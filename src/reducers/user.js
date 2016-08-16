@@ -1,19 +1,21 @@
-import {Types} from '../actions';
-import uuid from 'react-native-uuid';
+import {UPDATE_USER, SWITCH_CHILD} from '../actions';
+import update from 'react-addons-update';
 
-const user = (state = {}, action) => {
+export default(state = {}, action) => {
   switch (action.type) {
-    case Types.INITIALISE:
+    case UPDATE_USER:
       {
-        return {id: uuid.v4(), name: 'Eric Fan'};
+        return action.user;
       }
-    case Types.SELECT_CHILD:
+    case SWITCH_CHILD:
       {
-        return Object.assign({}, state, {currentChildId: action.id});
+        return update(state, {
+          currentChildId: {
+            $set: action.id
+          }
+        });
       }
     default:
       return state;
   }
 };
-
-export default user;

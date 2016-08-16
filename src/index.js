@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {View, Navigator, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
-import configureStore from './store/configureStore';
+import createStore from './reducers';
 import MainView from './containers/MainView';
-import {Types} from './actions';
+import * as Actions from './actions';
 import styles from './styles';
-import uuid from 'react-native-uuid';
 
-let store = configureStore({});
+let store = createStore({});
 
 const routes = [
   {
@@ -28,11 +27,7 @@ const routes = [
 export default class App extends Component {
   constructor(props) {
     super(props);
-    store.dispatch({type: Types.INITIALISE});
-    const childId = uuid.v4();
-    store.dispatch({type: Types.ADD_CHILD, id: childId, name: 'Olivia', gender: 'Female'});
-    store.dispatch({type: Types.ADD_CHILD, id: uuid.v4(), name: 'Michael', gender: 'Male'});
-    store.dispatch({type: Types.SELECT_CHILD, id: childId});
+    store.dispatch(Actions.initialise());
   }
   _renderScene(route, navigator) {
     switch (route.index) {

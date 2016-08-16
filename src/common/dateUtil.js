@@ -11,8 +11,8 @@ const WEEKDAY_NAMES = [
 ];
 
 export const today = () => {
-  let dt = new Date();
-  let dateStr = dt.toLocaleDateString('en-US', {year: 'numeric'}) + '-' + dt.toLocaleDateString('en-US', {month: '2-digit'}) + '-' + dt.toLocaleDateString('en-US', {day: '2-digit'});
+  const dt = new Date();
+  const dateStr = dt.toLocaleDateString('en-US', {year: 'numeric'}) + '-' + dt.toLocaleDateString('en-US', {month: '2-digit'}) + '-' + dt.toLocaleDateString('en-US', {day: '2-digit'});
   return new Date(dateStr);
 };
 export const thisWeek = () => {

@@ -54,7 +54,7 @@ export default class DrawerMenu extends Component {
       <Text key={rowID} style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{rowData.title}</Text>
     );
     return (
-      <TouchableHighlight underlayColor='white'>
+      <TouchableHighlight underlayColor='white' onPress={rowData.onPress}>
         <View style={styles.itemContainer}>
           {elements}
         </View>

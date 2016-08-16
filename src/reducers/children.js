@@ -1,44 +1,23 @@
-import {Types} from '../actions';
-import * as dateUtil from '../common/dateUtil';
+import {ADD_CHILD, REMOVE_CHILD, UPDATE_SCORES} from '../actions';
 import update from 'react-addons-update';
 
-const generateMutation = (fromDate, numOfDays) => {
-  let mutation = {};
-  const tasks = ['Task A', 'Task B', 'Task C', 'Task D', 'Task E'];
-  for (let idx = 1; idx <= numOfDays; idx++) {
-    const date = dateUtil.addDays(fromDate, -1 * idx);
-    mutation[date.toISOString()] = {
-      date: date,
-      scores: Object.assign({}, ...tasks.map(task => {
-        return {
-          [task]: {
-            task: task,
-            value: 0
-          }
-        };
-      }))
-    };
-  }
-  return mutation;
-};
-
-const children = (state = {}, action) => {
+export default(state = {}, action) => {
   switch (action.type) {
-    case Types.ADD_CHILD:
+    case ADD_CHILD:
       {
         return update(state, {
           $merge: {
-            [action.id]: {
-              id: action.id,
-              name: action.name,
-              gender: action.gender,
-              total: 0,
+            [action.child.id]: {
+              id: action.child.id,
+              name: action.child.name,
+              gender: action.child.gender,
+              total: action.child.total,
               days: {}
             }
           }
         });
       }
-    case Types.REMOVE_CHILD:
+    case REMOVE_CHILD:
       {
         return update(state, {
           $merge: {
@@ -46,76 +25,28 @@ const children = (state = {}, action) => {
           }
         });
       }
-    case Types.SELECT_CHILD:
+    case UPDATE_SCORES:
       {
-        return children(state, {
-          type: Types.FETCH_UP,
-          childId: action.id
-        });
-      }
-    case Types.FETCH_UP:
-      {
-        const child = state[action.childId];
-        const nextWeek = dateUtil.addDays(dateUtil.thisWeek(), 7);
-        let numOfDays = 28;
-        if (Object.keys(child.days).length > 0) {
-          const latestDay = child.days[Object.keys(child.days).sort().reverse()[0]].date;
-          const latestWeek = dateUtil.firstDayOfWeek(latestDay);
-          const diffDays = dateUtil.substractAsDays(nextWeek, latestWeek);
-          /* if (diffDays == 7) {
-            return state;
-          }*/
-          numOfDays = Math.max(numOfDays, diffDays);
-        }
-        let mutation = generateMutation(nextWeek, numOfDays);
+        const earliest = action.scores.days.map(d => d.date).sort()[0];
         return update(state, {
-          [action.childId]: {
-            days: {
-              $merge: mutation
-            }
-          }
-        });
-      }
-    case Types.FETCH_DOWN:
-      {
-        const child = state[action.childId];
-        if (Object.keys(child.days).length === 0) {
-          return children(state, {
-            type: Types.FETCH_UP,
-            childId: action.childId
-          });
-        }
-        const earliestDay = child.days[Object.keys(child.days).sort()[0]].date;
-        const earliestWeek = dateUtil.firstDayOfWeek(earliestDay);
-        let mutation = generateMutation(earliestWeek, 28);
-        return update(state, {
-          [action.childId]: {
-            days: {
-              $merge: mutation
-            }
-          }
-        });
-      }
-    case Types.SET_SCORE:
-      {
-        return update(state, {
-          [action.childId]: {
+          [action.scores.childId]: {
+            earliest: {
+              $apply: (e) => {
+                if (earliest !== undefined && (e === undefined || earliest < e)) {
+                  return earliest;
+                }
+                return e;
+              }
+            },
             total: {
-              $apply: x => (action.value === 1)
-                ? x + 1
-                : x - 1
+              $set: action.scores.total
             },
             days: {
-              [action.date.toISOString()]: {
-                scores: {
-                  $merge: {
-                    [action.task]: {
-                      task: action.task,
-                      value: action.value
-                    }
-                  }
-                }
-              }
+              $merge: Object.assign({}, ...action.scores.days.map(d => {
+                return {
+                  [d.date]: d
+                };
+              }))
             }
           }
         });
@@ -124,5 +55,3 @@ const children = (state = {}, action) => {
       return state;
   }
 };
-
-export default children;

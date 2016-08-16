@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, ListView, TouchableHighlight, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  ListView,
+  RefreshControl,
+  TouchableHighlight,
+  StyleSheet
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Seperator from '../components/Seperator';
 import * as dateUtil from '../common/dateUtil';
@@ -43,9 +50,15 @@ const styles = StyleSheet.create({
 });
 
 export default class TaskListView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      refreshing: false
+    };
+  }
   _buildDataSource() {
     const weekGroup = Object.values(this.props.child.days).reduce((g, day) => {
-      const week = dateUtil.firstDayOfWeek(day.date).toISOString();
+      const week = dateUtil.firstDayOfWeek(new Date(day.date)).toISOString();
       if (g[week] === undefined) {
         g[week] = [day];
       } else {
@@ -64,7 +77,7 @@ export default class TaskListView extends Component {
           task: task,
           items: days.map(d => {
             return {date: d.date, value: d.scores[task].value};
-          }).sort((x, y) => x.date.valueOf() - y.date.valueOf())
+          }).sort((x, y) => Date.parse(x.date) - Date.parse(y.date))
         };
       });
       return rows;
@@ -131,14 +144,28 @@ export default class TaskListView extends Component {
   _renderSeparator(sectionID, rowID) {
     return (<Seperator key={`${sectionID}-${rowID}`}/>);
   }
+  _refresh() {
+    this.setState({refreshing: true});
+    this.props.actions.refresh(this.props.child.id);
+    this.setState({refreshing: false});
+  }
+  _loadMore() {
+    this.props.actions.fetchMore(this.props.child.id);
+  }
   render() {
+    const refreshControl = <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._refresh()}/>;
     return (<ListView
+      ref="listView"
       dataSource={this._buildDataSource()}
       renderSectionHeader={(sectionData, sectionID) => this._renderSectionHeader(sectionData, sectionID)}
       renderRow={(rowData) => this._renderRow(rowData)}
       renderSeparator={(sectionID, rowID) => this._renderSeparator(sectionID, rowID)}
-      onEndReached={() => this.props.actions.fetchDown(this.props.child.id)}
-      onEndReachedThreshold={-10}/>);
+      refreshControl={refreshControl}
+      onEndReached={() => this._loadMore()}
+      onEndReachedThreshold={0}/>);
+  }
+  scrollToTop() {
+    this.refs.listView.scrollTo({y: 0});
   }
 }
 
@@ -149,8 +176,8 @@ TaskListView.propTypes = {
     gender: React.PropTypes.string.isRequired,
     total: React.PropTypes.number.isRequired,
     days: React.PropTypes.objectOf(React.PropTypes.shape({
-      date: React.PropTypes.object.isRequired,
-      scores: React.PropTypes.objectOf(React.PropTypes.shape({task: React.PropTypes.string.isRequired, value: React.PropTypes.number.isRequired}))
+      date: React.PropTypes.string.isRequired,
+      scores: React.PropTypes.objectOf(React.PropTypes.shape({task: React.PropTypes.string.isRequired, position: React.PropTypes.number.isRequired, value: React.PropTypes.number.isRequired}))
     })).isRequired
   }).isRequired,
   actions: React.PropTypes.object.isRequired

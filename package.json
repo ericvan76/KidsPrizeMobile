@@ -19,7 +19,6 @@
   "devDependencies": {
     "eslint": "^3.0.1",
     "eslint-plugin-react": "^5.2.2",
-    "eslint-plugin-react-native": "^1.1.0",
     "redux-devtools": "^3.3.1"
   }
 }

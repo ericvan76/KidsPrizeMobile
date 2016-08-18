@@ -12,11 +12,9 @@ export const initialise = () => {
     Promise.all([api.getUserInfo(), api.listChild()]).then(([user, children]) => {
       dispatch({type: UPDATE_USER, user: user});
       children.forEach(child => {
-        dispatch({type: ADD_CHILD, child: child});
+        dispatch({type: ADD_CHILD, id: child.id, name: child.name, gender: child.gender});
+        dispatch(refresh(child.id));
       });
-      if (children.length > 0) {
-        dispatch(switchChild(children[0].id));
-      }
     });
   };
 };
@@ -24,8 +22,8 @@ export const initialise = () => {
 export const addChild = (id, name, gender) => {
   return (dispatch) => {
     api.addChild(id, name, gender).then(child => {
-      dispatch({type: ADD_CHILD, child: child});
-      dispatch(switchChild(id));
+      dispatch({type: ADD_CHILD, id: child.id, name: child.name, gender: child.gender});
+      dispatch(refresh(id));
     });
   };
 };
@@ -33,9 +31,9 @@ export const addChild = (id, name, gender) => {
 export const removeChild = (id) => {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.user.currentChildId === id) {
+    if (state.currentChildId === id) {
       const replace = state.children.find(c => c.id !== id);
-      dispatch(switchChild(replace.id));
+      dispatch({type: SWITCH_CHILD, id: replace.id});
     }
     api.removeChild(id).then(() => {
       dispatch({type: REMOVE_CHILD, id: id});
@@ -44,20 +42,14 @@ export const removeChild = (id) => {
 };
 
 export const switchChild = (id) => {
-  return (dispatch, getState) => {
-    dispatch({type: SWITCH_CHILD, id: id});
-    const state = getState();
-    if (Object.keys(state.children[id].days).length === 0) {
-      dispatch(refresh(id));
-    }
-  };
+  return {type: SWITCH_CHILD, id: id};
 };
 
 export const refresh = (childId) => {
   return (dispatch) => {
     const nextWeek = dateUtil.addDays(dateUtil.thisWeek(), 7).toISOString();
     api.fetchScores(childId, nextWeek, 28).then(result => {
-      dispatch({type: UPDATE_SCORES, scores: result});
+      dispatch({type: UPDATE_SCORES, childId: result.childId, total: result.total, days: result.days});
     });
   };
 };
@@ -65,10 +57,10 @@ export const refresh = (childId) => {
 export const fetchMore = (childId) => {
   return (dispatch, getState) => {
     const state = getState();
-    const child = state.children[childId];
-    if (child.earliest !== undefined) {
-      api.fetchScores(childId, child.earliest, 28).then(result => {
-        dispatch({type: UPDATE_SCORES, scores: result});
+    const scores = state.scores[childId];
+    if (scores.earliest !== undefined) {
+      api.fetchScores(childId, scores.earliest, 28).then(result => {
+        dispatch({type: UPDATE_SCORES, childId: result.childId, total: result.total, days: result.days});
       });
     }
   };
@@ -77,7 +69,7 @@ export const fetchMore = (childId) => {
 export const setScore = (childId, date, task, value) => {
   return (dispatch) => {
     api.setScore(childId, date, task, value).then(result => {
-      dispatch({type: UPDATE_SCORES, scores: result});
+      dispatch({type: UPDATE_SCORES, childId: result.childId, total: result.total, days: result.days});
     });
   };
 };

@@ -1,7 +1,7 @@
 import uuid from 'react-native-uuid';
 import * as dateUtil from '../common/dateUtil';
 
-const tasks = ['Task A', 'Task B', 'Task C', 'Task D'];
+const _defaultTasks = ['Task A', 'Task B', 'Task C', 'Task D'];
 
 const children = [
   {
@@ -24,11 +24,10 @@ const data = {
     id: uuid.v4(),
     name: 'Eric'
   },
-  children: Object.assign({}, ...children.map(c => {
-    return {
-      [c.id]: c
-    };
-  }))
+  children: children.reduce((result, child) => {
+    result[child.id] = child;
+    return result;
+  }, {})
 };
 
 export const getUserInfo = () => {
@@ -61,24 +60,23 @@ export const removeChild = (id) => {
 export const setScore = (childId, date, task, value) => {
   const child = data.children[childId];
   let day = child.days[date];
-  if (day !== undefined) {
-    const oldValue = day.scores[task].value || 0;
-    day.scores[task].value = value;
+  if (day !== undefined && day.tasks[task] !== undefined) {
+    const oldValue = day.tasks[task].value || 0;
+    day.tasks[task].value = value;
     child.total = child.total + value - oldValue;
   } else {
     day = {
       date: date,
-      scores: Object.assign({}, ...tasks.map((t, i) => {
-        return {
-          [t]: {
-            task: t,
-            position: i,
-            value: t === task
-              ? value
-              : 0
-          }
+      tasks: _defaultTasks.reduce((result, t, idx) => {
+        result[t] = {
+          task: t,
+          position: idx,
+          value: t === task
+            ? value
+            : 0
         };
-      }))
+        return result;
+      }, {})
     };
     child.days[date] = day;
     child.total = child.total + value;
@@ -95,15 +93,14 @@ export const fetchScores = (childId, beforeDate, numOfDays) => {
       let date = dateUtil.addDays(new Date(beforeDate), -1 * (i + 1)).toISOString();
       return child.days[date] || {
         date: date,
-        scores: Object.assign({}, ...tasks.map((t, idx) => {
-          return {
-            [t]: {
-              task: t,
-              position: idx,
-              value: 0
-            }
+        tasks: _defaultTasks.reduce((result, t, idx) => {
+          result[t] = {
+            task: t,
+            position: idx,
+            value: 0
           };
-        }))
+          return result;
+        }, {})
       };
     })
   };

@@ -6,7 +6,7 @@ import MainView from './containers/MainView';
 import * as Actions from './actions';
 import styles from './styles';
 
-let store = createStore({});
+let store = createStore();
 
 const routes = [
   {

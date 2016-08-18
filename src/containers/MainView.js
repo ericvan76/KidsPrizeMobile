@@ -3,9 +3,9 @@ import {View, TouchableHighlight} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Drawer from 'react-native-drawer';
-import * as actions from '../actions';
+import {switchChild, refresh, fetchMore, setScore} from '../actions';
 import Header from '../components/Header';
-import TaskListView from '../components/TaskListView';
+import ScoreListView from '../components/ScoreListView';
 import DrawerMenu from '../components/DrawerMenu';
 import styles from '../styles';
 
@@ -17,15 +17,15 @@ class MainView extends Component {
     this.refs.drawer.close();
   }
   _switchChild(id) {
-    if (this.props.user.currentChildId != id) {
-      this.props.actions.switchChild(id);
+    if (this.props.child.id != id) {
       this.refs.listView.scrollToTop();
+      this.props.actions.switchChild(id);
     }
     this._closeDrawer();
   }
   _renderDrawer() {
-    let items = [
-      ...this.props.childList.map(c => {
+    const items = [
+      ...this.props.children.map(c => {
         return {
           icon: (c.gender.toLowerCase() === 'male')
             ? 'male'
@@ -56,50 +56,62 @@ class MainView extends Component {
     );
   }
   render() {
-    let mainView = null;
-    if (this.props.child !== undefined) {
-      mainView = <View style={styles.container}>
-        <TouchableHighlight onPress={() => this.refs.listView.scrollToTop()}>
-          <View>
-            <Header
-              style={styles.header}
-              iconStyle={styles.icon}
-              titleStyle={styles.title}
-              icon='bars'
-              title={this.props.child.name}
-              onIconPress={() => this._openDrawer()}/>
-          </View>
-        </TouchableHighlight>
-        <TaskListView ref='listView' child={this.props.child} actions={this.props.actions}/></View>;
+    if (!this.props.user || !this.props.child) {
+      return null;
     }
     return (
       <Drawer ref='drawer' content={this._renderDrawer()} openDrawerOffset={0.2} tapToClose={true}>
-        {mainView}
+        <View style={styles.container}>
+          <TouchableHighlight onPress={() => this.refs.listView.scrollToTop()}>
+            <View>
+              <Header
+                style={styles.header}
+                iconStyle={styles.icon}
+                titleStyle={styles.title}
+                icon='bars'
+                title={this.props.child.name}
+                onIconPress={() => this._openDrawer()}/>
+            </View>
+          </TouchableHighlight>
+          <ScoreListView
+            ref='listView'
+            styles={styles}
+            child={this.props.child}
+            scores={this.props.scores}
+            actions={this.props.actions}/>
+        </View>
       </Drawer>
     );
   }
 }
 
 MainView.propTypes = {
-  user: React.PropTypes.object.isRequired,
+  user: React.PropTypes.object,
+  children: React.PropTypes.arrayOf(React.PropTypes.shape({id: React.PropTypes.string.isRequired, name: React.PropTypes.string.isRequired, gender: React.PropTypes.string.isRequired})).isRequired,
   child: React.PropTypes.object,
-  childList: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  scores: React.PropTypes.object,
   actions: React.PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    child: state.children[state.user.currentChildId],
-    childList: Object.values(state.children).map(c => {
+    children: Object.values(state.children).map(c => {
       return {id: c.id, name: c.name, gender: c.gender};
-    })
+    }),
+    child: state.children[state.currentChildId],
+    scores: state.scores[state.currentChildId]
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators(actions, dispatch)
+    actions: bindActionCreators({
+      switchChild,
+      refresh,
+      fetchMore,
+      setScore
+    }, dispatch)
   };
 };
 

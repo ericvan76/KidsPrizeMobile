@@ -1,21 +1,14 @@
-import {UPDATE_USER, SWITCH_CHILD} from '../actions';
-import update from 'react-addons-update';
+import {UPDATE_USER} from '../actions';
 
-export default(state = {}, action) => {
+const user = (state = null, action) => {
   switch (action.type) {
     case UPDATE_USER:
       {
         return action.user;
       }
-    case SWITCH_CHILD:
-      {
-        return update(state, {
-          currentChildId: {
-            $set: action.id
-          }
-        });
-      }
     default:
       return state;
   }
 };
+
+export default user;

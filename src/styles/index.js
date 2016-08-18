@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-const FONT_X_SMALL = 8;
+// const FONT_X_SMALL = 8;
 const FONT_SMALL = 16;
 const FONT_MEDIUM = 24;
 const FONT_LARGE = 32;

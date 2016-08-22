@@ -1,33 +1,7 @@
 import React, {Component} from 'react';
-import {View, Text, ListView, TouchableHighlight, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {View, Text, ListView, TouchableOpacity, StyleSheet} from 'react-native';
+import Icon from './Icon';
 import Seperator from '../components/Seperator';
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20
-  },
-  seperatorContainer: {
-    height: 20,
-    justifyContent: 'center'
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 40
-  },
-  icon: {
-    flex: 0.3,
-    fontSize: 24,
-    textAlign: 'center'
-  },
-  title: {
-    flex: 0.7,
-    fontSize: 16,
-    textAlign: 'left',
-    paddingRight: 20
-  }
-});
 
 export default class DrawerMenu extends Component {
   _buildDataSource() {
@@ -54,11 +28,11 @@ export default class DrawerMenu extends Component {
       <Text key={rowID} style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{rowData.title}</Text>
     );
     return (
-      <TouchableHighlight underlayColor='white' onPress={rowData.onPress}>
+      <TouchableOpacity onPress={rowData.onPress}>
         <View style={styles.itemContainer}>
           {elements}
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
   render() {
@@ -73,3 +47,30 @@ export default class DrawerMenu extends Component {
 DrawerMenu.propTypes = {
   items: React.PropTypes.arrayOf(React.PropTypes.shape({icon: React.PropTypes.string, title: React.PropTypes.string.isRequired}))
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 20
+  },
+  seperatorContainer: {
+    height: 16,
+    justifyContent: 'center'
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 32
+  },
+  icon: {
+    flex: 0.2,
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  title: {
+    flex: 0.8,
+    fontSize: 16,
+    textAlign: 'left',
+    paddingRight: 10
+  }
+});

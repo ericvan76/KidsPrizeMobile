@@ -1,56 +1,62 @@
 import React, {Component} from 'react';
-import {View, TouchableHighlight} from 'react-native';
+import {View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Drawer from 'react-native-drawer';
 import {switchChild, refresh, fetchMore, setScore} from '../actions';
-import Header from '../components/Header';
+import HeadBar from '../components/HeadBar';
 import ScoreListView from '../components/ScoreListView';
 import DrawerMenu from '../components/DrawerMenu';
-import styles from '../styles';
+import * as routes from '../routes';
+import * as icons from '../components/Icon';
+//import styles from '../styles';
 
 class MainView extends Component {
-  _openDrawer() {
-    this.refs.drawer.open();
-  }
-  _closeDrawer() {
-    this.refs.drawer.close();
-  }
+
   _switchChild(id) {
     if (this.props.child.id != id) {
       this.refs.listView.scrollToTop();
       this.props.actions.switchChild(id);
     }
-    this._closeDrawer();
   }
   _renderDrawer() {
     const items = [
       ...this.props.children.map(c => {
         return {
           icon: (c.gender.toLowerCase() === 'male')
-            ? 'male'
-            : 'female',
+            ? icons.BOY
+            : icons.GIRL,
           title: c.name,
-          onPress: () => this._switchChild(c.id)
+          onPress: () => {
+            this._switchChild(c.id);
+            this.refs.drawer.close();
+          }
         };
       }), {
         title: '-'
       }, {
-        icon: 'plus',
-        title: 'Add Child'
+        icon: icons.ADD,
+        title: 'Add Child',
+        onPress: () => {
+          this.props.navigator.push(new routes.ChildViewRoute());
+          this.refs.drawer.close();
+        }
       }, {
         title: '-'
       }, {
-        icon: 'cog',
-        title: 'Settings'
+        icon: icons.SETTINGS,
+        title: 'Settings',
+        onPress: () => {
+          this.props.navigator.push(new routes.ChildListViewRoute());
+          this.refs.drawer.close();
+        }
       }, {
-        icon: 'info',
+        icon: icons.INFO,
         title: 'About'
       }
     ];
     return (
       <View style={styles.container}>
-        <Header style={styles.drawerHeader} iconStyle={styles.drawerIcon} icon='user' title={this.props.user.name}/>
         <DrawerMenu items={items}/>
       </View>
     );
@@ -59,20 +65,23 @@ class MainView extends Component {
     if (!this.props.user || !this.props.child) {
       return null;
     }
+    const leftButton = {
+      icon: icons.MENU,
+      handler: () => {
+        this.refs.drawer.open();
+      }
+    };
+    const title = {
+      text: this.props.child.name
+    };
     return (
       <Drawer ref='drawer' content={this._renderDrawer()} openDrawerOffset={0.2} tapToClose={true}>
         <View style={styles.container}>
-          <TouchableHighlight onPress={() => this.refs.listView.scrollToTop()}>
+          <TouchableWithoutFeedback onPress={() => this.refs.listView.scrollToTop()}>
             <View>
-              <Header
-                style={styles.header}
-                iconStyle={styles.icon}
-                titleStyle={styles.title}
-                icon='bars'
-                title={this.props.child.name}
-                onIconPress={() => this._openDrawer()}/>
+              <HeadBar leftButton={leftButton} title={title}/>
             </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
           <ScoreListView
             ref='listView'
             styles={styles}
@@ -86,6 +95,7 @@ class MainView extends Component {
 }
 
 MainView.propTypes = {
+  navigator: React.PropTypes.object.isRequired,
   user: React.PropTypes.object,
   children: React.PropTypes.arrayOf(React.PropTypes.shape({id: React.PropTypes.string.isRequired, name: React.PropTypes.string.isRequired, gender: React.PropTypes.string.isRequired})).isRequired,
   child: React.PropTypes.object,
@@ -116,3 +126,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});

@@ -4,51 +4,14 @@ import {
   Text,
   ListView,
   RefreshControl,
-  TouchableHighlight,
+  TouchableOpacity,
   StyleSheet
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from './Icon';
 import update from 'react-addons-update';
-import Seperator from '../components/Seperator';
+import Seperator from './Seperator';
+import * as icons from './Icon';
 import * as dateUtil from '../common/dateUtil';
-
-const styles = StyleSheet.create({
-  // section
-  section: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    justifyContent: 'flex-end',
-    backgroundColor: '#000000',
-    paddingLeft: 5,
-    paddingRight: 5
-  },
-  date: {
-    width: 40,
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#ffffff'
-  },
-  // row
-  row: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    paddingLeft: 5,
-    paddingRight: 5
-  },
-  task: {
-    fontSize: 16
-  },
-  starRow: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  star: {
-    width: 40,
-    fontSize: 32,
-    textAlign: 'center'
-  }
-});
 
 const allDaysOfWeek = (week) => {
   const wk = new Date(week);
@@ -129,7 +92,7 @@ export default class ScoreListView extends Component {
         month = `/${d.getUTCMonth() + 1}`;
       }
       return (
-        <Text style={[styles.date, this.props.styles.sectionText]} key={d.toISOString()}>{`${dayName}\n${date}${month}`}</Text>
+        <Text style={[styles.date, this.props.styles.date]} key={d.toISOString()}>{`${dayName}\n${date}${month}`}</Text>
       );
     });
     return (
@@ -143,15 +106,14 @@ export default class ScoreListView extends Component {
         ? 0
         : 1;
       const iconName = (value > 0)
-        ? 'star'
-        : 'star-o';
+        ? icons.STAR
+        : icons.STAR_BORDER;
       return (
-        <TouchableHighlight
+        <TouchableOpacity
           key={i}
-          underlayColor='white'
           onPress={() => this.props.actions.setScore(this.props.child.id, row.items[i].date, row.task, newValue)}>
           <Icon style={[styles.star, this.props.styles.star]} name={iconName}/>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
     });
     return (
@@ -223,5 +185,45 @@ ScoreListView.propTypes = {
     })).isRequired
   }).isRequired,
   actions: React.PropTypes.shape({refresh: React.PropTypes.func.isRequired, fetchMore: React.PropTypes.func.isRequired, setScore: React.PropTypes.func.isRequired}).isRequired,
-  styles: React.PropTypes.shape({section: React.PropTypes.number, sectionText: React.PropTypes.number, task: React.PropTypes.number, star: React.PropTypes.number})
+  styles: React.PropTypes.shape({section: View.propTypes.style, date: Text.propTypes.style, task: Text.propTypes.style, star: Text.propTypes.style})
 };
+
+const styles = StyleSheet.create({
+  // section
+  section: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    justifyContent: 'flex-end',
+    backgroundColor: '#666666',
+    paddingLeft: 5,
+    paddingRight: 5
+  },
+  date: {
+    width: 40,
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#ffffff'
+  },
+  // row
+  row: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    paddingLeft: 5,
+    paddingRight: 5
+  },
+  task: {
+    fontSize: 16,
+    color: '#333333'
+  },
+  starRow: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  star: {
+    width: 40,
+    fontSize: 36,
+    textAlign: 'center',
+    color: '#333333'
+  }
+});

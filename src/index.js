@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {View, Navigator} from 'react-native';
 import {Provider} from 'react-redux';
-import createStore from './reducers';
+
+import store from './store';
 import * as routes from './routes';
 import * as Actions from './actions';
 import styles from './styles';
-
-const store = createStore();
 
 export default class App extends Component {
   constructor(props) {

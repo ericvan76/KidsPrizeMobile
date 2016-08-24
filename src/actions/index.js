@@ -12,17 +12,17 @@ export const initialise = () => {
     Promise.all([api.getUserInfo(), api.listChild()]).then(([user, children]) => {
       dispatch({type: UPDATE_USER, user: user});
       children.forEach(child => {
-        dispatch({type: ADD_CHILD, id: child.id, name: child.name, gender: child.gender});
+        dispatch({type: ADD_CHILD, id: child.id, name: child.name, gender: child.gender, tasks: child.tasks});
         dispatch(refresh(child.id));
       });
     });
   };
 };
 
-export const addChild = (id, name, gender) => {
+export const addChild = (id, name, gender, tasks) => {
   return (dispatch) => {
-    api.addChild(id, name, gender).then(child => {
-      dispatch({type: ADD_CHILD, id: child.id, name: child.name, gender: child.gender});
+    api.addChild(id, name, gender, tasks).then(child => {
+      dispatch({type: ADD_CHILD, id: child.id, name: child.name, gender: child.gender, tasks: child.tasks});
       dispatch(refresh(id));
     });
   };

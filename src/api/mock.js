@@ -1,5 +1,5 @@
-import uuid from 'react-native-uuid';
 import * as dateUtil from '../common/dateUtil';
+import uuid from '../common/uuid';
 
 const _defaultTasks = ['Task A', 'Task B', 'Task C', 'Task D'];
 
@@ -7,13 +7,15 @@ const children = [
   {
     id: uuid.v4(),
     name: 'Olivia',
-    gender: 'Female',
+    gender: 'F',
+    tasks: _defaultTasks,
     total: 0,
     days: {}
   }, {
     id: uuid.v4(),
     name: 'Michael',
-    gender: 'Male',
+    gender: 'M',
+    tasks: _defaultTasks,
     total: 0,
     days: {}
   }
@@ -36,17 +38,18 @@ export const getUserInfo = () => {
 
 export const listChild = () => {
   const result = Object.values(data.children).map(c => {
-    return {id: c.id, name: c.name, gender: c.gender, total: c.total};
+    return {id: c.id, name: c.name, gender: c.gender, total: c.total, tasks: c.tasks};
   });
   return Promise.resolve(result);
 };
 
-export const addChild = (id, name, gender) => {
+export const addChild = (id, name, gender, tasks) => {
   const newChild = {
     id: id,
     name: name,
     gender: gender,
-    total: 0
+    total: 0,
+    tasks: tasks
   };
   data.children[id] = Object.assign({}, newChild, {days: {}});
   return Promise.resolve(newChild);
@@ -89,7 +92,9 @@ export const fetchScores = (childId, beforeDate, numOfDays) => {
   const result = {
     childId: childId,
     total: child.total,
-    days: [...new Array(numOfDays).keys()].map(i => {
+    days: Array.from({
+      length: numOfDays
+    }, (v, k) => k).map(i => {
       let date = dateUtil.addDays(new Date(beforeDate), -1 * (i + 1)).toISOString();
       return child.days[date] || {
         date: date,

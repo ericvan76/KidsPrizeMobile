@@ -1,21 +1,17 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ListView,
-  RefreshControl,
-  TouchableOpacity,
-  StyleSheet
-} from 'react-native';
-import Icon from './Icon';
+import {View, Text, ListView, RefreshControl, TouchableOpacity} from 'react-native';
 import update from 'react-addons-update';
-import Seperator from './Seperator';
-import * as icons from './Icon';
+import StyleSheet from 'react-native-extended-stylesheet';
+
+import Icon from './Icon';
+import Separator from './Seperator';
 import * as dateUtil from '../common/dateUtil';
 
 const allDaysOfWeek = (week) => {
   const wk = new Date(week);
-  return [...new Array(7).keys()].map(i => {
+  return Array.from({
+    length: 7
+  }, (v, k) => k).map(i => {
     return dateUtil.addDays(wk, i);
   });
 };
@@ -26,7 +22,9 @@ const createDataSource = () => {
       return false;
     },
     rowHasChanged: (r1, r2) => {
-      return [...new Array(7).keys()].some(i => r1.items[i].value !== r2.items[i].value);
+      return Array.from({
+        length: 7
+      }, (v, k) => k).some(i => r1.items[i].value !== r2.items[i].value);
     }
   });
 };
@@ -83,7 +81,7 @@ export default class ScoreListView extends Component {
       dataSource: createDataSource().cloneWithRowsAndSections(buildDataRows(props.scores))
     };
   }
-  _renderSectionHeader(sectionData, sectionID) {
+  renderSectionHeader(sectionData, sectionID) {
     const dates = allDaysOfWeek(sectionID).map(d => {
       const dayName = dateUtil.getWeekDayName(d.getUTCDay());
       const date = d.getUTCDate();
@@ -92,43 +90,54 @@ export default class ScoreListView extends Component {
         month = `/${d.getUTCMonth() + 1}`;
       }
       return (
-        <Text style={[styles.date, this.props.styles.date]} key={d.toISOString()}>{`${dayName}\n${date}${month}`}</Text>
+        <Text style={styles.date} key={d.toISOString()}>{`${dayName}\n${date}${month}`}</Text>
       );
     });
     return (
-      <View style={[styles.section, this.props.styles.section]}>{dates}</View>
+      <View>
+        <Separator key='s0'/>
+        <View style={styles.section}>
+          {dates}
+        </View>
+        <Separator key='s1'/>
+      </View>
     );
   }
-  _renderRow(row) {
-    let stars = [...new Array(7).keys()].map(i => {
+  handleSetScore(childId, date, task, value) {
+    this.props.actions.setScore(childId, date, task, value);
+  }
+  renderRow(row) {
+    let stars = Array.from({
+      length: 7
+    }, (v, k) => k).map(i => {
       const value = row.items[i].value;
       const newValue = (value > 0)
         ? 0
         : 1;
       const iconName = (value > 0)
-        ? icons.STAR
-        : icons.STAR_BORDER;
+        ? '#fa:star'
+        : '#fa:star-o';
       return (
         <TouchableOpacity
           key={i}
-          onPress={() => this.props.actions.setScore(this.props.child.id, row.items[i].date, row.task, newValue)}>
-          <Icon style={[styles.star, this.props.styles.star]} name={iconName}/>
+          onPress={this.handleSetScore.bind(this, this.props.child.id, row.items[i].date, row.task, newValue)}>
+          <Icon style={styles.star} name={iconName}/>
         </TouchableOpacity>
       );
     });
     return (
-      <View style={[styles.row]}>
-        <Text style={[styles.task, this.props.styles.task]} ellipsizeMode='tail' numberOfLines={1}>{row.task}</Text>
+      <View style={styles.row}>
+        <Text style={styles.task} ellipsizeMode='tail' numberOfLines={1}>{row.task}</Text>
         <View style={styles.starRow}>
           {stars}
         </View>
       </View>
     );
   }
-  _renderSeparator(sectionID, rowID) {
-    return (<Seperator key={`${sectionID}-${rowID}`}/>);
+  renderSeparator(sectionID, rowID) {
+    return (<Separator key={`${sectionID}-${rowID}`}/>);
   }
-  _onRefresh() {
+  handleRefresh() {
     this.setState(update(this.state, {
       refreshing: {
         $set: true
@@ -141,7 +150,7 @@ export default class ScoreListView extends Component {
       }
     }));
   }
-  _onEndReached() {
+  handleEndReached() {
     this.props.actions.fetchMore(this.props.child.id);
   }
   componentWillReceiveProps(nextProps) {
@@ -149,6 +158,7 @@ export default class ScoreListView extends Component {
     if (nextProps.child.id !== this.props.child.id) {
       // create a new datasource for different child
       ds = createDataSource();
+      this.refs.listView.scrollTo({y: 0});
     }
     this.setState(update(this.state, {
       dataSource: {
@@ -157,16 +167,16 @@ export default class ScoreListView extends Component {
     }));
   }
   render() {
-    const refreshControl = <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._onRefresh()}/>;
+    const refreshControl = <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.handleRefresh()}/>;
     return (
       <ListView
         ref='listView'
         dataSource={this.state.dataSource}
-        renderSectionHeader={(sectionData, sectionID) => this._renderSectionHeader(sectionData, sectionID)}
-        renderRow={(rowData) => this._renderRow(rowData)}
-        renderSeparator={(sectionID, rowID) => this._renderSeparator(sectionID, rowID)}
+        renderSectionHeader={(sectionData, sectionID) => this.renderSectionHeader(sectionData, sectionID)}
+        renderRow={(rowData) => this.renderRow(rowData)}
+        renderSeparator={(sectionID, rowID) => this.renderSeparator(sectionID, rowID)}
         refreshControl={refreshControl}
-        onEndReached={() => this._onEndReached()}
+        onEndReached={() => this.handleEndReached()}
         onEndReachedThreshold={0}></ListView>
     );
   }
@@ -184,8 +194,7 @@ ScoreListView.propTypes = {
       tasks: React.PropTypes.objectOf(React.PropTypes.shape({task: React.PropTypes.string.isRequired, position: React.PropTypes.number.isRequired, value: React.PropTypes.number.isRequired}))
     })).isRequired
   }).isRequired,
-  actions: React.PropTypes.shape({refresh: React.PropTypes.func.isRequired, fetchMore: React.PropTypes.func.isRequired, setScore: React.PropTypes.func.isRequired}).isRequired,
-  styles: React.PropTypes.shape({section: View.propTypes.style, date: Text.propTypes.style, task: Text.propTypes.style, star: Text.propTypes.style})
+  actions: React.PropTypes.shape({refresh: React.PropTypes.func.isRequired, fetchMore: React.PropTypes.func.isRequired, setScore: React.PropTypes.func.isRequired}).isRequired
 };
 
 const styles = StyleSheet.create({
@@ -194,15 +203,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'flex-end',
-    backgroundColor: '#666666',
+    backgroundColor: '$section.backgroundColor',
     paddingLeft: 5,
     paddingRight: 5
   },
   date: {
-    width: 40,
+    width: '2.5rem',
     textAlign: 'center',
-    fontSize: 12,
-    color: '#ffffff'
+    fontSize: '0.8rem',
+    color: '$normal.textColor'
   },
   // row
   row: {
@@ -212,8 +221,8 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   task: {
-    fontSize: 16,
-    color: '#333333'
+    fontSize: '1rem',
+    color: '$normal.textColor'
   },
   starRow: {
     alignSelf: 'stretch',
@@ -221,9 +230,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   star: {
-    width: 40,
-    fontSize: 36,
+    width: '2.5rem',
+    fontSize: '2rem',
     textAlign: 'center',
-    color: '#333333'
+    color: '$normal.textColor'
   }
 });

@@ -10,7 +10,8 @@ const children = (state = {}, action) => {
             [action.id]: {
               id: action.id,
               name: action.name,
-              gender: action.gender
+              gender: action.gender,
+              tasks: action.tasks
             }
           }
         });

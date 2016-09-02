@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {View, Navigator} from 'react-native';
-import {Provider} from 'react-redux';
+import React, { Component } from 'react';
+import { View, Navigator } from 'react-native';
+import { Provider } from 'react-redux';
 
 import store from './store';
 import * as routes from './routes';
@@ -12,14 +12,14 @@ export default class App extends Component {
     super(props);
     store.dispatch(Actions.initialise());
   }
-  _renderScene(route, navigator) {
+  renderScene(route, navigator) {
     return route.renderScene(navigator);
   }
   render() {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <Navigator initialRoute={new routes.MainViewRoute()} renderScene={this._renderScene}></Navigator>
+          <Navigator initialRoute={new routes.MainViewRoute()} renderScene={this.renderScene}></Navigator>
         </View>
       </Provider>
     );

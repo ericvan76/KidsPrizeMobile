@@ -1,4 +1,4 @@
-import {UPDATE_USER} from '../actions';
+import { UPDATE_USER } from '../actions';
 
 const user = (state = null, action) => {
   switch (action.type) {

@@ -1,13 +1,13 @@
-import {Dimensions} from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
+/*
+import {Dimensions} from 'react-native';
 const {width} = Dimensions.get('window');
+*/
 
 StyleSheet.build({
 
-  rem: width > 375
-    ? 18
-    : 16,
+  rem: 16,
 
   header: {
     textColor: '#FFFFFF',
@@ -30,7 +30,7 @@ StyleSheet.build({
   }
 });
 
-// todo: put overrided styles here
+// gloabl stylesheet
 export default StyleSheet.create({
   container: {
     flex: 1

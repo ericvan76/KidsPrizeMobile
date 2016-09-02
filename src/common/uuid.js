@@ -8,7 +8,6 @@ const v4 = () => {
     s4() + '-' + s4() + s4() + s4();
 };
 
-
 export default {
   v4: v4
 };

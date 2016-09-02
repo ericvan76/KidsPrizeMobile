@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {View, ScrollView, TouchableWithoutFeedback} from 'react-native';
+import React, { Component } from 'react';
+import { View, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
-import {Section, TableView} from 'react-native-tableview-simple';
+import { Section, TableView } from 'react-native-tableview-simple';
 
-import {switchChild, refresh, fetchMore, setScore} from '../actions';
+import { switchChild, refresh, fetchMore, setScore } from '../actions';
 import Header from '../components/Header';
 import ScoreListView from '../components/ScoreListView';
 import MenuCell from '../components/MenuCell';
@@ -34,9 +34,9 @@ class MainView extends Component {
   }
   renderDrawer() {
     const childrenRows = Object.values(this.props.children).map(c => {
-      const icon = c.gender === 'M'
-        ? '#fa:male'
-        : '#fa:female';
+      const icon = c.gender === 'M' ?
+        '#fa:male' :
+        '#fa:female';
       return <MenuCell key={c.id} icon={icon} title={c.name} onPress={this.handleSwitchChild.bind(this, c.id)}/>;
     });
     return (
@@ -68,7 +68,7 @@ class MainView extends Component {
               <Header title={this.props.child.name} leftButton='#ma:menu' onLeftPress={() => this.refs.drawer.open()}/>
             </View>
           </TouchableWithoutFeedback>
-          <ScoreListView ref='listView' child={this.props.child} scores={this.props.scores} actions={this.props.actions}/>
+          <ScoreListView ref='listView' child={this.props.child} rows={this.props.scores.weeks} actions={this.props.actions}/>
         </View>
       </Drawer>
     );
@@ -92,7 +92,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.user,
     children: Object.values(state.children).map(c => {
-      return {id: c.id, name: c.name, gender: c.gender};
+      return { id: c.id, name: c.name, gender: c.gender };
     }),
     child: state.children[state.currentChildId],
     scores: state.scores[state.currentChildId]

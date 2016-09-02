@@ -1,14 +1,6 @@
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-const WEEKDAY_NAMES = [
-  'Sun',
-  'Mon',
-  'Tue',
-  'Wed',
-  'Thu',
-  'Fri',
-  'Sat'
-];
+const WEEKDAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const today = () => {
   const t = new Date();
@@ -47,4 +39,11 @@ export const substractAsDays = (d1, d2) => {
     return -1 * Math.floor(Math.abs(diff) / DAY_IN_MS);
   }
   return Math.floor(diff / DAY_IN_MS);
+};
+
+export const allDaysOfWeek = (week) => {
+  const wk = new Date(week);
+  return Array.from({ length: 7 }, (v, k) => k).map(i => {
+    return addDays(wk, i);
+  });
 };

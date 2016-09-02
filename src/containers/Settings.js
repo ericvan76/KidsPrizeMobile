@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {View, ScrollView} from 'react-native';
+import React, { Component } from 'react';
+import { View, ScrollView } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import {Cell, Section, TableView} from 'react-native-tableview-simple';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Cell, Section, TableView } from 'react-native-tableview-simple';
 
 import Header from '../components/Header';
 import * as routes from '../routes';
@@ -43,7 +43,7 @@ Settings.propTypes = {
 const mapStateToProps = (state) => {
   return {
     children: Object.values(state.children).map(c => {
-      return {id: c.id, name: c.name, gender: c.gender};
+      return { id: c.id, name: c.name, gender: c.gender };
     })
   };
 };

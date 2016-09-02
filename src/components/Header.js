@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {View, Text, StatusBar, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, StatusBar, TouchableOpacity } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import Icon from './Icon';
@@ -9,11 +9,9 @@ export default class Header extends Component {
     if (button === undefined) {
       return null;
     } else if (button.startsWith('#')) {
-      return (<Icon style={styles.button} name={button}/>);
+      return <Icon style={styles.button} name={button}/>;
     } else {
-      return (
-        <Text style={styles.button} ellipsizeMode='tail' numberOfLines={1}>{button}</Text>
-      );
+      return <Text style={styles.button} ellipsizeMode='tail' numberOfLines={1}>{button}</Text>;
     }
   }
   handleLeftPress() {
@@ -25,7 +23,7 @@ export default class Header extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden={true}></StatusBar>
+        <StatusBar hidden={true}/>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.leftTouchable} onPress={this.handleLeftPress.bind(this)}>
             {this.renderButton(this.props.leftButton)}

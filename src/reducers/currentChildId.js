@@ -1,4 +1,4 @@
-import {SWITCH_CHILD, ADD_CHILD, REMOVE_CHILD} from '../actions';
+import { SWITCH_CHILD, ADD_CHILD, REMOVE_CHILD } from '../actions';
 
 const currentChildId = (state = null, action) => {
   switch (action.type) {

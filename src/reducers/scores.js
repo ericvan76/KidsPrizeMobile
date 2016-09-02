@@ -1,7 +1,9 @@
-import {ADD_CHILD, REMOVE_CHILD, UPDATE_SCORES} from '../actions';
 import update from 'react-addons-update';
 
-const scores = (state = {}, action) => {
+import { ADD_CHILD, REMOVE_CHILD, UPDATE_SCORES } from '../actions';
+import * as dateUtil from '../common/dateUtil';
+
+export default function(state = {}, action) {
   switch (action.type) {
     case ADD_CHILD:
       {
@@ -9,7 +11,8 @@ const scores = (state = {}, action) => {
           $merge: {
             [action.id]: {
               total: 0,
-              days: {}
+              days: {},
+              weeks: {}
             }
           }
         });
@@ -42,6 +45,13 @@ const scores = (state = {}, action) => {
                 result[day.date] = day;
                 return result;
               }, {})
+            },
+            weeks: {
+              //todo: performance enhancement
+              $set: transform(Object.assign({}, state[action.childId].days, action.days.reduce((result, day) => {
+                result[day.date] = day;
+                return result;
+              }, {})))
             }
           }
         });
@@ -49,6 +59,48 @@ const scores = (state = {}, action) => {
     default:
       return state;
   }
-};
+}
 
-export default scores;
+const transform = (dayScores) => {
+  // group days by week
+  const weekGroup = Object.values(dayScores).reduce((g, day) => {
+    const week = dateUtil.firstDayOfWeek(new Date(day.date)).toISOString();
+    if (g[week] === undefined) {
+      g[week] = [day];
+    } else {
+      g[week].push(day);
+    }
+    return g;
+  }, {});
+  // build rows for each section (week)
+  return Object.keys(weekGroup).sort().reverse().reduce((result, week) => {
+    const days = weekGroup[week];
+    // combine tasks in order
+    const tasks = Object.values(days.reduce((r, d) => {
+      return Object.values(d.tasks).reduce((r, t) => {
+        r[t.task] = {
+          task: t.task,
+          pos: t.position
+        };
+        return r;
+      }, r);
+    }, {})).sort((x, y) => x.pos - y.pos).map(x => x.task);
+    // build a row for each task
+    result[week] = tasks.map(task => {
+      return {
+        week: week,
+        task: task,
+        items: dateUtil.allDaysOfWeek(week).map(d => {
+          const date = d.toISOString();
+          const existingRecord = days.find(d => d.date === date && d.tasks[task] !== undefined);
+          let value = 0;
+          if (existingRecord !== undefined) {
+            value = existingRecord.tasks[task].value;
+          }
+          return { date: date, value: value };
+        })
+      };
+    });
+    return result;
+  }, {});
+};

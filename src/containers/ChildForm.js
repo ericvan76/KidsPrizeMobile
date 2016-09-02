@@ -1,20 +1,16 @@
-import React, {Component} from 'react';
-import {View, ScrollView, Picker} from 'react-native';
+import React, { Component } from 'react';
+import { View, ScrollView } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import {reduxForm, propTypes, Field} from 'redux-form';
-import {Cell, Section, TableView} from 'react-native-tableview-simple';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { reduxForm, propTypes, Field } from 'redux-form';
+import { Cell, Section, TableView } from 'react-native-tableview-simple';
 
 import Header from '../components/Header';
 import TextInputCell from '../components/TextInputCell';
+import PickerCell from '../components/PickerCell';
 import * as routes from '../routes';
 import uuid from '../common/uuid';
-
-const genders = {
-  M: 'Male',
-  F: 'Female'
-};
 
 class ChildForm extends Component {
   constructor(props) {
@@ -35,7 +31,7 @@ class ChildForm extends Component {
     this.props.navigator.push(new routes.EditTasksRoute(this.props.initialValues.tasks));
   }
   markAsDestroyed() {
-    this.setState(Object.assign({}, this.state, {destroyed: true}));
+    this.setState(Object.assign({}, this.state, { destroyed: true }));
   }
   handleLeftPress() {
     this.markAsDestroyed();
@@ -54,52 +50,43 @@ class ChildForm extends Component {
     const nameField = (props) => {
       return (
         <TextInputCell
-          title='Child Name'
-          value={props.input.value}
-          placeholder='Input Name'
-          onChangeText={props.input.onChange}
-          autoCapitalize='words'></TextInputCell>
+        style={styles.text}
+        title='Child Name'
+        value={props.input.value}
+        placeholder='Input Name'
+        onChangeText={props.input.onChange}
+        autoCapitalize='words'/>
       );
     };
     const genderField = (props) => {
-      let genderPicker = null;
-      if (this.state.showGenderPicker) {
-        const items = Object.keys(genders).map(i => {
-          return <Picker.Item key={i} label={genders[i]} value={i}/>;
-        });
-        genderPicker = (
-          <Picker selectedValue={props.input.value || 'M'} onValueChange={props.input.onChange}>
-            {items}
-          </Picker>
-        );
-      }
+      const pickerItems = {
+        M: 'Male',
+        F: 'Female'
+      };
       return (
-        <View>
-          <Cell
-            cellStyle='RightDetail'
-            accessory='DisclosureIndicator'
-            title='Gender'
-            detail={genders[props.input.value] || '-'}
-            onPress={this.toggleGenderPicker.bind(this)}></Cell>
-          {genderPicker}
-        </View>
+        <PickerCell
+        title='Gender'
+        pickerItems={pickerItems}
+        selectedValue={props.input.value || 'M'}
+        onValueChange={props.input.onChange}/>
       );
     };
 
     const tasksField = (props) => {
       return (
         <Cell
-          cellStyle='RightDetail'
-          accessory='DisclosureIndicator'
-          title='Tasks'
-          detail={props.input.value.length}
-          onPress={this.openTasksEditor.bind(this)}></Cell>
+        style={styles.text}
+        cellStyle='RightDetail'
+        accessory='DisclosureIndicator'
+        title='Tasks'
+        detail={props.input.value.length}
+        onPress={this.openTasksEditor.bind(this)}/>
       );
     };
 
-    const title = this.props.isNew
-      ? 'Add Child'
-      : 'Edit Child';
+    const title = this.props.isNew ?
+      'Add Child' :
+      'Edit Child';
 
     return (
       <View style={styles.container}>
@@ -164,11 +151,18 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({form: 'childForm', destroyOnUnmount: false})(ChildForm));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  reduxForm({
+    form: 'childForm',
+    destroyOnUnmount: false
+  })(ChildForm));
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$section.backgroundColor'
+  },
+  text: {
+    fontSize: '1rem'
   }
 });

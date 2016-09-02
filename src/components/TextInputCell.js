@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Text, TextInput} from 'react-native';
-import {CustomCell} from 'react-native-tableview-simple';
+import React, { Component } from 'react';
+import { Text, TextInput } from 'react-native';
+import { CustomCell } from 'react-native-tableview-simple';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export default class TextInputCell extends Component {

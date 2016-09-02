@@ -3,23 +3,21 @@ import uuid from '../common/uuid';
 
 const _defaultTasks = ['Task A', 'Task B', 'Task C', 'Task D'];
 
-const children = [
-  {
-    id: uuid.v4(),
-    name: 'Olivia',
-    gender: 'F',
-    tasks: _defaultTasks,
-    total: 0,
-    days: {}
-  }, {
-    id: uuid.v4(),
-    name: 'Michael',
-    gender: 'M',
-    tasks: _defaultTasks,
-    total: 0,
-    days: {}
-  }
-];
+const children = [{
+  id: uuid.v4(),
+  name: 'Olivia',
+  gender: 'F',
+  tasks: _defaultTasks,
+  total: 0,
+  days: {}
+}, {
+  id: uuid.v4(),
+  name: 'Michael',
+  gender: 'M',
+  tasks: _defaultTasks,
+  total: 0,
+  days: {}
+}];
 
 const data = {
   user: {
@@ -38,7 +36,13 @@ export const getUserInfo = () => {
 
 export const listChild = () => {
   const result = Object.values(data.children).map(c => {
-    return {id: c.id, name: c.name, gender: c.gender, total: c.total, tasks: c.tasks};
+    return {
+      id: c.id,
+      name: c.name,
+      gender: c.gender,
+      total: c.total,
+      tasks: c.tasks
+    };
   });
   return Promise.resolve(result);
 };
@@ -51,7 +55,7 @@ export const addChild = (id, name, gender, tasks) => {
     total: 0,
     tasks: tasks
   };
-  data.children[id] = Object.assign({}, newChild, {days: {}});
+  data.children[id] = Object.assign({}, newChild, { days: {} });
   return Promise.resolve(newChild);
 };
 
@@ -74,9 +78,8 @@ export const setScore = (childId, date, task, value) => {
         result[t] = {
           task: t,
           position: idx,
-          value: t === task
-            ? value
-            : 0
+          value: t === task ?
+            value : 0
         };
         return result;
       }, {})
@@ -84,7 +87,7 @@ export const setScore = (childId, date, task, value) => {
     child.days[date] = day;
     child.total = child.total + value;
   }
-  return Promise.resolve({childId: childId, total: child.total, days: [day]});
+  return Promise.resolve({ childId: childId, total: child.total, days: [day] });
 };
 
 export const fetchScores = (childId, beforeDate, numOfDays) => {
@@ -92,9 +95,7 @@ export const fetchScores = (childId, beforeDate, numOfDays) => {
   const result = {
     childId: childId,
     total: child.total,
-    days: Array.from({
-      length: numOfDays
-    }, (v, k) => k).map(i => {
+    days: Array.from({ length: numOfDays }, (v, k) => k).map(i => {
       let date = dateUtil.addDays(new Date(beforeDate), -1 * (i + 1)).toISOString();
       return child.days[date] || {
         date: date,

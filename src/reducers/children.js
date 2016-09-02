@@ -1,4 +1,4 @@
-import {ADD_CHILD, REMOVE_CHILD} from '../actions';
+import { ADD_CHILD, REMOVE_CHILD } from '../actions';
 import update from 'react-addons-update';
 
 const children = (state = {}, action) => {

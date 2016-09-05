@@ -1,44 +1,63 @@
 import React, { Component } from 'react';
-import { View, ScrollView } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Button,
+  Icon,
+  Text,
+  List,
+  ListItem
+} from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Cell, Section, TableView } from 'react-native-tableview-simple';
 
-import Header from '../components/Header';
-import * as routes from '../routes';
+import ListItemDivider from '../components/ListItemDivider';
+import { EditChildRoute } from '../routes';
+import theme from '../themes';
 
 class Settings extends Component {
-  handleEditChild(id) {
-    this.props.navigator.push(new routes.EditChildRoute(id));
+
+  static propTypes = {
+    children: React.PropTypes.arrayOf(React.PropTypes.shape({
+      id: React.PropTypes.string.isRequired,
+      name: React.PropTypes.string.isRequired,
+      gender: React.PropTypes.oneOf(['M', 'F']).isRequired
+    })).isRequired,
+    navigator: React.PropTypes.object.isRequired
+  }
+
+  editChild(childId) {
+    this.props.navigator.push(new EditChildRoute({ childId: childId }));
   }
   render() {
     const childrenRows = Object.values(this.props.children).map(c => {
-      return <Cell accessory='DisclosureIndicator' key={c.id} title={c.name} onPress={this.handleEditChild.bind(this, c.id)}/>;
+      return (
+        <ListItem iconRight button onPress={() => this.editChild(c.id) } key={c.id}>
+          <Text>{c.name}</Text>
+          <Icon style={theme.iconRight} name='ios-arrow-forward'/>
+        </ListItem>
+      );
     });
     return (
-      <View style={styles.conntainer}>
-        <Header title='Settings' leftButton='#ma:arrow-back' onLeftPress={() => this.props.navigator.pop()}/>
-        <ScrollView style={styles.conntainer}>
-          <TableView>
-            <Section header="CHILDREN">
-              {childrenRows}
-            </Section>
-          </TableView>
-        </ScrollView>
-      </View>
+      <Container theme={theme}>
+        <Header>
+          <Button transparent onPress={() => this.props.navigator.pop() }>
+            <Icon name='ios-arrow-back'/>
+          </Button>
+          <Title>Settings</Title>
+        </Header>
+        <Content>
+          <List>
+            <ListItemDivider title='CHILDREN' />
+            {childrenRows}
+          </List>
+        </Content>
+      </Container>
     );
   }
 }
-
-Settings.propTypes = {
-  children: React.PropTypes.arrayOf(React.PropTypes.shape({
-    id: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string.isRequired,
-    gender: React.PropTypes.oneOf(['M', 'F']).isRequired
-  })).isRequired,
-  navigator: React.PropTypes.object.isRequired
-};
 
 const mapStateToProps = (state) => {
   return {
@@ -57,10 +76,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
-
-const styles = StyleSheet.create({
-  conntainer: {
-    flex: 1,
-    backgroundColor: '$section.backgroundColor'
-  }
-});

@@ -1,4 +1,4 @@
-import * as dateUtil from '../common/dateUtil';
+import dateUtil from '../common/dateUtil';
 import uuid from '../common/uuid';
 
 const _defaultTasks = ['Task A', 'Task B', 'Task C', 'Task D'];

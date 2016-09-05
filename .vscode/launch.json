@@ -6,7 +6,7 @@
       "type": "reactnative",
       "request": "launch",
       "platform": "android",
-      "internalDebuggerPort": 9090,
+      "internalDebuggerPort": 9091,
       "sourceMaps": true,
       "outDir": "${workspaceRoot}/.vscode/.react"
     },

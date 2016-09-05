@@ -1,5 +1,6 @@
-import { ADD_CHILD, REMOVE_CHILD } from '../actions';
 import update from 'react-addons-update';
+
+import { ADD_CHILD, REMOVE_CHILD } from '../actions';
 
 const children = (state = {}, action) => {
   switch (action.type) {

@@ -1,7 +1,7 @@
 import update from 'react-addons-update';
 
 import { ADD_CHILD, REMOVE_CHILD, UPDATE_SCORES } from '../actions';
-import * as dateUtil from '../common/dateUtil';
+import dateUtil from '../common/dateUtil';
 
 export default function(state = {}, action) {
   switch (action.type) {

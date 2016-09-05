@@ -1,92 +1,116 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Button,
+  Icon,
+  Text,
+  List,
+  ListItem
+} from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
-import { Section, TableView } from 'react-native-tableview-simple';
 
 import { switchChild, refresh, fetchMore, setScore } from '../actions';
-import Header from '../components/Header';
 import ScoreListView from '../components/ScoreListView';
-import MenuCell from '../components/MenuCell';
-import * as routes from '../routes';
+import ListItemDivider from '../components/ListItemDivider';
+import { EditChildRoute, SettingsRoute } from '../routes';
+import theme from '../themes';
 
 class MainView extends Component {
-  handleSwitchChild(id) {
-    this.props.actions.switchChild(id);
-    this.refs.drawer.close();
+
+  static propTypes = {
+    navigator: React.PropTypes.object.isRequired,
+    user: React.PropTypes.object,
+    children: React.PropTypes.arrayOf(React.PropTypes.shape({
+      id: React.PropTypes.string.isRequired,
+      name: React.PropTypes.string.isRequired,
+      gender: React.PropTypes.oneOf(['M', 'F']).isRequired
+    })).isRequired,
+    child: React.PropTypes.object,
+    scores: React.PropTypes.object,
+    actions: React.PropTypes.object.isRequired
   }
-  handleAddChild() {
-    this.props.navigator.push(new routes.EditChildRoute());
-    this.refs.drawer.close();
-  }
-  handleSettings() {
-    this.props.navigator.push(new routes.SettingsRoute());
-    this.refs.drawer.close();
-  }
-  handleAbout() {
-    // todo: push about ui
-    this.refs.drawer.close();
-  }
-  handleScrollToTop() {
-    this.refs.listView.scrollToTop();
-  }
+
   renderDrawer() {
     const childrenRows = Object.values(this.props.children).map(c => {
       const icon = c.gender === 'M' ?
-        '#fa:male' :
-        '#fa:female';
-      return <MenuCell key={c.id} icon={icon} title={c.name} onPress={this.handleSwitchChild.bind(this, c.id)}/>;
+        'ios-man' :
+        'ios-woman';
+      return (
+        <ListItem key={c.id} iconLeft button onPress={() => {
+          this.props.actions.switchChild(c.id);
+          this.refs.drawer.close();
+        } }>
+          <Icon name={icon}/>
+          <Text>{c.name}</Text>
+        </ListItem>
+      );
     });
     return (
-      <ScrollView style={styles.drawerContainer}>
-        <TableView>
-          <Section header='CHILDREN'>
+      <Container theme={theme}>
+        <Header>
+          <Button transparent>
+            <Icon name='ios-person'/>
+          </Button>
+          <Title>{this.props.user.name}</Title>
+        </Header>
+        <Content>
+          <List>
+            <ListItemDivider title='CHILDREN'/>
             {childrenRows}
-          </Section>
-          <Section header='ADD'>
-            <MenuCell icon='#ma:add' title='Add Child' onPress={this.handleAddChild.bind(this)}/>
-          </Section>
-          <Section header='OTHERS'>
-            <MenuCell icon='#ma:settings' title='Settings' onPress={this.handleSettings.bind(this)}/>
-            <MenuCell icon='#ma:info-outline' title='About' onPress={this.handleAbout.bind(this)}/>
-          </Section>
-        </TableView>
-      </ScrollView>
+            <ListItem iconLeft button onPress={() => {
+              this.props.navigator.push(new EditChildRoute());
+              this.refs.drawer.close();
+            } }>
+              <Icon name='ios-add'/>
+              <Text>Add Child</Text>
+            </ListItem>
+            <ListItemDivider title='OTHERS'/>
+            <ListItem iconLeft button onPress={() => {
+              this.props.navigator.push(new SettingsRoute());
+              this.refs.drawer.close();
+            } }>
+              <Icon name='ios-settings'/>
+              <Text>Settings</Text>
+            </ListItem>
+            <ListItem iconLeft button>
+              <Icon name='ios-log-out'/>
+              <Text>Sign out</Text>
+            </ListItem>
+          </List>
+        </Content>
+      </Container>
     );
   }
+
   render() {
     if (!this.props.user || !this.props.child) {
       return null;
     }
     return (
-      <Drawer ref='drawer' content={this.renderDrawer()} openDrawerOffset={0.2} tapToClose={true}>
-        <View style={styles.container}>
-          <TouchableWithoutFeedback onPress={this.handleScrollToTop.bind(this)}>
-            <View>
-              <Header title={this.props.child.name} leftButton='#ma:menu' onLeftPress={() => this.refs.drawer.open()}/>
-            </View>
-          </TouchableWithoutFeedback>
-          <ScoreListView ref='listView' child={this.props.child} rows={this.props.scores.weeks} actions={this.props.actions}/>
-        </View>
+      <Drawer ref='drawer' content={this.renderDrawer() } openDrawerOffset={0.2} tapToClose={true}>
+        <Container>
+          <Header>
+            <Button transparent onPress={() => this.refs.drawer.open() }>
+              <Icon name='ios-menu'/>
+            </Button>
+            <Title>{this.props.child.name}</Title>
+            <Button transparent onPress={() => this.refs.listView.scrollToTop() }
+              >Top</Button>
+          </Header>
+          <Content horizontal={true} scrollEnabled={false}>
+            <ScoreListView ref='listView' style={styles.listView} child={this.props.child} rows={this.props.scores.weeks} actions={this.props.actions}/>
+          </Content>
+        </Container>
       </Drawer>
     );
   }
 }
-
-MainView.propTypes = {
-  navigator: React.PropTypes.object.isRequired,
-  user: React.PropTypes.object,
-  children: React.PropTypes.arrayOf(React.PropTypes.shape({
-    id: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string.isRequired,
-    gender: React.PropTypes.oneOf(['M', 'F']).isRequired
-  })).isRequired,
-  child: React.PropTypes.object,
-  scores: React.PropTypes.object,
-  actions: React.PropTypes.object.isRequired
-};
 
 const mapStateToProps = (state) => {
   return {
@@ -110,15 +134,11 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainView);
-
 const styles = StyleSheet.create({
-  container: {
+  listView: {
     flex: 1,
-    backgroundColor: '$normal.backgroundColor'
+    width: '100%'
   },
-  drawerContainer: {
-    flex: 1,
-    backgroundColor: '$section.backgroundColor'
-  }
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainView);

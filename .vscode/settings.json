@@ -1,0 +1,22 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "editor.tabSize": 2,
+  "editor.formatOnType": true,
+  "editor.renderIndentGuides": true,
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    "**/buck-out": true,
+    "**/.buckd": true,
+    "**/.idea": true
+  },
+  "javascript.validate.enable": false,
+  "beautify.onSave": true,
+  "beautify.JSfiles": [
+    "js",
+    "json",
+    "jsbeautifyrc",
+    "jshintrc",
+    "babelrc"
+  ]
+}

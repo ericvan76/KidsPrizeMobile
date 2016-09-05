@@ -41,3 +41,4 @@ android/app/libs
 android/keystores/debug.keystore
 .vscode/typings
 .vscode/.react
+.vscode/launchReactNative.js

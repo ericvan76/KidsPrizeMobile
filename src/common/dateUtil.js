@@ -2,35 +2,41 @@ const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 const WEEKDAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export const today = () => {
+const today = () => {
   const t = new Date();
   return new Date(t.setHours(0, -1 * t.getTimezoneOffset(), 0, 0));
 };
-export const thisWeek = () => {
+
+const thisWeek = () => {
   return firstDayOfWeek(today());
 };
-export const addDays = (date, count) => {
+
+const addDays = (date, count) => {
   if (date === undefined) {
     return undefined;
   }
   return new Date(date.valueOf() + count * DAY_IN_MS);
 };
-export const firstDayOfWeek = (date) => {
+
+const firstDayOfWeek = (date) => {
   if (date === undefined) {
     return undefined;
   }
   return addDays(date, -1 * date.getDay());
 };
-export const isFirstDayOfWeek = (date) => {
+
+const isFirstDayOfWeek = (date) => {
   if (date === undefined) {
     return undefined;
   }
   return firstDayOfWeek(date).valueOf() === date.valueOf();
 };
-export const getWeekDayName = (index) => {
+
+const getWeekDayName = (index) => {
   return WEEKDAY_NAMES[index];
 };
-export const substractAsDays = (d1, d2) => {
+
+const substractAsDays = (d1, d2) => {
   if (d1 === undefined || d2 === undefined) {
     return undefined;
   }
@@ -41,9 +47,20 @@ export const substractAsDays = (d1, d2) => {
   return Math.floor(diff / DAY_IN_MS);
 };
 
-export const allDaysOfWeek = (week) => {
+const allDaysOfWeek = (week) => {
   const wk = new Date(week);
   return Array.from({ length: 7 }, (v, k) => k).map(i => {
     return addDays(wk, i);
   });
+};
+
+export default {
+  today,
+  thisWeek,
+  addDays,
+  firstDayOfWeek,
+  isFirstDayOfWeek,
+  getWeekDayName,
+  substractAsDays,
+  allDaysOfWeek,
 };

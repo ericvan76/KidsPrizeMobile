@@ -9,5 +9,5 @@ const v4 = () => {
 };
 
 export default {
-  v4: v4
+  v4
 };

@@ -1,5 +1,5 @@
 import * as api from '../api/mock';
-import dateUtil from '../common/dateUtil';
+import dateUtil from '../utils/dateUtil';
 
 export const UPDATE_USER = 'UPDATE_USER';
 export const ADD_CHILD = 'ADD_CHILD';

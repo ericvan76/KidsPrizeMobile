@@ -6,7 +6,7 @@ import update from 'react-addons-update';
 
 import Separator from './Seperator';
 import theme from '../themes';
-import dateUtil from '../common/dateUtil';
+import dateUtil from '../utils/dateUtil';
 
 
 const createDataSource = () => {

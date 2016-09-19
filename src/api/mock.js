@@ -1,5 +1,5 @@
-import dateUtil from '../common/dateUtil';
-import uuid from '../common/uuid';
+import dateUtil from '../utils/dateUtil';
+import uuid from '../utils/uuid';
 
 const _defaultTasks = ['Task A', 'Task B', 'Task C', 'Task D'];
 

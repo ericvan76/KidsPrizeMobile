@@ -17,7 +17,7 @@ import { reduxForm, propTypes, Field } from 'redux-form';
 
 import ListItemDivider from '../components/ListItemDivider';
 import { TextInputRoute, PickerRoute, TaskEditorRoute } from '../routes';
-import uuid from '../common/uuid';
+import uuid from '../utils/uuid';
 import theme from '../themes';
 
 
@@ -95,7 +95,7 @@ class ChildForm extends Component {
                       }
                     }))
                   }>
-                  <Icon name='ios-radio-button-off' />
+                  <Icon name='logo-apple' />
                   <Text>Child Name</Text>
                   <Text note style={theme.listNote}>{props.input.value}</Text>
                 </ListItem>
@@ -119,7 +119,7 @@ class ChildForm extends Component {
                       }
                     }))
                   }>
-                  <Icon name='ios-radio-button-off' />
+                  <Icon name='logo-apple' />
                   <Text>Gender</Text>
                   <Text note style={theme.listNote}>{items[props.input.value]}</Text>
                 </ListItem>
@@ -135,7 +135,7 @@ class ChildForm extends Component {
                       onChange: props.input.onChange
                     }))
                   }>
-                  <Icon name='ios-radio-button-off' />
+                  <Icon name='logo-apple' />
                   <Text>Tasks</Text>
                   <Text note style={theme.listNote}>{props.input.value.length}</Text>
                 </ListItem>

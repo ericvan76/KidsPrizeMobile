@@ -30,7 +30,7 @@ class Row extends Component {
     return (
       <View>
         <View style={styles.row}>
-          <Button transparent onPress={this.props.onRemove}>
+          <Button transparent onPress={this.props.onRemove }>
             <Icon style={styles.removeIcon} name='ios-remove-circle' />
           </Button>
           <Text style={styles.rowText} ellipsizeMode='tail' numberOfLines={1}>{this.props.title}</Text>
@@ -125,7 +125,7 @@ class TaskEditor extends Component {
   }
   renderRow(row) {
     return (
-      <Row title={row} onRemove={row => this.onRemove(row) }/>
+      <Row title={row} onRemove={()=>this.onRemove(row) }/>
     );
   }
   render() {

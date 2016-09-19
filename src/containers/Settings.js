@@ -34,7 +34,8 @@ class Settings extends Component {
   render() {
     const childrenRows = Object.values(this.props.children).map(c => {
       return (
-        <ListItem iconRight button onPress={() => this.editChild(c.id) } key={c.id}>
+        <ListItem iconLeft iconRight button onPress={() => this.editChild(c.id) } key={c.id}>
+          <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'} />
           <Text>{c.name}</Text>
           <Icon style={theme.iconRight} name='ios-arrow-forward'/>
         </ListItem>

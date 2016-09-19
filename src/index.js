@@ -1,38 +1,54 @@
 import React, { Component } from 'react';
-import { View, Navigator } from 'react-native';
+import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import store from './store';
-import { MainViewRoute } from './routes';
-import { initialise } from './actions';
+import { LoginRoute, MainViewRoute } from './routes';
+import localStorage from './utils/localStorage';
+import Spinning from './components/Spinning';
 import theme from './themes';
 
 StyleSheet.build({
   rem: theme.fontSizeBase
 });
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
-    store.dispatch(initialise());
+    this.state = {
+      initialised: false
+    };
+  }
+  componentDidMount() {
+    localStorage.getToken()
+      .then(token => {
+        this.setState({
+          initialised: true,
+          token: token
+        });
+      });
   }
   renderScene(route, navigator) {
     return route.renderScene(navigator);
   }
   render() {
+    if (!this.state.initialised) {
+      return (
+        <Provider store={store}>
+          <Spinning/>
+        </Provider>
+      );
+    }
     return (
       <Provider store={store}>
-        <View style={styles.container}>
-          <Navigator initialRoute={new MainViewRoute()} renderScene={this.renderScene}></Navigator>
-        </View>
+        <Navigator
+          initialRoute={!this.state.token ? new LoginRoute() : new MainViewRoute() }
+          renderScene={this.renderScene.bind(this) }
+          />
       </Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-});
+export default App;

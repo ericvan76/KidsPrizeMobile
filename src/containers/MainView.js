@@ -15,10 +15,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
 
-import { switchChild, refresh, fetchMore, setScore } from '../actions';
+import { initialise, switchChild, refresh, fetchMore, setScore } from '../actions';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
-import { EditChildRoute, SettingsRoute } from '../routes';
+import Spinning from '../components/Spinning';
+import localStorage from '../utils/localStorage';
+import { EditChildRoute, SettingsRoute, LoginRoute } from '../routes';
 import theme from '../themes';
 
 class MainView extends Component {
@@ -36,17 +38,19 @@ class MainView extends Component {
     actions: React.PropTypes.object.isRequired
   }
 
+  constructor(props) {
+    super(props);
+    this.props.actions.initialise();
+  }
+
   renderDrawer() {
     const childrenRows = Object.values(this.props.children).map(c => {
-      const icon = c.gender === 'M' ?
-        'ios-man' :
-        'ios-woman';
       return (
         <ListItem key={c.id} iconLeft button onPress={() => {
           this.props.actions.switchChild(c.id);
           this.refs.drawer.close();
         } }>
-          <Icon name={icon}/>
+          <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'}/>
           <Text>{c.name}</Text>
         </ListItem>
       );
@@ -78,9 +82,15 @@ class MainView extends Component {
               <Icon name='ios-settings'/>
               <Text>Settings</Text>
             </ListItem>
-            <ListItem iconLeft button>
+            <ListItem iconLeft button onPress={() => {
+              localStorage.clearToken().then(token => {
+                this.refs.drawer.close();
+                // todo: revoke token
+                this.props.navigator.push(new LoginRoute({ logout: true, id_token: token.id_token }));
+              });
+            }}>
               <Icon name='ios-log-out'/>
-              <Text>Sign out</Text>
+              <Text>Sign Out</Text>
             </ListItem>
           </List>
         </Content>
@@ -90,7 +100,7 @@ class MainView extends Component {
 
   render() {
     if (!this.props.user || !this.props.child) {
-      return null;
+      return <Spinning />;
     }
     return (
       <Drawer ref='drawer' content={this.renderDrawer() } openDrawerOffset={0.2} tapToClose={true}>
@@ -126,6 +136,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: bindActionCreators({
+      initialise,
       switchChild,
       refresh,
       fetchMore,
@@ -139,6 +150,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%'
   },
+  drawer: {
+    shadowColor: '#000000',
+    shadowOpacity: 0.8,
+    shadowRadius: 3
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);

@@ -1,55 +1,78 @@
 import React, { Component } from 'react';
 import { WebView } from 'react-native';
+import update from 'react-addons-update';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import StyleSheet from 'react-native-extended-stylesheet';
 import url from 'url';
 
 import Spinning from '../components/Spinning';
-import { MainViewRoute } from '../routes';
-import localStorage from '../utils/localStorage';
-import oidc from '../utils/oidc';
+import oidc from '../api/oidc';
+import * as actions from '../actions';
 
+const WEBVIEW_REF = 'webview';
 
 class LoginView extends Component {
+
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
-    logout: React.PropTypes.bool,
-    id_token: React.PropTypes.string
+    auth: React.PropTypes.shape({
+      nitialised: React.PropTypes.bool,
+      token: React.PropTypes.object
+    }).isRequired,
+    actions: React.PropTypes.object.isRequired
   }
+
   constructor(props) {
     super(props);
     this.state = {
-      codeReceived: false,
-      uri: props.logout ? oidc.logoutUrl(props.id_token) : oidc.authoriseUrl,
+      source: { html: oidc.getLoginPage() },
+      stopLoading: false
     };
   }
-  onNavigationStateChange(navState) {
-    const urlObj = url.parse(navState.url, true);
-    if (urlObj.query.code !== undefined) {
-      oidc.getToken(urlObj.query.code).then(resp => {
-        localStorage.setToken(resp).then(() => {
-          this.props.navigator.resetTo(new MainViewRoute());
-        });
-      });
-      this.setState(Object.assign({}, this.state, {
-        codeReceived: true
-      }));
+
+  onLoadStart(e) {
+    const urlObj = url.parse(e.nativeEvent.url, true);
+    if (urlObj.href.startsWith(oidc.config.redirect_uri) && urlObj.query.code) {
+      this.setState(update(this.state, { stopLoading: { $set: true } }));
+      this.props.actions.requestToken(urlObj.query.code);
     }
   }
+
+  componentDidUpdate() {
+    if (this.props.auth.token) {
+      this.props.navigator.pop();
+    }
+  }
+
   render() {
-    if (this.state.codeReceived) {
-      return <Spinning/>;
+    if (this.state.stopLoading) {
+      return <Spinning />;
     }
     return (
       <WebView
+        ref={WEBVIEW_REF}
         style={styles.webView}
-        source={{ uri: this.state.uri }}
-        onNavigationStateChange={this.onNavigationStateChange.bind(this)} />
+        source={this.state.source}
+        onLoadStart ={this.onLoadStart.bind(this)}/>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  };
+};
 
 const styles = StyleSheet.create({
   webView: { marginTop: 20 }
 });
 
-export default LoginView;
+export default connect(mapStateToProps, mapDispatchToProps)(LoginView);

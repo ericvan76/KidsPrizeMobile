@@ -1,7 +1,7 @@
 package com.kidsprizemobile;
 
 import com.facebook.react.ReactActivity;
-import com.oblador.vectoricons.VectorIconsPackage;
+import com.psykar.cookiemanager.CookieManagerPackage;
 
 public class MainActivity extends ReactActivity {
 

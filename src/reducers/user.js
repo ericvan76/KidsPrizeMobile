@@ -1,10 +1,14 @@
-import { UPDATE_USER } from '../actions';
+import * as Types from '../actions/ActionTypes';
 
 const user = (state = null, action) => {
   switch (action.type) {
-    case UPDATE_USER:
+    case Types.SET_USER:
       {
         return action.user;
+      }
+    case Types.SIGN_OUT:
+      {
+        return null;
       }
     default:
       return state;

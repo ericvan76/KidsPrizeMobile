@@ -1,30 +1,76 @@
 import * as api from '../api/mock';
+import oidc from '../api/oidc';
+import storage from '../api/storage';
 import dateUtil from '../utils/dateUtil';
+import * as Types from './ActionTypes';
 
-export const UPDATE_USER = 'UPDATE_USER';
-export const ADD_CHILD = 'ADD_CHILD';
-export const REMOVE_CHILD = 'REMOVE_CHILD';
-export const SWITCH_CHILD = 'SWITCH_CHILD';
-export const UPDATE_SCORES = 'UPDATE_SCORES';
 
 export const initialise = () => {
   return (dispatch) => {
-    Promise.all([api.getUserInfo(), api.listChild()]).then(([user, children]) => {
-      dispatch({
-        type: UPDATE_USER,
-        user: user
-      });
-      children.forEach(child => {
+    Promise.all([oidc.discover(), storage.loadToken()])
+      .then(([discovery, token]) => {
         dispatch({
-          type: ADD_CHILD,
-          id: child.id,
-          name: child.name,
-          gender: child.gender,
-          tasks: child.tasks
+          type: Types.INITIALISED,
+          discovery: discovery,
+          token: token
         });
-        dispatch(refresh(child.id));
       });
-    });
+  };
+};
+
+export const requestToken = (code) => {
+  return (dispatch) => {
+    oidc.requestToken(code)
+      .then(token => {
+        if (!token.error) {
+          storage.saveToken(token);
+          return token;
+        }
+        throw token.error;
+      })
+      .then(token => {
+        dispatch({
+          type: Types.SIGN_IN,
+          token: token
+        });
+      });
+  };
+};
+
+export const signout = () => {
+  return (dispatch, getState) => {
+    let state = getState();
+    storage.clearToken()
+      .then(() => {
+        oidc.logout(state.auth.token);
+      })
+      .then(() => {
+        dispatch({
+          type: Types.SIGN_OUT
+        });
+      });
+  };
+};
+
+export const loadChildren = () => {
+  return (dispatch) => {
+    Promise.all([api.getUserInfo(), api.listChild()])
+      .then(([user, children]) => {
+        dispatch({
+          type: Types.SET_USER,
+          user: user
+        });
+        children.forEach(child => {
+          dispatch({
+            type: Types.ADD_CHILD,
+            id: child.id,
+            name: child.name,
+            gender: child.gender,
+            tasks: child.tasks
+          });
+          dispatch(refresh(child.id));
+        });
+      });
   };
 };
 
@@ -32,7 +78,7 @@ export const addChild = (id, name, gender, tasks) => {
   return (dispatch) => {
     api.addChild(id, name, gender, tasks).then(child => {
       dispatch({
-        type: ADD_CHILD,
+        type: Types.ADD_CHILD,
         id: child.id,
         name: child.name,
         gender: child.gender,
@@ -49,13 +95,13 @@ export const removeChild = (id) => {
     if (state.currentChildId === id) {
       const replace = state.children.find(c => c.id !== id);
       dispatch({
-        type: SWITCH_CHILD,
+        type: Types.SWITCH_CHILD,
         id: replace.id
       });
     }
     api.removeChild(id).then(() => {
       dispatch({
-        type: REMOVE_CHILD,
+        type: Types.REMOVE_CHILD,
         id: id
       });
     });
@@ -64,7 +110,7 @@ export const removeChild = (id) => {
 
 export const switchChild = (id) => {
   return {
-    type: SWITCH_CHILD,
+    type: Types.SWITCH_CHILD,
     id: id
   };
 };
@@ -74,7 +120,7 @@ export const refresh = (childId) => {
     const nextWeek = dateUtil.addDays(dateUtil.thisWeek(), 7).toISOString();
     api.fetchScores(childId, nextWeek, 28).then(result => {
       dispatch({
-        type: UPDATE_SCORES,
+        type: Types.UPDATE_SCORES,
         childId: result.childId,
         total: result.total,
         days: result.days
@@ -90,7 +136,7 @@ export const fetchMore = (childId) => {
     if (scores.earliest !== undefined) {
       api.fetchScores(childId, scores.earliest, 28).then(result => {
         dispatch({
-          type: UPDATE_SCORES,
+          type: Types.UPDATE_SCORES,
           childId: result.childId,
           total: result.total,
           days: result.days
@@ -104,7 +150,7 @@ export const setScore = (childId, date, task, value) => {
   return (dispatch) => {
     api.setScore(childId, date, task, value).then(result => {
       dispatch({
-        type: UPDATE_SCORES,
+        type: Types.UPDATE_SCORES,
         childId: result.childId,
         total: result.total,
         days: result.days

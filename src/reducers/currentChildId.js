@@ -1,16 +1,20 @@
-import { SWITCH_CHILD, ADD_CHILD, REMOVE_CHILD } from '../actions';
+import * as Types from '../actions/ActionTypes';
 
 const currentChildId = (state = null, action) => {
   switch (action.type) {
-    case SWITCH_CHILD:
+    case Types.SWITCH_CHILD:
       {
         return action.id;
       }
-    case ADD_CHILD:
+    case Types.ADD_CHILD:
       {
         return action.id;
       }
-    case REMOVE_CHILD:
+    case Types.REMOVE_CHILD:
+      {
+        return null;
+      }
+    case Types.SIGN_OUT:
       {
         return null;
       }

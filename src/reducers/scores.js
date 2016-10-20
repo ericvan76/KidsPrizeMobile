@@ -1,11 +1,11 @@
 import update from 'react-addons-update';
 
-import { ADD_CHILD, REMOVE_CHILD, UPDATE_SCORES } from '../actions';
+import * as Types from '../actions/ActionTypes';
 import dateUtil from '../utils/dateUtil';
 
-export default function(state = {}, action) {
+export default function (state = {}, action) {
   switch (action.type) {
-    case ADD_CHILD:
+    case Types.ADD_CHILD:
       {
         return update(state, {
           $merge: {
@@ -17,14 +17,14 @@ export default function(state = {}, action) {
           }
         });
       }
-    case REMOVE_CHILD:
+    case Types.REMOVE_CHILD:
       {
         return Object.keys(state).filter(key => key !== action.id).reduce((result, key) => {
           result[key] = state[key];
           return result;
         }, {});
       }
-    case UPDATE_SCORES:
+    case Types.UPDATE_SCORES:
       {
         const earliest = action.days.map(d => d.date).sort()[0];
         return update(state, {

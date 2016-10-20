@@ -1,34 +1,32 @@
 import { AsyncStorage, Alert } from 'react-native';
 
-const keys = {
-  token: 'token'
-};
+const TOKEN = 'token';
 
-const setToken = async(token) => {
+const saveToken = async(token) => {
   try {
-    await AsyncStorage.setItem(keys.token, JSON.stringify(token));
+    await AsyncStorage.setItem(TOKEN, JSON.stringify(token));
   } catch (error) {
     Alert.alert('Error', 'Failed to persist token.');
   }
 };
 
-const getToken = async() => {
+const loadToken = async() => {
   try {
-    var value = await AsyncStorage.getItem(keys.token);
+    var value = await AsyncStorage.getItem(TOKEN);
     return JSON.parse(value);
-  } catch (error) {
+  } catch (e) {
     return null;
   }
 };
 
 const clearToken = async() => {
-  const token = await getToken();
+  const token = await loadToken();
   await AsyncStorage.clear();
   return token;
 };
 
 export default {
-  setToken,
-  getToken,
+  saveToken,
+  loadToken,
   clearToken
 };

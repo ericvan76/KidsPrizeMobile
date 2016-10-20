@@ -30,12 +30,12 @@ class Row extends Component {
     return (
       <View>
         <View style={styles.row}>
-          <Button transparent onPress={this.props.onRemove }>
+          <Button transparent onPress={this.props.onRemove}>
             <Icon style={styles.removeIcon} name='ios-remove-circle' />
           </Button>
           <Text style={styles.rowText} ellipsizeMode='tail' numberOfLines={1}>{this.props.title}</Text>
           <Button transparent delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
-            <Icon style={styles.draggableIcon} name='ios-reorder'/>
+            <Icon style={styles.draggableIcon} name='ios-reorder' />
           </Button>
         </View>
         <Seperator />
@@ -125,27 +125,27 @@ class TaskEditor extends Component {
   }
   renderRow(row) {
     return (
-      <Row title={row} onRemove={()=>this.onRemove(row) }/>
+      <Row title={row} onRemove={() => this.onRemove(row)} />
     );
   }
   render() {
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent onPress={() => this.props.navigator.pop() }>
-            <Icon name='ios-arrow-back'/>
+          <Button transparent onPress={() => this.props.navigator.pop()}>
+            <Icon name='ios-arrow-back' />
           </Button>
           <Title>Task List</Title>
-          <Button transparent onPress={() => this.onAddPress() }>Add</Button>
+          <Button transparent onPress={() => this.onAddPress()}>Add</Button>
         </Header>
-        <Content horizontal={true} scrollEnabled={false}>
+        <Content scrollEnabled={false}>
           <SortableListView
             style={styles.listView}
             sortRowStyle={styles.sortRow}
             data={this.state.data}
             order={this.state.order}
-            onRowMoved={e => this.onMove(e) }
-            renderRow={row => this.renderRow(row) }/>
+            onRowMoved={e => this.onMove(e)}
+            renderRow={row => this.renderRow(row)} />
         </Content>
       </Container>
     );

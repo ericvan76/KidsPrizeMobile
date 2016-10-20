@@ -5,9 +5,8 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import store from './store';
 import { LoginRoute, MainViewRoute } from './routes';
-import localStorage from './utils/localStorage';
-import Spinning from './components/Spinning';
 import theme from './themes';
+
 
 StyleSheet.build({
   rem: theme.fontSizeBase
@@ -16,35 +15,27 @@ StyleSheet.build({
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      initialised: false
-    };
   }
-  componentDidMount() {
-    localStorage.getToken()
-      .then(token => {
-        this.setState({
-          initialised: true,
-          token: token
-        });
-      });
-  }
+
   renderScene(route, navigator) {
     return route.renderScene(navigator);
   }
-  render() {
-    if (!this.state.initialised) {
-      return (
-        <Provider store={store}>
-          <Spinning/>
-        </Provider>
-      );
+
+  configureScene(route) {
+    if (route instanceof LoginRoute) {
+      return Navigator.SceneConfigs.FloatFromBottom;
     }
+    return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  render() {
+    let route = new MainViewRoute();
     return (
       <Provider store={store}>
         <Navigator
-          initialRoute={!this.state.token ? new LoginRoute() : new MainViewRoute() }
-          renderScene={this.renderScene.bind(this) }
+          initialRoute={route}
+          renderScene={this.renderScene.bind(this)}
+          configureScene={this.configureScene.bind(this)}
           />
       </Provider>
     );

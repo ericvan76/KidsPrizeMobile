@@ -15,11 +15,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
 
-import { initialise, switchChild, refresh, fetchMore, setScore } from '../actions';
+import * as actions from '../actions';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
 import Spinning from '../components/Spinning';
-import localStorage from '../utils/localStorage';
 import { EditChildRoute, SettingsRoute, LoginRoute } from '../routes';
 import theme from '../themes';
 
@@ -27,6 +26,10 @@ class MainView extends Component {
 
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
+    auth: React.PropTypes.shape({
+      initialised: React.PropTypes.bool,
+      token: React.PropTypes.object
+    }).isRequired,
     user: React.PropTypes.object,
     children: React.PropTypes.arrayOf(React.PropTypes.shape({
       id: React.PropTypes.string.isRequired,
@@ -40,7 +43,9 @@ class MainView extends Component {
 
   constructor(props) {
     super(props);
-    this.props.actions.initialise();
+    if (!this.props.auth.initialised) {
+      this.props.actions.initialise();
+    }
   }
 
   renderDrawer() {
@@ -50,7 +55,7 @@ class MainView extends Component {
           this.props.actions.switchChild(c.id);
           this.refs.drawer.close();
         } }>
-          <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'}/>
+          <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'} />
           <Text>{c.name}</Text>
         </ListItem>
       );
@@ -59,37 +64,34 @@ class MainView extends Component {
       <Container theme={theme}>
         <Header>
           <Button transparent>
-            <Icon name='ios-person'/>
+            <Icon name='ios-person' />
           </Button>
           <Title>{this.props.user.name}</Title>
         </Header>
         <Content>
           <List>
-            <ListItemDivider title='CHILDREN'/>
+            <ListItemDivider title='CHILDREN' />
             {childrenRows}
             <ListItem iconLeft button onPress={() => {
               this.props.navigator.push(new EditChildRoute());
               this.refs.drawer.close();
             } }>
-              <Icon name='ios-add'/>
+              <Icon name='ios-add' />
               <Text>Add Child</Text>
             </ListItem>
-            <ListItemDivider title='OTHERS'/>
+            <ListItemDivider title='OTHERS' />
             <ListItem iconLeft button onPress={() => {
               this.props.navigator.push(new SettingsRoute());
               this.refs.drawer.close();
             } }>
-              <Icon name='ios-settings'/>
+              <Icon name='ios-settings' />
               <Text>Settings</Text>
             </ListItem>
             <ListItem iconLeft button onPress={() => {
-              localStorage.clearToken().then(token => {
-                this.refs.drawer.close();
-                // todo: revoke token
-                this.props.navigator.push(new LoginRoute({ logout: true, id_token: token.id_token }));
-              });
-            }}>
-              <Icon name='ios-log-out'/>
+              this.props.actions.signout();
+              this.refs.drawer.close();
+            } }>
+              <Icon name='ios-log-out' />
               <Text>Sign Out</Text>
             </ListItem>
           </List>
@@ -98,23 +100,33 @@ class MainView extends Component {
     );
   }
 
+  componentDidUpdate() {
+    if (this.props.auth.initialised) {
+      if (!this.props.auth.token) {
+        this.props.navigator.push(new LoginRoute());
+      } else if (!this.props.user) {
+        this.props.actions.loadChildren();
+      }
+    }
+  }
+
   render() {
     if (!this.props.user || !this.props.child) {
       return <Spinning />;
     }
     return (
-      <Drawer ref='drawer' content={this.renderDrawer() } openDrawerOffset={0.2} tapToClose={true}>
+      <Drawer ref='drawer' content={this.renderDrawer()} openDrawerOffset={0.2} tapToClose={true}>
         <Container>
           <Header>
-            <Button transparent onPress={() => this.refs.drawer.open() }>
-              <Icon name='ios-menu'/>
+            <Button transparent onPress={() => this.refs.drawer.open()}>
+              <Icon name='ios-menu' />
             </Button>
             <Title>{this.props.child.name}</Title>
-            <Button transparent onPress={() => this.refs.listView.scrollToTop() }
+            <Button transparent onPress={() => this.refs.listView.scrollToTop()}
               >Top</Button>
           </Header>
           <Content horizontal={true} scrollEnabled={false}>
-            <ScoreListView ref='listView' style={styles.listView} child={this.props.child} rows={this.props.scores.weeks} actions={this.props.actions}/>
+            <ScoreListView ref='listView' style={styles.listView} child={this.props.child} rows={this.props.scores.weeks} actions={this.props.actions} />
           </Content>
         </Container>
       </Drawer>
@@ -124,6 +136,7 @@ class MainView extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    auth: state.auth,
     user: state.user,
     children: Object.values(state.children).map(c => {
       return { id: c.id, name: c.name, gender: c.gender };
@@ -135,13 +148,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators({
-      initialise,
-      switchChild,
-      refresh,
-      fetchMore,
-      setScore
-    }, dispatch)
+    actions: bindActionCreators(actions, dispatch)
   };
 };
 

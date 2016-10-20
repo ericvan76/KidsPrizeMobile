@@ -1,10 +1,10 @@
 import update from 'react-addons-update';
 
-import { ADD_CHILD, REMOVE_CHILD } from '../actions';
+import * as Types from '../actions/ActionTypes';
 
 const children = (state = {}, action) => {
   switch (action.type) {
-    case ADD_CHILD:
+    case Types.ADD_CHILD:
       {
         return update(state, {
           $merge: {
@@ -17,12 +17,16 @@ const children = (state = {}, action) => {
           }
         });
       }
-    case REMOVE_CHILD:
+    case Types.REMOVE_CHILD:
       {
         return Object.keys(state).filter(key => key !== action.id).reduce((result, key) => {
           result[key] = state[key];
           return result;
         }, {});
+      }
+    case Types.SIGN_OUT:
+      {
+        return {};
       }
     default:
       return state;

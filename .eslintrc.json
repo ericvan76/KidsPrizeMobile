@@ -5,7 +5,8 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:flowtype/recommended"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -17,12 +18,14 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "flowtype"
   ],
   "rules": {
     "indent": [
       "error",
-      2, {
+      2,
+      {
         "SwitchCase": 1
       }
     ],
@@ -39,5 +42,4 @@
       "always"
     ]
   }
-
 }

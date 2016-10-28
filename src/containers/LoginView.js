@@ -1,3 +1,5 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import { WebView } from 'react-native';
 import update from 'react-addons-update';
@@ -8,22 +10,40 @@ import url from 'url';
 
 import Spinning from '../components/Spinning';
 import oidc from '../api/oidc';
-import * as actions from '../actions';
+import * as authActions from '../actions/auth';
 
 const WEBVIEW_REF = 'webview';
 
+type Props = {
+  navigator: Object,
+  auth: {
+    initialised: boolean,
+    token: Token
+  },
+  actions: {
+    requestToken: (code: string) => void,
+  }
+};
+
+type LocalState = {
+  source: { html: string },
+  stopLoading: boolean
+};
+
 class LoginView extends Component {
+
+  state: LocalState;
 
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
     auth: React.PropTypes.shape({
-      nitialised: React.PropTypes.bool,
+      initialised: React.PropTypes.bool,
       token: React.PropTypes.object
     }).isRequired,
     actions: React.PropTypes.object.isRequired
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       source: { html: oidc.getLoginPage() },
@@ -54,20 +74,20 @@ class LoginView extends Component {
         ref={WEBVIEW_REF}
         style={styles.webView}
         source={this.state.source}
-        onLoadStart ={this.onLoadStart.bind(this)}/>
+        onLoadStart={this.onLoadStart.bind(this)} />
     );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: Object) => {
   return {
     auth: state.auth
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    actions: bindActionCreators(actions, dispatch)
+    actions: bindActionCreators(authActions, dispatch)
   };
 };
 

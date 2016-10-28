@@ -1,10 +1,16 @@
+/* @flow */
+
 import moment from 'moment';
 import CookieManager from 'react-native-cookies';
 import config from '../config';
 
 class OpenIdClient {
 
+  config: Config;
+  discovery: Discovery;
+
   constructor() {
+
     this.config = Object.assign({}, {
       authority: 'https://secure.kids-prize.com',
       response_type: 'code',
@@ -15,7 +21,7 @@ class OpenIdClient {
     }, config);
   }
 
-  discover() {
+  discover(): Promise<Discovery> {
     const u = this.config.authority + '/.well-known/openid-configuration';
     return fetch(u)
       .then(response => {
@@ -27,14 +33,14 @@ class OpenIdClient {
       });
   }
 
-  urlEncode(data) {
-    return Object.keys(data).map(function(key) {
+  urlEncode(data: Object): string {
+    return Object.keys(data).map((key: string): string => {
       return [key, data[key]].map(encodeURIComponent).join('=');
     }).join('&');
   }
 
-  externalLoginUrl(provider) {
-    let returnUrl = `${this.discovery.authorization_endpoint.slice(this.discovery.issuer.length)}/login?${this.urlEncode({
+  externalLoginUrl(provider: 'Google' | 'Facebook'): string {
+    const returnUrl = `${this.discovery.authorization_endpoint.slice(this.discovery.issuer.length)}/login?${this.urlEncode({
       scope: this.config.scope,
       response_type: this.config.response_type,
       client_id: this.config.client_id,
@@ -47,7 +53,7 @@ class OpenIdClient {
     })}`;
   }
 
-  requestToken(code) {
+  requestToken(code: string): Promise<Token> {
     return fetch(this.discovery.token_endpoint, {
       method: 'POST',
       headers: {
@@ -63,14 +69,14 @@ class OpenIdClient {
     }).then(response => {
       return response.json();
     }).then(json => {
-      let token = Object.assign({}, json, {
+      const token = Object.assign({}, json, {
         expires_at: moment().add(json.expires_in, 'seconds').format()
       });
       return token;
     });
   }
 
-  refreshToken(refresh_token) {
+  refreshToken(refresh_token: string): Promise<Token> {
     return fetch(this.discovery.token_endpoint, {
       method: 'POST',
       headers: {
@@ -92,7 +98,7 @@ class OpenIdClient {
     });
   }
 
-  logout(token) {
+  logout(token: Token): Promise<any[]> {
     let revokeToken = fetch(this.discovery.revocation_endpoint, {
       method: 'POST',
       headers: {
@@ -108,11 +114,11 @@ class OpenIdClient {
     let endSession = fetch(`${this.discovery.end_session_endpoint}?${this.urlEncode({
       id_token_hint: token.id_token
     })}`);
-    let clearCookies = CookieManager.clearAll(() => {});
+    let clearCookies = CookieManager.clearAll(() => { });
     return Promise.all([revokeToken, endSession, clearCookies]);
   }
 
-  getLoginPage() {
+  getLoginPage(): string {
     return `
 <!DOCTYPE html>\n
 <html lang="en">

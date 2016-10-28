@@ -9,12 +9,18 @@
 # Ignore malformed json
 .*/node_modules/y18n/test/.*\.json
 
+
+.*/node_modules/fbjs.*
+.*/node_modules/react-native.*
+.*/node_modules/native-base.*
+
 [include]
 
 [libs]
 node_modules/react-native/Libraries/react-native/react-native-interface.js
 node_modules/react-native/flow
-flow/
+flow-typed/
+src/decls/
 
 [options]
 module.system=haste
@@ -38,4 +44,4 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-7]\\|1[0-9]\\|[0-9
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 
 [version]
-^0.27.0
+^0.33.0

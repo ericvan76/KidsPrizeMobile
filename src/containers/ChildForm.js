@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 import {
   Container,
   Header,
@@ -71,15 +70,15 @@ class ChildForm extends Component {
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent onPress={() => this.onClose() }>
-            <Icon name='ios-close'/>
+          <Button transparent onPress={() => this.onClose()}>
+            <Icon name='ios-close' />
           </Button>
           <Title>{this.props.isNew ? 'Add Child' : 'Edit Child'}</Title>
-          <Button transparent onPress={() => this.onSave() }>Save</Button>
+          <Button transparent onPress={() => this.onSave()}>Save</Button>
         </Header>
         <Content>
           <List>
-            <ListItemDivider title='BASIC INFO'/>
+            <ListItemDivider title='BASIC INFO' />
             <Field name='name' component={props => {
               return (
                 <ListItem iconLeft button
@@ -125,7 +124,7 @@ class ChildForm extends Component {
                 </ListItem>
               );
             } } />
-            <ListItemDivider title='TASKS'/>
+            <ListItemDivider title='TASKS' />
             <Field name='tasks' component={props => {
               return (
                 <ListItem iconLeft button
@@ -140,7 +139,7 @@ class ChildForm extends Component {
                   <Text note style={theme.listNote}>{props.input.value.length}</Text>
                 </ListItem>
               );
-            } }/>
+            } } />
           </List>
         </Content>
       </Container>

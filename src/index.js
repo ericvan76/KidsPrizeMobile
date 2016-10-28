@@ -3,7 +3,7 @@ import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import store from './store';
+import store from './reducers/store';
 import { LoginRoute, MainViewRoute } from './routes';
 import theme from './themes';
 

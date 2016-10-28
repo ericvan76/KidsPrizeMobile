@@ -1,12 +1,12 @@
 import React from 'react';
 
-import LoginView from './containers/LoginView';
-import MainView from './containers/MainView';
-import Settings from './containers/Settings';
-import ChildForm from './containers/ChildForm';
-import TaskEditor from './containers/TaskEditor';
-import TextInputView from './containers/TextInputView';
-import PickerView from './containers/PickerView';
+import LoginView from '../containers/LoginView';
+import MainView from '../containers/MainView';
+import Settings from '../containers/Settings';
+import ChildForm from '../containers/ChildForm';
+import TaskEditor from '../containers/TaskEditor';
+import TextInputView from '../containers/TextInputView';
+import PickerView from '../containers/PickerView';
 
 export class LoginRoute {
   constructor(props) {
@@ -14,7 +14,7 @@ export class LoginRoute {
   }
   renderScene(navigator) {
     return (
-      <LoginView navigator={navigator} {...this.props}/>
+      <LoginView navigator={navigator} {...this.props} />
     );
   }
 }
@@ -25,7 +25,7 @@ export class MainViewRoute {
   }
   renderScene(navigator) {
     return (
-      <MainView navigator={navigator} {...this.props}/>
+      <MainView navigator={navigator} {...this.props} />
     );
   }
 }
@@ -36,7 +36,7 @@ export class SettingsRoute {
   }
   renderScene(navigator) {
     return (
-      <Settings navigator={navigator} {...this.props}/>
+      <Settings navigator={navigator} {...this.props} />
     );
   }
 }
@@ -47,7 +47,7 @@ export class EditChildRoute {
   }
   renderScene(navigator) {
     return (
-      <ChildForm navigator={navigator} {...this.props}/>
+      <ChildForm navigator={navigator} {...this.props} />
     );
   }
 }
@@ -58,7 +58,7 @@ export class TaskEditorRoute {
   }
   renderScene(navigator) {
     return (
-      <TaskEditor navigator={navigator} {...this.props}/>
+      <TaskEditor navigator={navigator} {...this.props} />
     );
   }
 }
@@ -70,7 +70,7 @@ export class TextInputRoute {
   }
   renderScene(navigator) {
     return (
-      <TextInputView navigator={navigator} {...this.props}/>
+      <TextInputView navigator={navigator} {...this.props} />
     );
   }
 }
@@ -81,7 +81,7 @@ export class PickerRoute {
   }
   renderScene(navigator) {
     return (
-      <PickerView navigator={navigator} {...this.props}/>
+      <PickerView navigator={navigator} {...this.props} />
     );
   }
 }

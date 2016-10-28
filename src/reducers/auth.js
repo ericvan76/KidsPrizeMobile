@@ -1,33 +1,50 @@
+/* @flow */
 import update from 'react-addons-update';
+import * as actions from '../actions/auth';
 
-import * as Types from '../actions/ActionTypes';
+type AuthState = {
+  initialised: boolean,
+  discovery?: Discovery,
+  token?: Token,
+  user?: User
+}
 
-const auth = (state = {}, action) => {
+export default function reducer(state: AuthState = {
+  initialised: false
+}, action: Action): AuthState {
 
   switch (action.type) {
-    case Types.INITIALISED:
+
+    case actions.DISCOVERY_SUCCESS:
       {
+        const discovery: Discovery = action.payload;
         return update(state, {
-          initialised: { $set: true },
-          discovery: { $set: action.discovery },
-          token: { $set: action.token }
+          initialised: { $set: state.token !== undefined },
+          discovery: { $set: discovery }
         });
       }
-    case Types.SIGN_IN:
+    case actions.TOKEN_SUCCESS:
       {
+        const token: Token = action.payload;
         return update(state, {
-          token: { $set: action.token }
+          initialised: { $set: state.discovery !== undefined },
+          token: { $set: token }
         });
       }
-    case Types.SIGN_OUT:
+    case actions.TOKEN_REVOKED:
       {
         return update(state, {
           token: { $set: null }
         });
       }
+    case actions.USER_INFO:
+      {
+        const user: User = action.payload;
+        return update(state, {
+          user: { $set: user }
+        });
+      }
     default:
       return state;
   }
-};
-
-export default auth;
+}

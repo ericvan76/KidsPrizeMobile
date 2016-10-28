@@ -15,7 +15,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
 
-import * as actions from '../actions';
+import * as authActions from '../actions/auth';
+import * as childActions from '../actions/child';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
 import Spinning from '../components/Spinning';
@@ -28,9 +29,9 @@ class MainView extends Component {
     navigator: React.PropTypes.object.isRequired,
     auth: React.PropTypes.shape({
       initialised: React.PropTypes.bool,
-      token: React.PropTypes.object
+      token: React.PropTypes.object,
+      user: React.PropTypes.object
     }).isRequired,
-    user: React.PropTypes.object,
     children: React.PropTypes.arrayOf(React.PropTypes.shape({
       id: React.PropTypes.string.isRequired,
       name: React.PropTypes.string.isRequired,
@@ -44,7 +45,8 @@ class MainView extends Component {
   constructor(props) {
     super(props);
     if (!this.props.auth.initialised) {
-      this.props.actions.initialise();
+      this.props.actions.discovery();
+      this.props.actions.loadToken();
     }
   }
 
@@ -66,7 +68,7 @@ class MainView extends Component {
           <Button transparent>
             <Icon name='ios-person' />
           </Button>
-          <Title>{this.props.user.name}</Title>
+          <Title>{this.props.auth.user.name}</Title>
         </Header>
         <Content>
           <List>
@@ -88,7 +90,7 @@ class MainView extends Component {
               <Text>Settings</Text>
             </ListItem>
             <ListItem iconLeft button onPress={() => {
-              this.props.actions.signout();
+              this.props.actions.logout();
               this.refs.drawer.close();
             } }>
               <Icon name='ios-log-out' />
@@ -99,19 +101,21 @@ class MainView extends Component {
       </Container>
     );
   }
-
+  s
   componentDidUpdate() {
     if (this.props.auth.initialised) {
       if (!this.props.auth.token) {
         this.props.navigator.push(new LoginRoute());
-      } else if (!this.props.user) {
+      } else if (!this.props.auth.user) {
+        this.props.actions.getUserInfo();
+      } else if (!this.props.child) {
         this.props.actions.loadChildren();
       }
     }
   }
 
   render() {
-    if (!this.props.user || !this.props.child) {
+    if (!this.props.auth.user || !this.props.child) {
       return <Spinning />;
     }
     return (
@@ -137,7 +141,6 @@ class MainView extends Component {
 const mapStateToProps = (state) => {
   return {
     auth: state.auth,
-    user: state.user,
     children: Object.values(state.children).map(c => {
       return { id: c.id, name: c.name, gender: c.gender };
     }),
@@ -148,8 +151,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators(actions, dispatch)
-  };
+    actions: bindActionCreators({
+      ...authActions,
+      ...childActions
+    }, dispatch)};
 };
 
 const styles = StyleSheet.create({

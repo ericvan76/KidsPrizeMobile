@@ -1,3 +1,5 @@
+/* @flow */
+
 import theme from './light';
 
 export default Object.assign({}, theme, {

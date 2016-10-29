@@ -1,9 +1,17 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import { ListItem, Text } from 'native-base';
 import StyleSheet from 'react-native-extended-stylesheet';
 import theme from '../themes';
 
+type Props = {
+  title: string
+};
+
 class ListItemDivider extends Component {
+
+  props: Props;
 
   static propTypes = {
     title: React.PropTypes.string

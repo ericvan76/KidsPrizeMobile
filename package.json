@@ -1,5 +1,5 @@
 {
-  "name": "kids-prize-mobile",
+  "name": "KidsPrizeMobile",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,8 +7,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "moment": "^2.15.2",
-    "native-base": "^0.5.11",
+    "moment": "^2.16.0",
+    "native-base": "^0.5.13",
     "react": "15.3.2",
     "react-addons-update": "15.3.2",
     "react-native": "0.36.0",
@@ -16,26 +16,33 @@
     "react-native-drawer": "^2.3.0",
     "react-native-extended-stylesheet": "^0.3.0",
     "react-native-sortable-listview": "^0.1.1",
-    "react-redux": "^4.4.5",
+    "react-native-vector-icons": "^3.0.0",
+    "react-redux": "^4.4.6",
     "redux": "^3.6.0",
-    "redux-form": "^6.1.1",
+    "redux-form": "^6.2.0",
     "redux-thunk": "^2.1.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "uuid": "^2.0.3"
   },
   "jest": {
-    "preset": "jest-react-native"
+    "verbose": true,
+    "preset": "jest-react-native",
+    "testRegex": "(/__tests__/.(test|spec)|\\.(test|spec))\\.(js|jsx)$",
+    "setupFiles": [
+      "__tests__/setup.js"
+    ]
   },
   "devDependencies": {
     "babel-eslint": "^7.1.0",
-    "babel-jest": "16.0.0",
-    "babel-preset-react-native": "1.9.0",
-    "eslint": "^3.8.1",
+    "babel-jest": "^17.0.2",
+    "babel-preset-react-native": "^1.9.0",
+    "eslint": "^3.10.2",
     "eslint-plugin-flowtype": "^2.25.0",
-    "eslint-plugin-react": "^6.4.1",
-    "flow-bin": "^0.33.0",
-    "jest": "16.0.2",
-    "jest-react-native": "16.0.0",
-    "react-test-renderer": "15.3.2",
+    "eslint-plugin-react": "^6.7.1",
+    "flow-bin": "^0.35.0",
+    "jest": "^17.0.2",
+    "jest-react-native": "^17.0.2",
+    "react-test-renderer": "^15.3.2",
     "redux-devtools": "^3.3.1"
   }
 }

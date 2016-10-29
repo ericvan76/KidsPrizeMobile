@@ -1,18 +1,21 @@
+/* @flow */
+
 import React from 'react';
 
 import LoginView from '../containers/LoginView';
 import MainView from '../containers/MainView';
 import Settings from '../containers/Settings';
 import ChildForm from '../containers/ChildForm';
-import TaskEditor from '../containers/TaskEditor';
-import TextInputView from '../containers/TextInputView';
-import PickerView from '../containers/PickerView';
+import TaskEditor from '../components/TaskEditor';
+import TextInputView from '../components/TextInputView';
+import PickerView from '../components/PickerView';
 
 export class LoginRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <LoginView navigator={navigator} {...this.props} />
     );
@@ -20,10 +23,11 @@ export class LoginRoute {
 }
 
 export class MainViewRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <MainView navigator={navigator} {...this.props} />
     );
@@ -31,10 +35,11 @@ export class MainViewRoute {
 }
 
 export class SettingsRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <Settings navigator={navigator} {...this.props} />
     );
@@ -42,10 +47,11 @@ export class SettingsRoute {
 }
 
 export class EditChildRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <ChildForm navigator={navigator} {...this.props} />
     );
@@ -53,10 +59,11 @@ export class EditChildRoute {
 }
 
 export class TaskEditorRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <TaskEditor navigator={navigator} {...this.props} />
     );
@@ -65,10 +72,11 @@ export class TaskEditorRoute {
 
 // Resuable Routes
 export class TextInputRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <TextInputView navigator={navigator} {...this.props} />
     );
@@ -76,10 +84,11 @@ export class TextInputRoute {
 }
 
 export class PickerRoute {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     this.props = props;
   }
-  renderScene(navigator) {
+  renderScene(navigator: Object) {
     return (
       <PickerView navigator={navigator} {...this.props} />
     );

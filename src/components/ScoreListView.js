@@ -1,115 +1,124 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import { View, Text, ListView, RefreshControl, TouchableOpacity } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 import { Icon } from 'native-base';
 import update from 'react-addons-update';
+import moment from 'moment';
 
 import Separator from './Seperator';
 import theme from '../themes';
-import dateUtil from '../utils/dateUtil';
 
+import type { WeeklyScoresState, WeeklySectionState, TaskRowState } from '../types/states.flow';
 
-const createDataSource = () => {
+function createDataSource() {
 
   return new ListView.DataSource({
     sectionHeaderHasChanged: () => {
       return false;
     },
-    rowHasChanged: (r1, r2) => {
-      return Array.from({
-        length: 7
-      }, (v, k) => k).some(i => r1.items[i].value !== r2.items[i].value);
+    rowHasChanged: (r1: TaskRowState, r2: TaskRowState) => {
+      return rowHash(r1) !== rowHash(r2);
     }
   });
+}
+
+function rowHash(row: TaskRowState): string {
+  return Object.keys(row).sort().reduce((prev: string, k: string) => {
+    return `${prev}|${k}:${row[k]}`;
+  }, '');
+}
+
+
+
+type Props = {
+  child: Child,
+  rows: WeeklyScoresState,
+  refreshAsync: (childId: string) => void,
+  fetchMoreAsync: (childId: string) => void,
+  setScoreAsync: (childId: string, date: string, task: string, value: number) => void,
+  style: any
+};
+
+type State = {
+  refreshing: boolean,
+  dataSource: any
 };
 
 class ScoreListView extends Component {
 
+  props: Props;
+  state: State;
+
   static propTypes = {
-    child: React.PropTypes.shape({
-      id: React.PropTypes.string.isRequired,
-      name: React.PropTypes.string.isRequired,
-      gender: React.PropTypes.string.isRequired
-    }).isRequired,
-    rows: React.PropTypes.objectOf(
-      React.PropTypes.arrayOf(React.PropTypes.shape({
-        task: React.PropTypes.string.isRequired,
-        items: React.PropTypes.arrayOf(React.PropTypes.shape({
-          date: React.PropTypes.string.isRequired,
-          value: React.PropTypes.number.isRequired
-        })).isRequired
-      }))).isRequired,
-    actions: React.PropTypes.shape({
-      refresh: React.PropTypes.func.isRequired,
-      fetchMore: React.PropTypes.func.isRequired,
-      setScore: React.PropTypes.func.isRequired
-    }).isRequired,
+    child: React.PropTypes.object.isRequired,
+    rows: React.PropTypes.object.isRequired,
+    refreshAsync: React.PropTypes.func.isRequired,
+    fetchMoreAsync: React.PropTypes.func.isRequired,
+    setScoreAsync: React.PropTypes.func.isRequired,
     style: View.propTypes.style
   }
 
-
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       refreshing: false,
       dataSource: createDataSource().cloneWithRowsAndSections(props.rows)
     };
   }
-  renderSectionHeader(sectionData, sectionID) {
-    const dates = dateUtil.allDaysOfWeek(sectionID).map(d => {
-      const dayName = dateUtil.getWeekDayName(d.getUTCDay());
-      const date = d.getUTCDate();
+
+  renderSectionHeader(sectionData: WeeklySectionState, sectionID: string) {
+    const week = sectionID;
+    const dates = Array.from({ length: 7 }, (v, k) => k).map((i: number) => {
+      const mo = moment(Date.parse(week)).utc().day(i);
       let month = '';
-      if (date === 1) {
-        month = `/${d.getUTCMonth() + 1}`;
+      if (mo.date() === 1) {
+        month = `/${mo.month()}`;
       }
       return (
-        <Text style={styles.date} key={d.toISOString()}>{`${dayName}\n${date}${month}`}</Text>
+        <Text style={styles.date} key={mo.format('YYYY-MM-DD')}>{`${mo.format('ddd')}\n${mo.date()}${month}`}</Text>
       );
     });
     return (
       <View>
-        <Separator key='s0'/>
+        <Separator key='s0' />
         <View style={styles.section}>
           {dates}
         </View>
-        <Separator key='s1'/>
+        <Separator key='s1' />
       </View>
     );
   }
-  onSetScore(childId, date, task, value) {
-    this.props.actions.setScore(childId, date, task, value);
-  }
-  renderRow(row) {
-    let stars = Array.from({
-      length: 7
-    }, (v, k) => k).map(i => {
-      const value = row.items[i].value;
-      const newValue = (value > 0) ?
-        0 :
-        1;
-      const iconName = (value > 0) ?
-        'ios-star' :
-        'ios-star-outline';
+
+  renderRow(rowData: TaskRowState, sectionID: string, rowID: string) {
+    const week = sectionID;
+    const task = rowID;
+    const stars = Array.from({ length: 7 }, (v, k) => k).map((i: number) => {
+      const mo = moment(Date.parse(week)).utc().day(i);
+      const date: string = mo.format('YYYY-MM-DD');
+      const value = rowData[date] || 0;
+      const newValue = (value > 0) ? 0 : 1;
+      const iconName = (value > 0) ? 'ios-star' : 'ios-star-outline';
       return (
         <TouchableOpacity
           key={i}
-          onPress={() => this.onSetScore(this.props.child.id, row.items[i].date, row.task, newValue) }>
-          <Icon style={styles.star} name={iconName}/>
+          onPress={() => this.props.setScoreAsync(this.props.child.id, date, task, newValue)}>
+          <Icon style={styles.star} name={iconName} />
         </TouchableOpacity>
       );
     });
     return (
       <View style={styles.row}>
-        <Text style={styles.task} ellipsizeMode='tail' numberOfLines={1}>{row.task}</Text>
+        <Text style={styles.task} ellipsizeMode='tail' numberOfLines={1}>{task}</Text>
         <View style={styles.starRow}>
           {stars}
         </View>
       </View>
     );
   }
-  renderSeparator(sectionID, rowID) {
-    return (<Separator key={`${sectionID}-${rowID}`}/>);
+  renderSeparator(sectionID: string, rowID: string) {
+    return (<Separator key={`${sectionID}-${rowID}`} />);
   }
   onRefresh() {
     this.setState(update(this.state, {
@@ -117,7 +126,7 @@ class ScoreListView extends Component {
         $set: true
       }
     }));
-    this.props.actions.refresh(this.props.child.id);
+    this.props.refreshAsync(this.props.child.id);
     this.setState(update(this.state, {
       refreshing: {
         $set: false
@@ -125,9 +134,9 @@ class ScoreListView extends Component {
     }));
   }
   onEndReached() {
-    this.props.actions.fetchMore(this.props.child.id);
+    this.props.fetchMoreAsync(this.props.child.id);
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     let ds = this.state.dataSource;
     if (nextProps.child.id !== this.props.child.id) {
       // create a new datasource for different child
@@ -142,7 +151,7 @@ class ScoreListView extends Component {
   }
   render() {
     const refreshControl =
-      <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.onRefresh() }/>;
+      <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.onRefresh()} />;
 
     return (
       <ListView
@@ -150,7 +159,7 @@ class ScoreListView extends Component {
         ref='listView'
         dataSource={this.state.dataSource}
         renderSectionHeader={(sectionData, sectionID) => this.renderSectionHeader(sectionData, sectionID)}
-        renderRow={(rowData) => this.renderRow(rowData)}
+        renderRow={(rowData, sectionID, rowID) => this.renderRow(rowData, sectionID, rowID)}
         renderSeparator={(sectionID, rowID) => this.renderSeparator(sectionID, rowID)}
         refreshControl={refreshControl}
         onEndReached={() => this.onEndReached()}

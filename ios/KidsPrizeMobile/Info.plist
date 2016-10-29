@@ -44,7 +44,7 @@
       <dict>
         <key>localhost</key>
         <dict>
-          <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
           <true/>
         </dict>
       </dict>
@@ -70,6 +70,7 @@
       <string>Ionicons.ttf</string>
       <string>MaterialIcons.ttf</string>
       <string>Octicons.ttf</string>
+      <string>SimpleLineIcons.ttf</string>
       <string>Zocial.ttf</string>
     </array>
   </dict>

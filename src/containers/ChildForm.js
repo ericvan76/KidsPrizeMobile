@@ -1,49 +1,66 @@
+/* @flow */
+
 import React, { Component } from 'react';
-import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Button,
-  Icon,
-  Text,
-  List,
-  ListItem
-} from 'native-base';
+import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm, propTypes, Field } from 'redux-form';
+import * as uuid from 'uuid';
 
 import ListItemDivider from '../components/ListItemDivider';
 import { TextInputRoute, PickerRoute, TaskEditorRoute } from '../routes';
-import uuid from '../utils/uuid';
 import theme from '../themes';
 
+import type { AppState } from '../types/states.flow';
+
+type OwnProps = {
+  childId: string
+};
+
+type StoreProps = {
+  isNew: boolean,
+  initialValues: Child & {
+    tasks: string[]
+  }
+};
+
+type ActionProps = {
+}
+
+type Props = OwnProps & StoreProps & ActionProps & {
+  navigator: Object,
+  // redux-form
+  destroy: (form: string) => void;
+};
+
+type State = {
+  showGenderPicker: boolean,
+  destroyed: boolean
+};
 
 class ChildForm extends Component {
+
+  props: Props;
+  state: State;
 
   static propTypes = {
     ...propTypes, // react-form propTypes
     isNew: React.PropTypes.bool.isRequired,
-    initialValues: React.PropTypes.shape({
-      id: React.PropTypes.string.isRequired,
-      name: React.PropTypes.string,
-      gender: React.PropTypes.oneOf(['M', 'F']),
-      tasks: React.PropTypes.arrayOf(React.PropTypes.string)
-    }).isRequired,
+    initialValues: React.PropTypes.object.isRequired,
     childId: React.PropTypes.string,
     navigator: React.PropTypes.object.isRequired,
     actions: React.PropTypes.object.isRequired
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      showGenderPicker: false
+      showGenderPicker: false,
+      destroyed: false
     };
   }
-  isNew() {
-    return this.props.childId === undefined;
+  isNew(): boolean {
+    return !this.props.childId;
   }
   toggleGenderPicker() {
     this.setState({
@@ -79,7 +96,7 @@ class ChildForm extends Component {
         <Content>
           <List>
             <ListItemDivider title='BASIC INFO' />
-            <Field name='name' component={props => {
+            <Field name='name' component={(props: Field.Props) => {
               return (
                 <ListItem iconLeft button
                   onPress={() => this.props.navigator.push(
@@ -88,7 +105,7 @@ class ChildForm extends Component {
                       placeholder: 'Type child name here',
                       autoCapitalize: 'words',
                       defaultValue: props.input.value,
-                      onSubmit: text => {
+                      onSubmit: (text: string) => {
                         props.input.onChange(text.trim());
                         this.props.navigator.pop();
                       }
@@ -100,7 +117,7 @@ class ChildForm extends Component {
                 </ListItem>
               );
             } } />
-            <Field name='gender' component={props => {
+            <Field name='gender' component={(props: Field.Props) => {
               const items = {
                 M: 'Male',
                 F: 'Female'
@@ -112,7 +129,7 @@ class ChildForm extends Component {
                       title: 'Select Gender',
                       items: items,
                       defaultValue: props.input.value,
-                      onSubmit: v => {
+                      onSubmit: (v: Gender) => {
                         props.input.onChange(v);
                         this.props.navigator.pop();
                       }
@@ -125,7 +142,7 @@ class ChildForm extends Component {
               );
             } } />
             <ListItemDivider title='TASKS' />
-            <Field name='tasks' component={props => {
+            <Field name='tasks' component={(props: Field.Props) => {
               return (
                 <ListItem iconLeft button
                   onPress={() => this.props.navigator.push(
@@ -148,29 +165,31 @@ class ChildForm extends Component {
 }
 
 
-const mapStateToProps = (state, ownProps) => {
-  if (ownProps.childId !== undefined) {
+const mapStateToProps = (state: AppState, ownProps: OwnProps): StoreProps => {
+  if (!ownProps.childId) {
+    const topWeek = Object.keys(state.children[ownProps.childId].weeklyScores)[0];
     return {
       isNew: false,
-      initialValues: state.children[ownProps.childId]
+      initialValues: Object.assign({}, state.children[ownProps.childId].child, {
+        tasks: Object.keys(state.children[ownProps.childId].weeklyScores[topWeek].tasks)
+      })
     };
   } else {
     return {
       isNew: true,
       initialValues: {
         id: uuid.v4(),
+        name: '',
+        gender: 'F',
+        totalScore: 0,
         tasks: ['Task A', 'Task B', 'Task C']
       }
     };
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    actions: bindActionCreators({
-      //todo: add actions here
-    }, dispatch)
-  };
+const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
+  return bindActionCreators({}, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

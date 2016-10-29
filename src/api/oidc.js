@@ -2,119 +2,104 @@
 
 import moment from 'moment';
 import CookieManager from 'react-native-cookies';
-import config from '../config';
+import config from '../__config__';
+import { getAccessToken } from './token';
+import * as url from '../utils/url';
+
+import { fetchOrThrow } from './api';
+import type { AuthConfig } from '../types/config.flow';
 
 class OpenIdClient {
 
-  config: Config;
+  config: AuthConfig;
   discovery: Discovery;
 
   constructor() {
-
-    this.config = Object.assign({}, {
-      authority: 'https://secure.kids-prize.com',
-      response_type: 'code',
-      scope: 'openid profile offline_access api1',
-      client_id: '****',
-      client_secret: '****',
-      redirect_uri: '****'
-    }, config);
+    this.config = config.auth;
   }
 
-  discover(): Promise<Discovery> {
-    const u = this.config.authority + '/.well-known/openid-configuration';
-    return fetch(u)
-      .then(response => {
-        return response.json();
-      })
-      .then(json => {
-        this.discovery = json;
-        return json;
-      });
-  }
-
-  urlEncode(data: Object): string {
-    return Object.keys(data).map((key: string): string => {
-      return [key, data[key]].map(encodeURIComponent).join('=');
-    }).join('&');
+  async discover(): Promise<Discovery> {
+    const discovery: Discovery = await fetchOrThrow(`${this.config.authority}/.well-known/openid-configuration`);
+    this.discovery = discovery;
+    return discovery;
   }
 
   externalLoginUrl(provider: 'Google' | 'Facebook'): string {
-    const returnUrl = `${this.discovery.authorization_endpoint.slice(this.discovery.issuer.length)}/login?${this.urlEncode({
+    const returnUrl = `${this.discovery.authorization_endpoint.slice(this.discovery.issuer.length)}/login?${url.encodeQueryString({
       scope: this.config.scope,
       response_type: this.config.response_type,
       client_id: this.config.client_id,
       redirect_uri: this.config.redirect_uri,
       state: Math.floor(Math.random() * 1000000)
     })}`;
-    return `${this.config.authority}/account/External?${this.urlEncode({
+    return `${this.config.authority}/account/External?${url.encodeQueryString({
       provider: provider,
       returnUrl: returnUrl
     })}`;
   }
 
-  requestToken(code: string): Promise<Token> {
-    return fetch(this.discovery.token_endpoint, {
+  async requestToken(code: string): Promise<Token> {
+    const token: Token = await fetchOrThrow(this.discovery.token_endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: this.urlEncode({
+      body: url.encodeQueryString({
         grant_type: 'authorization_code',
         code: code,
         client_id: this.config.client_id,
         client_secret: this.config.client_secret,
         redirect_uri: this.config.redirect_uri
       })
-    }).then(response => {
-      return response.json();
-    }).then(json => {
-      const token = Object.assign({}, json, {
-        expires_at: moment().add(json.expires_in, 'seconds').format()
-      });
-      return token;
     });
+    token['expires_at'] = moment(Date.now()).add(token.expires_in, 'seconds').toDate();
+    return token;
   }
 
-  refreshToken(refresh_token: string): Promise<Token> {
-    return fetch(this.discovery.token_endpoint, {
+  async refreshToken(refresh_token: string): Promise<Token> {
+    const token: Token = await fetchOrThrow(this.discovery.token_endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: this.urlEncode({
+      body: url.encodeQueryString({
         grant_type: 'refresh_token',
         refresh_token: refresh_token,
         client_id: this.config.client_id,
         client_secret: this.config.client_secret,
       })
-    }).then(response => {
-      return response.json();
-    }).then(json => {
-      let token = Object.assign({}, json, {
-        expires_at: moment().add(json.expires_in, 'seconds').format()
-      });
-      return token;
     });
+    token['expires_at'] = moment(Date.now()).add(token.expires_in, 'seconds').toDate();
+    return token;
   }
 
-  logout(token: Token): Promise<any[]> {
-    let revokeToken = fetch(this.discovery.revocation_endpoint, {
+  async getUserInfo() {
+    const access_token = await getAccessToken();
+    const user = await fetchOrThrow(this.discovery.userinfo_endpoint, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    });
+    return user;
+  }
+
+  logout(token: Token): Promise<any> {
+    const revokeToken = fetchOrThrow(this.discovery.revocation_endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: this.urlEncode({
+      body: url.encodeQueryString({
         token: token.refresh_token,
         token_type_hint: 'refresh_token',
         client_id: this.config.client_id,
         client_secret: this.config.client_secret
       })
     });
-    let endSession = fetch(`${this.discovery.end_session_endpoint}?${this.urlEncode({
+    const endSession = fetchOrThrow(`${this.discovery.end_session_endpoint}?${url.encodeQueryString({
       id_token_hint: token.id_token
     })}`);
-    let clearCookies = CookieManager.clearAll(() => { });
+    const clearCookies = CookieManager.clearAll(() => { });
     return Promise.all([revokeToken, endSession, clearCookies]);
   }
 
@@ -412,7 +397,6 @@ class OpenIdClient {
   }
 }
 
-
-let oidc = new OpenIdClient();
+const oidc = new OpenIdClient();
 
 export default oidc;

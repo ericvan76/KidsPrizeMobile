@@ -32,7 +32,6 @@ local.properties
 # node.js
 #
 node_modules/
-flow-typed/
 npm-debug.log
 
 # BUCK
@@ -40,7 +39,11 @@ buck-out/
 \.buckd/
 android/app/libs
 android/keystores/debug.keystore
-.vscode/typings
-.vscode/.react
+
+
 .vscode/launchReactNative.js
-src/config/
+.vscode/.react/
+.vscode/typings/
+typings/
+
+src/__config__/

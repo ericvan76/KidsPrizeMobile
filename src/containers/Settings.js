@@ -1,15 +1,7 @@
+/* @flow */
+
 import React, { Component } from 'react';
-import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Button,
-  Icon,
-  Text,
-  List,
-  ListItem
-} from 'native-base';
+import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -17,35 +9,46 @@ import ListItemDivider from '../components/ListItemDivider';
 import { EditChildRoute } from '../routes';
 import theme from '../themes';
 
+import type { AppState } from '../types/states.flow';
+
+type StoreProps = {
+  children: Child[]
+};
+
+type ActionProps = {
+};
+
+type Props = StoreProps & ActionProps & {
+  navigator: Object
+};
+
 class Settings extends Component {
 
+  props: Props;
+
   static propTypes = {
-    children: React.PropTypes.arrayOf(React.PropTypes.shape({
-      id: React.PropTypes.string.isRequired,
-      name: React.PropTypes.string.isRequired,
-      gender: React.PropTypes.oneOf(['M', 'F']).isRequired
-    })).isRequired,
+    children: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
     navigator: React.PropTypes.object.isRequired
   }
 
-  editChild(childId) {
+  editChild(childId: string) {
     this.props.navigator.push(new EditChildRoute({ childId: childId }));
   }
   render() {
-    const childrenRows = Object.values(this.props.children).map(c => {
+    const childrenRows = this.props.children.map((c: Child) => {
       return (
-        <ListItem iconLeft iconRight button onPress={() => this.editChild(c.id) } key={c.id}>
+        <ListItem iconLeft iconRight button onPress={() => this.editChild(c.id)} key={c.id}>
           <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'} />
           <Text>{c.name}</Text>
-          <Icon style={theme.iconRight} name='ios-arrow-forward'/>
+          <Icon style={theme.iconRight} name='ios-arrow-forward' />
         </ListItem>
       );
     });
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent onPress={() => this.props.navigator.pop() }>
-            <Icon name='ios-arrow-back'/>
+          <Button transparent onPress={() => this.props.navigator.pop()}>
+            <Icon name='ios-arrow-back' />
           </Button>
           <Title>Settings</Title>
         </Header>
@@ -60,20 +63,14 @@ class Settings extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppState): StoreProps => {
   return {
-    children: Object.values(state.children).map(c => {
-      return { id: c.id, name: c.name, gender: c.gender };
-    })
+    children: Object.keys(state.children).map(id => state.children[id].child)
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    actions: bindActionCreators({
-      //todo: add actions here
-    }, dispatch)
-  };
+const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
+  return bindActionCreators({}, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);

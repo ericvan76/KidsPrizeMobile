@@ -1,3 +1,5 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -11,7 +13,7 @@ class Seperator extends Component {
   }
 
   render() {
-    return <View {...this.props} style={[styles.container, this.props.style]}/>;
+    return <View {...this.props} style={[styles.container, this.props.style]} />;
   }
 }
 

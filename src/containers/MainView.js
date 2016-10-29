@@ -1,16 +1,8 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
-import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Button,
-  Icon,
-  Text,
-  List,
-  ListItem
-} from 'native-base';
+import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
@@ -23,38 +15,63 @@ import Spinning from '../components/Spinning';
 import { EditChildRoute, SettingsRoute, LoginRoute } from '../routes';
 import theme from '../themes';
 
+import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
+
+type StoreProps = {
+  auth: AuthState,
+  childList: Child[],
+  child: ?Child,
+  weeklyScores: WeeklyScoresState
+}
+
+type ActionProps = {
+  initialiseAsync: () => void,
+  switchChild: (childId: string) => void,
+  getUserInfoAsync: () => void,
+  listChildrenAsync: () => void,
+  logoutAsync: () => void,
+  refreshAsync: (childId: string) => void,
+  fetchMoreAsync: (childId: string) => void,
+  setScoreAsync: (childId: string, date: string, task: string, value: number) => void
+};
+
+type Props = StoreProps & ActionProps & {
+  navigator: Object
+}
+
 class MainView extends Component {
+
+  props: Props;
 
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
-    auth: React.PropTypes.shape({
-      initialised: React.PropTypes.bool,
-      token: React.PropTypes.object,
-      user: React.PropTypes.object
-    }).isRequired,
-    children: React.PropTypes.arrayOf(React.PropTypes.shape({
-      id: React.PropTypes.string.isRequired,
-      name: React.PropTypes.string.isRequired,
-      gender: React.PropTypes.oneOf(['M', 'F']).isRequired
-    })).isRequired,
+    auth: React.PropTypes.object.isRequired,
+    childList: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
     child: React.PropTypes.object,
-    scores: React.PropTypes.object,
-    actions: React.PropTypes.object.isRequired
-  }
+    weeklyScores: React.PropTypes.object,
+    // actions
+    initialiseAsync: React.PropTypes.func.isRequired,
+    switchChild: React.PropTypes.func.isRequired,
+    getUserInfoAsync: React.PropTypes.func.isRequired,
+    listChildrenAsync: React.PropTypes.func.isRequired,
+    logoutAsync: React.PropTypes.func.isRequired,
+    refreshAsync: React.PropTypes.func.isRequired,
+    fetchMoreAsync: React.PropTypes.func.isRequired,
+    setScoreAsync: React.PropTypes.func.isRequired
+  };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     if (!this.props.auth.initialised) {
-      this.props.actions.discovery();
-      this.props.actions.loadToken();
+      this.props.initialiseAsync();
     }
   }
 
   renderDrawer() {
-    const childrenRows = Object.values(this.props.children).map(c => {
+    const childrenRows = this.props.childList.map((c: Child) => {
       return (
         <ListItem key={c.id} iconLeft button onPress={() => {
-          this.props.actions.switchChild(c.id);
+          this.props.switchChild(c.id);
           this.refs.drawer.close();
         } }>
           <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'} />
@@ -68,7 +85,7 @@ class MainView extends Component {
           <Button transparent>
             <Icon name='ios-person' />
           </Button>
-          <Title>{this.props.auth.user.name}</Title>
+          <Title>{this.props.auth.user ? this.props.auth.user.name : ''}</Title>
         </Header>
         <Content>
           <List>
@@ -90,7 +107,7 @@ class MainView extends Component {
               <Text>Settings</Text>
             </ListItem>
             <ListItem iconLeft button onPress={() => {
-              this.props.actions.logout();
+              this.props.logout();
               this.refs.drawer.close();
             } }>
               <Icon name='ios-log-out' />
@@ -101,15 +118,15 @@ class MainView extends Component {
       </Container>
     );
   }
-  s
+
   componentDidUpdate() {
     if (this.props.auth.initialised) {
       if (!this.props.auth.token) {
         this.props.navigator.push(new LoginRoute());
       } else if (!this.props.auth.user) {
-        this.props.actions.getUserInfo();
+        this.props.getUserInfoAsync();
       } else if (!this.props.child) {
-        this.props.actions.loadChildren();
+        this.props.listChildrenAsync();
       }
     }
   }
@@ -130,7 +147,12 @@ class MainView extends Component {
               >Top</Button>
           </Header>
           <Content horizontal={true} scrollEnabled={false}>
-            <ScoreListView ref='listView' style={styles.listView} child={this.props.child} rows={this.props.scores.weeks} actions={this.props.actions} />
+            <ScoreListView ref='listView' style={styles.listView}
+              child={this.props.child}
+              rows={this.props.weeklyScores}
+              refreshAsync={this.props.refreshAsync}
+              fetchMoreAsync={this.props.fetchMoreAsync}
+              setScoreAsync={this.props.setScoreAsync} />
           </Content>
         </Container>
       </Drawer>
@@ -138,23 +160,20 @@ class MainView extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppState): StoreProps => {
   return {
     auth: state.auth,
-    children: Object.values(state.children).map(c => {
-      return { id: c.id, name: c.name, gender: c.gender };
-    }),
-    child: state.children[state.currentChildId],
-    scores: state.scores[state.currentChildId]
+    childList: Object.keys(state.children).map(k => state.children[k].child),
+    child: state.currentChild ? state.children[state.currentChild].child : null,
+    weeklyScores: state.currentChild ? state.children[state.currentChild].weeklyScores : {},
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...childActions
-    }, dispatch)};
+const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
+  return bindActionCreators({
+    ...authActions,
+    ...childActions
+  }, dispatch);
 };
 
 const styles = StyleSheet.create({

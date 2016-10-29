@@ -1,9 +1,11 @@
+/* @flow */
+
 import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import store from './reducers/store';
+import store from './store';
 import { LoginRoute, MainViewRoute } from './routes';
 import theme from './themes';
 
@@ -12,16 +14,17 @@ StyleSheet.build({
   rem: theme.fontSizeBase
 });
 
+
 class App extends Component {
-  constructor(props) {
+  constructor(props: Object) {
     super(props);
   }
 
-  renderScene(route, navigator) {
+  renderScene(route: Object, navigator: Object) {
     return route.renderScene(navigator);
   }
 
-  configureScene(route) {
+  configureScene(route: Object) {
     if (route instanceof LoginRoute) {
       return Navigator.SceneConfigs.FloatFromBottom;
     }

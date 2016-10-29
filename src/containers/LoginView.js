@@ -12,35 +12,39 @@ import Spinning from '../components/Spinning';
 import oidc from '../api/oidc';
 import * as authActions from '../actions/auth';
 
+import type { AppState } from '../types/states.flow';
+
 const WEBVIEW_REF = 'webview';
 
-type Props = {
-  navigator: Object,
+type StoreProps = {
   auth: {
     initialised: boolean,
-    token: Token
+    token: ?Token
   },
-  actions: {
-    requestToken: (code: string) => void,
-  }
 };
 
-type LocalState = {
+type ActionProps = {
+  requestTokenAsync: (code: string) => void,
+};
+
+type Props = StoreProps & ActionProps & {
+  navigator: Object
+};
+
+type State = {
   source: { html: string },
   stopLoading: boolean
 };
 
 class LoginView extends Component {
 
-  state: LocalState;
+  props: Props;
+  state: State;
 
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
-    auth: React.PropTypes.shape({
-      initialised: React.PropTypes.bool,
-      token: React.PropTypes.object
-    }).isRequired,
-    actions: React.PropTypes.object.isRequired
+    auth: React.PropTypes.object.isRequired,
+    requestTokenAsync: React.PropTypes.func.isRequired
   }
 
   constructor(props: Props) {
@@ -51,11 +55,11 @@ class LoginView extends Component {
     };
   }
 
-  onLoadStart(e) {
+  onLoadStart(e: Object) {
     const urlObj = url.parse(e.nativeEvent.url, true);
     if (urlObj.href.startsWith(oidc.config.redirect_uri) && urlObj.query.code) {
       this.setState(update(this.state, { stopLoading: { $set: true } }));
-      this.props.actions.requestToken(urlObj.query.code);
+      this.props.requestTokenAsync(urlObj.query.code);
     }
   }
 
@@ -79,16 +83,14 @@ class LoginView extends Component {
   }
 }
 
-const mapStateToProps = (state: Object) => {
+const mapStateToProps = (state: AppState): StoreProps => {
   return {
-    auth: state.auth
+    auth: state.auth,
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    actions: bindActionCreators(authActions, dispatch)
-  };
+const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
+  return bindActionCreators(authActions, dispatch);
 };
 
 const styles = StyleSheet.create({

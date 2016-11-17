@@ -83,7 +83,7 @@ class OpenIdClient {
     return user;
   }
 
-  logout(token: Token): Promise<any> {
+  async logout(token: Token) {
     const revokeToken = fetchOrThrow(this.discovery.revocation_endpoint, {
       method: 'POST',
       headers: {
@@ -96,11 +96,8 @@ class OpenIdClient {
         client_secret: this.config.client_secret
       })
     });
-    const endSession = fetchOrThrow(`${this.discovery.end_session_endpoint}?${url.encodeQueryString({
-      id_token_hint: token.id_token
-    })}`);
     const clearCookies = CookieManager.clearAll(() => { });
-    return Promise.all([revokeToken, endSession, clearCookies]);
+    return Promise.all([revokeToken, clearCookies]);
   }
 
   getLoginPage(): string {

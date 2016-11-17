@@ -107,7 +107,7 @@ class MainView extends Component {
               <Text>Settings</Text>
             </ListItem>
             <ListItem iconLeft button onPress={() => {
-              this.props.logout();
+              this.props.logoutAsync();
               this.refs.drawer.close();
             } }>
               <Icon name='ios-log-out' />

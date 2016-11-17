@@ -71,6 +71,13 @@ export function createChildAsync(childId: string, name: string, gender: Gender, 
   };
 }
 
+export function updateChildAsync(childId: string, name: string, gender: Gender, tasks: string[]) {
+  return async (dispatch: Dispatch) => {
+    const result: ScoreResult = await api.updateChild(childId, name, gender, tasks);
+    dispatch(updateChild(result));
+  };
+}
+
 export function removeChildAsync(childId: string) {
   return async (dispatch: Dispatch, getState: Function) => {
     const state: AppState = getState();

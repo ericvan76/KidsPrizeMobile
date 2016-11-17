@@ -155,7 +155,7 @@ class TaskEditor extends Component {
           <Title>Task List</Title>
           <Button transparent onPress={() => this.onAddPress()}>Add</Button>
         </Header>
-        <Content scrollEnabled={false}>
+        <Content horizontal={true} scrollEnabled={false}>
           <SortableListView
             style={styles.listView}
             sortRowStyle={styles.sortRow}

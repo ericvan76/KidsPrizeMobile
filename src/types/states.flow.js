@@ -4,7 +4,9 @@ export type AppState = {
   auth: AuthState,
   currentChild: ?string,
   children: ChildrenState,
-  form: any
+  form: {
+    childForm: any
+  }
 };
 
 export type AuthState = {

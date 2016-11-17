@@ -10,5 +10,7 @@ export const INITIAL_STATE: AppState = {
   },
   currentChild: null,
   children: {},
-  form: null
+  form: {
+    childForm: null
+  }
 };

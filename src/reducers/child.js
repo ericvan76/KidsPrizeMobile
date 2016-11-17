@@ -15,18 +15,24 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
     case UPDATE_CHILD:
       {
         const payload: ScoreResult = action.payload;
-        const weeklyScores: WeeklyScoresState = payload.weeklyScores.reduce((prev: WeeklyScoresState, weeklyScore: WeeklyScore) => {
-          const week = moment(Date.parse(weeklyScore.week)).utc().format('YYYY-MM-DD');
-          prev[week] = weeklyScore.tasks.reduce((prev: { [task: string]: { [date: string]: number } }, task: string) => {
-            prev[task] = weeklyScore.scores.filter(s => s.task == task).reduce((prev: { [date: string]: number }, score: Score) => {
-              const date = moment(Date.parse(score.date)).utc().format('YYYY-MM-DD');
-              prev[date] = score.value;
+        const weeklyScores: WeeklyScoresState = payload.weeklyScores
+          .sort((a: WeeklyScore, b: WeeklyScore) => {
+            if (a.week < b.week) return 1;
+            if (a.week > b.week) return -1;
+            return 0;
+          })
+          .reduce((prev: WeeklyScoresState, weeklyScore: WeeklyScore) => {
+            const week = moment(Date.parse(weeklyScore.week)).utc().format('YYYY-MM-DD');
+            prev[week] = weeklyScore.tasks.reduce((prev: { [task: string]: { [date: string]: number } }, task: string) => {
+              prev[task] = weeklyScore.scores.filter(s => s.task == task).reduce((prev: { [date: string]: number }, score: Score) => {
+                const date = moment(Date.parse(score.date)).utc().format('YYYY-MM-DD');
+                prev[date] = score.value;
+                return prev;
+              }, {});
               return prev;
             }, {});
             return prev;
           }, {});
-          return prev;
-        }, {});
         if (!state[payload.child.id]) {
           return update(state, {
             $merge: {
@@ -36,13 +42,20 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
               }
             }
           });
+        } else {
+          const mergedWeeklyScores = update(state[payload.child.id].weeklyScores, { $merge: weeklyScores });
+          const sortedWeeklyScores = Object.keys(mergedWeeklyScores).sort().reverse()
+            .reduce((prev: WeeklyScoresState, week: string) => {
+              prev[week] = mergedWeeklyScores[week];
+              return prev;
+            }, {});
+          return update(state, {
+            [payload.child.id]: {
+              child: { $set: payload.child },
+              weeklyScores: { $set: sortedWeeklyScores }
+            }
+          });
         }
-        return update(state, {
-          [payload.child.id]: {
-            child: { $set: payload.child },
-            weeklyScores: { $merge: weeklyScores }
-          }
-        });
       }
     case DELETE_CHILD:
       {

@@ -10,6 +10,7 @@ import * as uuid from 'uuid';
 import ListItemDivider from '../components/ListItemDivider';
 import { TextInputRoute, PickerRoute, TaskEditorRoute } from '../routes';
 import theme from '../themes';
+import { createChildAsync, updateChildAsync } from '../actions/child';
 
 import type { AppState } from '../types/states.flow';
 
@@ -18,18 +19,18 @@ type OwnProps = {
 };
 
 type StoreProps = {
-  isNew: boolean,
-  initialValues: Child & {
-    tasks: string[]
-  }
+  formValues: Object
 };
 
 type ActionProps = {
+  createChildAsync: (childId: string, name: string, gender: Gender, tasks: string[]) => void,
+  updateChildAsync: (childId: string, name: string, gender: Gender, tasks: string[]) => void
 }
 
 type Props = OwnProps & StoreProps & ActionProps & {
   navigator: Object,
   // redux-form
+  initialValues: Object,
   destroy: (form: string) => void;
 };
 
@@ -45,11 +46,9 @@ class ChildForm extends Component {
 
   static propTypes = {
     ...propTypes, // react-form propTypes
-    isNew: React.PropTypes.bool.isRequired,
-    initialValues: React.PropTypes.object.isRequired,
     childId: React.PropTypes.string,
     navigator: React.PropTypes.object.isRequired,
-    actions: React.PropTypes.object.isRequired
+    formValues: React.PropTypes.object
   }
 
   constructor(props: Props) {
@@ -75,6 +74,12 @@ class ChildForm extends Component {
     this.props.navigator.pop();
   }
   onSave() {
+    const formValues = this.props.formValues;
+    if (this.isNew()) {
+      this.props.createChildAsync(formValues.id, formValues.name, formValues.gender, formValues.tasks);
+    } else {
+      this.props.updateChildAsync(formValues.id, formValues.name, formValues.gender, formValues.tasks);
+    }
     this.markAsDestroyed();
     this.props.navigator.pop();
   }
@@ -90,7 +95,7 @@ class ChildForm extends Component {
           <Button transparent onPress={() => this.onClose()}>
             <Icon name='ios-close' />
           </Button>
-          <Title>{this.props.isNew ? 'Add Child' : 'Edit Child'}</Title>
+          <Title>{this.isNew() ? 'Add Child' : 'Edit Child'}</Title>
           <Button transparent onPress={() => this.onSave()}>Save</Button>
         </Header>
         <Content>
@@ -166,30 +171,30 @@ class ChildForm extends Component {
 
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps): StoreProps => {
-  if (!ownProps.childId) {
+  let initialValues = {
+    id: uuid.v4(),
+    name: '',
+    gender: 'F',
+    totalScore: 0,
+    tasks: ['Task A', 'Task B', 'Task C']
+  };
+  if (ownProps.childId) {
     const topWeek = Object.keys(state.children[ownProps.childId].weeklyScores)[0];
-    return {
-      isNew: false,
-      initialValues: Object.assign({}, state.children[ownProps.childId].child, {
-        tasks: Object.keys(state.children[ownProps.childId].weeklyScores[topWeek].tasks)
-      })
-    };
-  } else {
-    return {
-      isNew: true,
-      initialValues: {
-        id: uuid.v4(),
-        name: '',
-        gender: 'F',
-        totalScore: 0,
-        tasks: ['Task A', 'Task B', 'Task C']
-      }
-    };
+    initialValues = Object.assign({}, state.children[ownProps.childId].child, {
+      tasks: Object.keys(state.children[ownProps.childId].weeklyScores[topWeek])
+    });
   }
+  return {
+    initialValues: initialValues,
+    formValues: state.form.childForm && state.form.childForm.values
+  };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({
+    createChildAsync,
+    updateChildAsync
+  }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

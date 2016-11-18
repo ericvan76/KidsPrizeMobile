@@ -23,11 +23,11 @@ export async function callApi(uri: string, init?: Object = {}): Promise<any> {
 export async function fetchOrThrow(input: string, init?: Object): Promise<any> {
   try {
     const response = await fetch(input, init);
+    const text = await response.text();
     if (response.ok) {
-      const text = await response.text();
       return text ? JSON.parse(text) : null;
     } else {
-      throw new Error(`${response.status} ${response.statusText}`);
+      throw new Error(`${response.status} ${text}`);
     }
   } catch (err) {
     throw err;

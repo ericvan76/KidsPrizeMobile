@@ -12,5 +12,6 @@ export const INITIAL_STATE: AppState = {
   children: {},
   form: {
     childForm: null
-  }
+  },
+  errors: []
 };

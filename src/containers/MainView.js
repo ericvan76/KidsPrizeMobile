@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
+import { Alert } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
 import { bindActionCreators } from 'redux';
@@ -9,6 +10,7 @@ import Drawer from 'react-native-drawer';
 
 import * as authActions from '../actions/auth';
 import * as childActions from '../actions/child';
+import * as failureActions from '../actions/failure';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
 import Spinning from '../components/Spinning';
@@ -21,7 +23,8 @@ type StoreProps = {
   auth: AuthState,
   childList: Child[],
   child: ?Child,
-  weeklyScores: WeeklyScoresState
+  weeklyScores: WeeklyScoresState,
+  errors: Error[]
 }
 
 type ActionProps = {
@@ -32,7 +35,8 @@ type ActionProps = {
   logoutAsync: () => void,
   refreshAsync: (childId: string) => void,
   fetchMoreAsync: (childId: string) => void,
-  setScoreAsync: (childId: string, date: string, task: string, value: number) => void
+  setScoreAsync: (childId: string, date: string, task: string, value: number) => void,
+  resetFailure: () => void
 };
 
 type Props = StoreProps & ActionProps & {
@@ -57,7 +61,8 @@ class MainView extends Component {
     logoutAsync: React.PropTypes.func.isRequired,
     refreshAsync: React.PropTypes.func.isRequired,
     fetchMoreAsync: React.PropTypes.func.isRequired,
-    setScoreAsync: React.PropTypes.func.isRequired
+    setScoreAsync: React.PropTypes.func.isRequired,
+    resetFailure: React.PropTypes.func.isRequired,
   };
 
   constructor(props: Props) {
@@ -119,7 +124,21 @@ class MainView extends Component {
     );
   }
 
+  shouldComponentUpdate(nextProps: Props) {
+    if (this.props.errors.length > 0 && nextProps.errors.length > 0) {
+      return false;
+    } return true;
+  }
+
   componentDidUpdate() {
+    if (this.props.errors.length > 0) {
+      Alert.alert(
+        'Oops!',
+        this.props.errors[0].message,
+        [
+          { text: 'OK', onPress: () => { this.props.resetFailure(); } }
+        ]);
+    }
     if (this.props.auth.initialised) {
       if (!this.props.auth.token) {
         this.props.navigator.push(new LoginRoute());
@@ -166,13 +185,15 @@ const mapStateToProps = (state: AppState): StoreProps => {
     childList: Object.keys(state.children).map(k => state.children[k].child),
     child: state.currentChild ? state.children[state.currentChild].child : null,
     weeklyScores: state.currentChild ? state.children[state.currentChild].weeklyScores : {},
+    errors: state.errors
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
   return bindActionCreators({
     ...authActions,
-    ...childActions
+    ...childActions,
+    ...failureActions
   }, dispatch);
 };
 

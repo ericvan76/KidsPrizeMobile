@@ -6,7 +6,8 @@ export type AppState = {
   children: ChildrenState,
   form: {
     childForm: any
-  }
+  },
+  errors: Error[]
 };
 
 export type AuthState = {

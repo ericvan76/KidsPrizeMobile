@@ -108,24 +108,32 @@ describe('reducers', () => {
     });
 
     it('test delete child', () => {
-      const childId = uuid.v4();
+      const childId1 = uuid.v4();
       const childId2 = uuid.v4();
+      const childId3 = uuid.v4();
       const initState = {
-        [childId]: new ChildStateBuilder()
-          .withChild(childId, 'Child1', 'F')
+        [childId1]: new ChildStateBuilder()
+          .withChild(childId1, 'Child1', 'F')
           .withWeek('2016-11-13', ['A', 'B', 'C'])
           .withScore('2016-11-13', 'B', 1)
           .build(),
         [childId2]: new ChildStateBuilder()
-          .withChild(childId, 'Child2', 'M')
+          .withChild(childId2, 'Child2', 'M')
+          .withWeek('2016-11-13', ['A', 'B', 'C'])
+          .withScore('2016-11-15', 'C', 1)
+          .build(),
+        [childId3]: new ChildStateBuilder()
+          .withChild(childId3, 'Child2', 'M')
           .withWeek('2016-11-13', ['A', 'B', 'C'])
           .withScore('2016-11-15', 'C', 1)
           .build()
       };
-      const state: ChildrenState = reducer(initState, deleteChild(childId));
+      const state: ChildrenState = reducer(initState, deleteChild(childId2));
       expect(state).toBeTruthy();
-      expect(state[childId]).toBeUndefined();
-      expect(state[childId2]).toEqual(initState[childId2]);
+      expect(Object.keys(state).length).toBe(2);
+      expect(state[childId2]).toBeUndefined();
+      expect(state[childId1]).toEqual(initState[childId1]);
+      expect(state[childId3]).toEqual(initState[childId3]);
     });
 
     it('test clear token', () => {

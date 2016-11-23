@@ -8,8 +8,7 @@
   "files.exclude": {
     "**/buck-out": true,
     "**/.buckd": true,
-    "**/.idea": true,
-    "**/typings": true
+    "**/.idea": true
   },
   "javascript.validate.enable": false,
   "typescript.disableAutomaticTypeAcquisition": true

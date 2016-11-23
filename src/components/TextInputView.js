@@ -44,7 +44,7 @@ class TextInputView extends Component {
       <Container theme={theme}>
         <Header>
           <Button transparent onPress={() => this.props.navigator.pop()}>
-            <Icon name='ios-close' />
+            <Icon name='ios-arrow-back' />
           </Button>
           <Title>{this.props.title}</Title>
           <Button transparent onPress={() => this.props.onSubmit(this.state.value)}

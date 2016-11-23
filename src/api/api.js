@@ -16,7 +16,6 @@ export async function callApi(uri: string, init?: Object = {}): Promise<any> {
     init.headers.set('Content-Type', 'application/json');
   }
   init.headers.set('Authorization', `Bearer ${access_token}`);
-
   return await fetchOrThrow(url, init);
 }
 

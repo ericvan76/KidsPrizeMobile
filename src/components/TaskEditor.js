@@ -108,7 +108,8 @@ class TaskEditor extends Component {
     this.onChange(newState);
   }
   onAdd(text: string) {
-    if (text.length > 0 && !this.state.data[text]) {
+    text = text.trim();
+    if (text.length > 0 && !this.state.order.find(x => x.toLowerCase() === text.toLowerCase())) {
       const newState = update(this.state, {
         order: {
           $push: [
@@ -172,6 +173,7 @@ class TaskEditor extends Component {
 const styles = StyleSheet.create({
   listView: {
     flex: 1,
+    backgroundColor: theme.inverseTextColor,
     width: '100%'
   },
   sortRow: {
@@ -190,7 +192,8 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     paddingLeft: '0.5rem',
     paddingRight: '0.5rem',
-    color: theme.textColor
+    color: theme.textColor,
+    fontSize: '1.0rem'
   },
   removeIcon: {
     color: theme.badgeBg

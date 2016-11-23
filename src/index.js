@@ -11,7 +11,7 @@ import theme from './themes';
 
 
 StyleSheet.build({
-  rem: theme.fontSizeBase
+  rem: theme.fontSizeBase * 1.1
 });
 
 

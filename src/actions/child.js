@@ -88,15 +88,16 @@ export function updateChildAsync(childId: string, name: string, gender: Gender, 
   };
 }
 
-export function removeChildAsync(childId: string) {
+export function deleteChildAsync(childId: string) {
   return async (dispatch: Dispatch, getState: Function) => {
     try {
+      await api.deleteChild(childId);
       const state: AppState = getState();
       if (state.currentChild === childId) {
-        const anotherChildId: ?string = Object.keys(state.children).find(id => id !== childId);
-        dispatch(switchChild(anotherChildId));
+        const childIdArray = Object.keys(state.children);
+        const nextChildId: ?string = childIdArray.find((id: string) => { return id !== childId; });
+        dispatch(switchChild(nextChildId));
       }
-      await api.deleteChild(childId);
       dispatch(deleteChild(childId));
     } catch (err) {
       dispatch(failure(err));

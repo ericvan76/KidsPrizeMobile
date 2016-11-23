@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
 
   },
   date: {
-    width: '2.5rem',
+    width: '2.2rem',
     textAlign: 'center',
     fontSize: theme.subTitleFontSize,
     color: theme.subtitleColor
@@ -197,16 +197,17 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   task: {
-    fontSize: '1rem'
+    fontSize: '1rem',
+    margin: 5
   },
   starRow: {
     alignSelf: 'stretch',
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   star: {
-    width: '2.5rem',
-    fontSize: '2.5rem',
+    width: '2.2rem',
+    fontSize: '2.2rem',
     textAlign: 'center'
   }
 });

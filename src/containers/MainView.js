@@ -3,10 +3,9 @@
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
-import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
+import { Drawer, Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Drawer from 'react-native-drawer';
 
 import * as authActions from '../actions/auth';
 import * as childActions from '../actions/child';
@@ -79,7 +78,7 @@ class MainView extends Component {
           this.props.switchChild(c.id);
           this.refs.drawer.close();
         } }>
-          <Icon name={c.gender === 'M' ? 'ios-man' : 'ios-woman'} />
+          <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
           <Text>{c.name}</Text>
         </ListItem>
       );
@@ -88,7 +87,7 @@ class MainView extends Component {
       <Container theme={theme}>
         <Header>
           <Button transparent>
-            <Icon name='ios-person' />
+            <Icon name='ios-contact-outline' />
           </Button>
           <Title>{this.props.auth.user ? this.props.auth.user.name : ''}</Title>
         </Header>
@@ -100,7 +99,7 @@ class MainView extends Component {
               this.props.navigator.push(new EditChildRoute());
               this.refs.drawer.close();
             } }>
-              <Icon name='ios-add' />
+              <Icon name='ios-person-add-outline' />
               <Text>Add Child</Text>
             </ListItem>
             <ListItemDivider title='OTHERS' />
@@ -108,14 +107,14 @@ class MainView extends Component {
               this.props.navigator.push(new SettingsRoute());
               this.refs.drawer.close();
             } }>
-              <Icon name='ios-settings' />
+              <Icon name='ios-settings-outline' />
               <Text>Settings</Text>
             </ListItem>
             <ListItem iconLeft button onPress={() => {
               this.props.logoutAsync();
               this.refs.drawer.close();
             } }>
-              <Icon name='ios-log-out' />
+              <Icon name='ios-exit-outline' />
               <Text>Sign Out</Text>
             </ListItem>
           </List>
@@ -151,19 +150,20 @@ class MainView extends Component {
   }
 
   render() {
+    let mainElem = null;
     if (!this.props.auth.user || !this.props.child) {
-      return <Spinning />;
-    }
-    return (
-      <Drawer ref='drawer' content={this.renderDrawer()} openDrawerOffset={0.2} tapToClose={true}>
+      mainElem = <Spinning />;
+    } else {
+      mainElem = (
         <Container>
           <Header>
             <Button transparent onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu' />
             </Button>
             <Title>{this.props.child.name}</Title>
-            <Button transparent onPress={() => this.refs.listView.scrollToTop()}
-              >Top</Button>
+            <Button transparent onPress={() => this.refs.listView.scrollToTop()}>
+              <Icon name='ios-arrow-dropup' />
+            </Button>
           </Header>
           <Content horizontal={true} scrollEnabled={false}>
             <ScoreListView ref='listView' style={styles.listView}
@@ -174,6 +174,31 @@ class MainView extends Component {
               setScoreAsync={this.props.setScoreAsync} />
           </Content>
         </Container>
+      );
+    }
+    return (
+      <Drawer
+        ref='drawer'
+        type='overlay'
+        content={this.renderDrawer()}
+        tapToClose
+        openDrawerOffset={0.2}
+        styles={{
+          drawer: {
+            backgroundColor: theme.inverseTextColor,
+            shadowColor: theme.shadowColor,
+            shadowOpacity: theme.shadowOpacity,
+            shadowRadius: 0
+          }
+        }}
+        tweenHandler={(ratio: number) => {
+          return {
+            drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
+            main: { opacity: (2 - ratio) / 2 },
+          };
+        } }
+        negotiatePan >
+        {mainElem}
       </Drawer>
     );
   }
@@ -202,11 +227,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%'
   },
-  drawer: {
-    shadowColor: '#000000',
-    shadowOpacity: 0.8,
-    shadowRadius: 3
-  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);

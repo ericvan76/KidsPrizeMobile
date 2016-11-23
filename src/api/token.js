@@ -26,7 +26,7 @@ export async function getAccessToken(): Promise<string> {
   } catch (err) {
     // do nothing
   }
-  storage.clearToken();
+  await storage.clearToken();
   store.dispatch(clearToken());
-  throw new Error('Not logged in.');
+  throw new Error('Failed to get access_token.');
 }

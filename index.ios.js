@@ -7,4 +7,4 @@
 import { AppRegistry } from 'react-native';
 import App from './src';
 
-AppRegistry.registerComponent('KidsPrizeMobile', () => App);
+AppRegistry.registerComponent('KidsPrize', () => App);

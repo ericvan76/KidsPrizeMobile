@@ -1,4 +1,4 @@
-rootProject.name = 'KidsPrizeMobile'
+rootProject.name = 'KidsPrize'
 
 include ':app'
 include ':react-native-vector-icons'

@@ -38,9 +38,9 @@ npm-debug.log
 buck-out/
 \.buckd/
 android/app/libs
-android/keystores/debug.keystore
+*.keystore
 
-
+# my settings
 .vscode/launchReactNative.js
 .vscode/.react/
 .vscode/typings/

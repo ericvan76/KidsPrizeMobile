@@ -27,7 +27,6 @@ type StoreProps = {
 }
 
 type ActionProps = {
-  initialiseAsync: () => void,
   switchChild: (childId: string) => void,
   getUserInfoAsync: () => void,
   listChildrenAsync: () => void,
@@ -53,7 +52,6 @@ class MainView extends Component {
     child: React.PropTypes.object,
     weeklyScores: React.PropTypes.object,
     // actions
-    initialiseAsync: React.PropTypes.func.isRequired,
     switchChild: React.PropTypes.func.isRequired,
     getUserInfoAsync: React.PropTypes.func.isRequired,
     listChildrenAsync: React.PropTypes.func.isRequired,
@@ -66,9 +64,6 @@ class MainView extends Component {
 
   constructor(props: Props) {
     super(props);
-    if (!this.props.auth.initialised) {
-      this.props.initialiseAsync();
-    }
   }
 
   renderDrawer() {

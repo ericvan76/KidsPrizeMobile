@@ -3,6 +3,7 @@
 import oidc from '../api/oidc';
 import * as api from '../api/api';
 import * as storage from '../api/storage';
+import { failure } from './failure';
 
 import type { AppState } from '../types/states.flow';
 import type { Action, InitialisedPayload } from '../types/actions.flow';
@@ -45,40 +46,56 @@ export function setUser(user: User) {
 
 export function initialiseAsync() {
   return async (dispatch: Dispatch) => {
-    const discovery = await oidc.discover();
-    const token = await storage.loadToken();
-    dispatch(initialised(discovery, token));
+    try {
+      const discovery = await oidc.discover();
+      const token = await storage.loadToken();
+      dispatch(initialised(discovery, token));
+    } catch (err) {
+      dispatch(failure(err));
+    }
   };
 }
 
 export function requestTokenAsync(code: string) {
   return async (dispatch: Dispatch) => {
-    const token = await oidc.requestToken(code);
-    await storage.saveToken(token);
-    dispatch(setToken(token));
+    try {
+      const token = await oidc.requestToken(code);
+      await storage.saveToken(token);
+      dispatch(setToken(token));
+    } catch (err) {
+      dispatch(failure(err));
+    }
   };
 }
 
 
 export function logoutAsync() {
   return async (dispatch: Dispatch, getState: Function) => {
-    const state: AppState = getState();
-    if (state.auth.token) {
-      const token: Token = state.auth.token;
-      await storage.clearToken();
-      await oidc.logout(token);
-      dispatch(clearToken());
+    try {
+      const state: AppState = getState();
+      if (state.auth.token) {
+        const token: Token = state.auth.token;
+        await storage.clearToken();
+        await oidc.logout(token);
+        dispatch(clearToken());
+      }
+    } catch (err) {
+      dispatch(failure(err));
     }
   };
 }
 
 export function getUserInfoAsync() {
   return async (dispatch: Dispatch) => {
-    // set current timezone before get user
-    await api.setPreference({
-      timeZoneOffset: new Date().getTimezoneOffset()
-    });
-    const user = await oidc.getUserInfo();
-    dispatch(setUser(user));
+    try {
+      // set current timezone before get user
+      await api.setPreference({
+        timeZoneOffset: new Date().getTimezoneOffset()
+      });
+      const user = await oidc.getUserInfo();
+      dispatch(setUser(user));
+    } catch (err) {
+      dispatch(failure(err));
+    }
   };
 }

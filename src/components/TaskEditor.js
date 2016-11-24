@@ -150,9 +150,7 @@ class TaskEditor extends Component {
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent onPress={() => this.props.navigator.pop()}>
-            <Icon name='ios-arrow-back' />
-          </Button>
+          <Button transparent onPress={() => this.props.navigator.pop()}>Done</Button>
           <Title>Task List</Title>
           <Button transparent onPress={() => this.onAddPress()}>Add</Button>
         </Header>

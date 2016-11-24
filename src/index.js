@@ -5,6 +5,7 @@ import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 import StyleSheet from 'react-native-extended-stylesheet';
 
+import { initialiseAsync } from './actions/auth';
 import store from './store';
 import { LoginRoute, MainViewRoute } from './routes';
 import theme from './themes';
@@ -18,6 +19,7 @@ StyleSheet.build({
 class App extends Component {
   constructor(props: Object) {
     super(props);
+    store.dispatch(initialiseAsync());
   }
 
   renderScene(route: Object, navigator: Object) {

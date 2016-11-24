@@ -117,9 +117,7 @@ class ChildForm extends Component {
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent onPress={() => this.onClose()}>
-            <Icon name='ios-arrow-back' />
-          </Button>
+          <Button transparent onPress={() => this.onClose()}>Cancel</Button>
           <Title>{this.isNew() ? 'Add Child' : 'Edit Child'}</Title>
           <Button transparent disabled={!this.props.dirty || !this.props.valid} onPress={() => this.onSubmit()}>Save</Button>
         </Header>

@@ -23,6 +23,6 @@ const rootReducer = combineReducers({
   errors: failureReducer
 });
 
-const store: Store<AppState, Action<any, any>> = createStore(rootReducer, INITIAL_STATE, applyMiddleware(thunk));
+const store: Store<AppState, Function | Action<any, any>> = createStore(rootReducer, INITIAL_STATE, applyMiddleware(thunk));
 
 export default store;

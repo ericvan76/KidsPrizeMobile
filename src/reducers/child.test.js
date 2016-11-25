@@ -4,14 +4,21 @@ import moment from 'moment';
 import uuid from 'uuid';
 
 import { clearToken } from '../actions/auth';
-import { updateChild, deleteChild, updateScore } from '../actions/child';
+import { noChild, updateChild, deleteChild, updateScore } from '../actions/child';
 import reducer from './child';
 import type { ChildState, ChildrenState, WeeklySectionState, WeeklyScoresState } from '../types/states.flow';
 
 describe('reducers', () => {
   describe('child', () => {
+    it('test no child', () => {
+      const initState = { isNotLoaded: true };
+      const state: ChildrenState = reducer(initState, noChild());
+      expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
+    });
+
     it('test add 1st child', () => {
-      const initState = {};
+      const initState = { isNotLoaded: true };
       const childId = uuid.v4();
       const scoreResult = new ScoreResultBuilder()
         .withChild(childId, 'Child1', 'F')
@@ -19,6 +26,7 @@ describe('reducers', () => {
         .build();
       const state: ChildrenState = reducer(initState, updateChild(scoreResult));
       expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
       expect(state[childId]).toBeTruthy();
       expect(state[childId].child).toEqual(scoreResult.child);
       const expectWeek = state[childId].weeklyScores['2016-11-13'];
@@ -45,6 +53,7 @@ describe('reducers', () => {
         .build();
       const state: ChildrenState = reducer(initState, updateChild(scoreResult));
       expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
       expect(state[childId]).toBeTruthy();
       expect(state[childId].child).toEqual(initState[childId].child);
       let expectWeek = state[childId].weeklyScores['2016-11-13'];
@@ -77,6 +86,7 @@ describe('reducers', () => {
         .build();
       let state: ChildrenState = reducer(initState, updateChild(scoreResult));
       expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
       expect(state[childId]).toBeTruthy();
       expect(state[childId].child).toEqual(scoreResult.child);
       const expectWeek = state[childId].weeklyScores['2016-11-13'];
@@ -95,12 +105,15 @@ describe('reducers', () => {
       };
       let state: ChildrenState = reducer(initState, updateScore(childId, '2016-11-14', 'C', 1));
       expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
       expect(state[childId]).toBeTruthy();
       expect(state[childId].child.totalScore).toBe(2);
       let expectWeek = state[childId].weeklyScores['2016-11-13'];
       expect(expectWeek['C']['2016-11-14']).toBe(1);
 
       state = reducer(state, updateScore(childId, '2016-11-13', 'B', 0));
+      expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
       expect(state[childId].child.totalScore).toBe(1);
       expect(state[childId].child).toEqual(initState[childId].child);
       expectWeek = state[childId].weeklyScores['2016-11-13'];
@@ -130,6 +143,7 @@ describe('reducers', () => {
       };
       const state: ChildrenState = reducer(initState, deleteChild(childId2));
       expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
       expect(Object.keys(state).length).toBe(2);
       expect(state[childId2]).toBeUndefined();
       expect(state[childId1]).toEqual(initState[childId1]);
@@ -147,7 +161,7 @@ describe('reducers', () => {
       };
       const state: ChildrenState = reducer(initState, clearToken());
       expect(state).toBeTruthy();
-      expect(state).toEqual({});
+      expect(state).toEqual({ isNotLoaded: true });
     });
   });
 });

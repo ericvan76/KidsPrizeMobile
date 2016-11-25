@@ -8,6 +8,7 @@ import type { Action, UpdateScorePayload } from '../types/actions.flow';
 
 const WEEKS_TO_LOAD: number = 4;
 
+export const NO_CHILD: string = 'NO_CHILD';
 export const SWITCH_CHILD: string = 'SWITCH_CHILD';
 export const DELETE_CHILD: string = 'DELETE_CHILD';
 export const UPDATE_CHILD: string = 'UPDATE_CHILD';
@@ -15,6 +16,13 @@ export const UPDATE_SCORE: string = 'UPDATE_SCORE';
 
 // to fix formatter
 type nullableString = ?string;
+
+export function noChild(): Action<'NO_CHILD', void> {
+  return {
+    type: 'NO_CHILD',
+    payload: undefined
+  };
+}
 
 export function switchChild(childId: ?string): Action<'SWITCH_CHILD', nullableString> {
   return {
@@ -37,7 +45,6 @@ export function updateChild(scoreResult: ScoreResult): Action<'UPDATE_CHILD', Sc
   };
 }
 
-
 export function updateScore(childId: string, date: string, task: string, value: number): Action<'UPDATE_SCORE', UpdateScorePayload> {
   return {
     type: 'UPDATE_SCORE',
@@ -56,6 +63,10 @@ export function listChildrenAsync() {
   return async (dispatch: Dispatch) => {
     try {
       const children: Child[] = await api.listChildren();
+      if (children.length === 0) {
+        dispatch(noChild());
+        return;
+      }
       children.forEach((child: Child) => {
         dispatch(refreshAsync(child.id));
       });
@@ -96,7 +107,7 @@ export function deleteChildAsync(childId: string) {
       if (state.currentChild === childId) {
         const childIdArray = Object.keys(state.children);
         const nextChildId: ?string = childIdArray.find((id: string) => { return id !== childId; });
-        dispatch(switchChild(nextChildId));
+        dispatch(switchChild(nextChildId || null));
       }
       dispatch(deleteChild(childId));
     } catch (err) {

@@ -20,7 +20,7 @@ import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flo
 
 type StoreProps = {
   auth: AuthState,
-  childList: Child[],
+  childList: ?Array<Child>,
   child: ?Child,
   weeklyScores: WeeklyScoresState,
   errors: Error[]
@@ -48,7 +48,7 @@ class MainView extends Component {
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
     auth: React.PropTypes.object.isRequired,
-    childList: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+    childList: React.PropTypes.arrayOf(React.PropTypes.object),
     child: React.PropTypes.object,
     weeklyScores: React.PropTypes.object,
     // actions
@@ -67,17 +67,21 @@ class MainView extends Component {
   }
 
   renderDrawer() {
-    const childrenRows = this.props.childList.map((c: Child) => {
-      return (
-        <ListItem key={c.id} iconLeft button onPress={() => {
-          this.props.switchChild(c.id);
-          this.refs.drawer.close();
-        } }>
-          <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
-          <Text>{c.name}</Text>
-        </ListItem>
-      );
-    });
+    let childrenRows = [];
+    if (this.props.childList) {
+      childrenRows = this.props.childList.map((c: Child) => {
+        return (
+          <ListItem key={c.id} iconLeft button onPress={() => {
+            this.props.switchChild(c.id);
+            this.refs.drawer.close();
+          } }>
+            <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
+            <Text>{c.name}</Text>
+            <Text note style={theme.listNote}>{c.totalScore}</Text>
+          </ListItem>
+        );
+      });
+    }
     return (
       <Container theme={theme}>
         <Header>
@@ -121,7 +125,8 @@ class MainView extends Component {
   shouldComponentUpdate(nextProps: Props) {
     if (this.props.errors.length > 0 && nextProps.errors.length > 0) {
       return false;
-    } return true;
+    }
+    return true;
   }
 
   componentDidUpdate() {
@@ -138,17 +143,38 @@ class MainView extends Component {
         this.props.navigator.push(new LoginRoute());
       } else if (!this.props.auth.user) {
         this.props.getUserInfoAsync();
-      } else if (!this.props.child) {
+      } else if (!this.props.childList) {
         this.props.listChildrenAsync();
+      } else {
+        if (this.props.childList.length === 0) {
+          this.refs.drawer.open();
+        } else {
+          this.refs.drawer.close();
+        }
       }
     }
   }
 
   render() {
     let mainElem = null;
-    if (!this.props.auth.user || !this.props.child) {
+    if (!this.props.auth.user || !this.props.childList) {
       mainElem = <Spinning />;
-    } else {
+    }
+    else if (!this.props.child) {
+      mainElem = (
+        <Container>
+          <Header>
+            <Button transparent onPress={() => this.refs.drawer.open()}>
+              <Icon name='ios-menu' />
+            </Button>
+            <Title></Title>
+          </Header>
+          <Content horizontal={true} scrollEnabled={false}>
+          </Content>
+        </Container>
+      );
+    }
+    else {
       mainElem = (
         <Container>
           <Header>
@@ -192,7 +218,7 @@ class MainView extends Component {
             main: { opacity: (2 - ratio) / 2 },
           };
         } }
-        negotiatePan >
+        negotiatePan>
         {mainElem}
       </Drawer>
     );
@@ -202,7 +228,7 @@ class MainView extends Component {
 const mapStateToProps = (state: AppState): StoreProps => {
   return {
     auth: state.auth,
-    childList: Object.keys(state.children).map(k => state.children[k].child),
+    childList: state.children.isNotLoaded ? null : Object.keys(state.children).map(k => state.children[k].child),
     child: state.currentChild ? state.children[state.currentChild].child : null,
     weeklyScores: state.currentChild ? state.children[state.currentChild].weeklyScores : {},
     errors: state.errors

@@ -78,13 +78,16 @@ class ChildForm extends Component {
   }
   onClose() {
     this.markAsDestroyed();
-    this.props.navigator.pop();
+    this.props.navigator.popToTop();
   }
 
   onSubmit() {
+
     this.markAsDestroyed();
-    this.props.submit();
-    this.props.navigator.pop();
+    if (this.props.dirty) {
+      this.props.submit();
+    }
+    this.props.navigator.popToTop();
   }
 
   onDelete() {
@@ -96,7 +99,7 @@ class ChildForm extends Component {
           text: 'Delete', onPress: () => {
             this.markAsDestroyed();
             this.props.deleteChildAsync(this.props.childId);
-            this.props.navigator.pop();
+            this.props.navigator.popToTop();
           }
         },
         {
@@ -119,7 +122,7 @@ class ChildForm extends Component {
         <Header>
           <Button transparent onPress={() => this.onClose()}>Cancel</Button>
           <Title>{this.isNew() ? 'Add Child' : 'Edit Child'}</Title>
-          <Button transparent disabled={!this.props.dirty || !this.props.valid} onPress={() => this.onSubmit()}>Save</Button>
+          <Button transparent disabled={!this.props.valid} onPress={() => this.onSubmit()}>Save</Button>
         </Header>
         <Content>
           <List>

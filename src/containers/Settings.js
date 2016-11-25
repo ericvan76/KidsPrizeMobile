@@ -34,10 +34,15 @@ class Settings extends Component {
   editChild(childId: string) {
     this.props.navigator.push(new EditChildRoute({ childId: childId }));
   }
+
   render() {
     const childrenRows = this.props.children.map((c: Child) => {
       return (
-        <ListItem iconLeft iconRight onPress={() => this.editChild(c.id)} key={c.id}>
+        <ListItem iconLeft iconRight
+          key={c.id}
+          onPress={() => {
+            this.editChild(c.id);
+          } } >
           <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
           <Text>{c.name}</Text>
           <Icon style={theme.iconRight} name='ios-arrow-forward' />
@@ -65,7 +70,7 @@ class Settings extends Component {
 
 const mapStateToProps = (state: AppState): StoreProps => {
   return {
-    children: Object.keys(state.children).map(id => state.children[id].child)
+    children: state.children.isNotLoaded ? [] : Object.keys(state.children).map(id => state.children[id].child)
   };
 };
 

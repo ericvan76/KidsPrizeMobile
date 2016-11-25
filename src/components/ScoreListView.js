@@ -13,7 +13,6 @@ import theme from '../themes';
 import type { WeeklyScoresState, WeeklySectionState, TaskRowState } from '../types/states.flow';
 
 function createDataSource() {
-
   return new ListView.DataSource({
     sectionHeaderHasChanged: () => {
       return false;
@@ -29,8 +28,6 @@ function rowHash(row: TaskRowState): string {
     return `${prev}|${k}:${row[k]}`;
   }, '');
 }
-
-
 
 type Props = {
   child: Child,
@@ -180,8 +177,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: theme.listDividerBg,
     paddingLeft: 5,
-    paddingRight: 5
-
+    paddingRight: 5,
+    paddingTop: 5
   },
   date: {
     width: '2.2rem',

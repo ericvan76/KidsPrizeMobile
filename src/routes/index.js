@@ -10,6 +10,10 @@ import TaskEditor from '../components/TaskEditor';
 import TextInputView from '../components/TextInputView';
 import PickerView from '../components/PickerView';
 
+export type Route = {
+  renderScene: (navigator: Object) => any
+}
+
 export class LoginRoute {
   props: any;
   constructor(props: any) {

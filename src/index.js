@@ -40,8 +40,7 @@ class App extends Component {
         <Navigator
           initialRoute={route}
           renderScene={this.renderScene.bind(this)}
-          configureScene={this.configureScene.bind(this)}
-          />
+          configureScene={this.configureScene.bind(this)} />
       </Provider>
     );
   }

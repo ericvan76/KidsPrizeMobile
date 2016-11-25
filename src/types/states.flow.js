@@ -18,6 +18,7 @@ export type AuthState = {
 };
 
 export type ChildrenState = {
+  isNotLoaded?: boolean,
   [id: string]: ChildState
 };
 

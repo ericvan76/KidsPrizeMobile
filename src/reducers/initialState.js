@@ -9,7 +9,9 @@ export const INITIAL_STATE: AppState = {
     user: null
   },
   currentChild: null,
-  children: {},
+  children: {
+    isNotLoaded: true
+  },
   form: {
     childForm: null
   },

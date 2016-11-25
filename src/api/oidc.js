@@ -32,7 +32,7 @@ class OpenIdClient {
       redirect_uri: this.config.redirect_uri,
       state: Math.floor(Math.random() * 1000000)
     })}`;
-    return `${this.config.authority}/account/External?${url.encodeQueryString({
+    return `${this.discovery.issuer}/account/External?${url.encodeQueryString({
       provider: provider,
       returnUrl: returnUrl
     })}`;
@@ -42,7 +42,8 @@ class OpenIdClient {
     const token: Token = await fetchOrThrow(this.discovery.token_endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cache-Control': 'no-cache'
       },
       body: url.encodeQueryString({
         grant_type: 'authorization_code',
@@ -60,7 +61,8 @@ class OpenIdClient {
     const token: Token = await fetchOrThrow(this.discovery.token_endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cache-Control': 'no-cache'
       },
       body: url.encodeQueryString({
         grant_type: 'refresh_token',
@@ -87,7 +89,8 @@ class OpenIdClient {
     const revokeToken = fetchOrThrow(this.discovery.revocation_endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cache-Control': 'no-cache'
       },
       body: url.encodeQueryString({
         token: token.refresh_token,
@@ -381,10 +384,10 @@ class OpenIdClient {
 <body style="margin:40px;margin-top:60px;text-align:center">
   <br/>
   <br/>
-  <a class="btn btn-block btn-social btn-lg btn-facebook" href="${this.externalLoginUrl('Facebook')}">
+  <a class="btn btn-block btn-social btn-facebook" href="${this.externalLoginUrl('Facebook')}">
     <span class="fa fa-facebook"></span> Sign in with Facebook
   </a>
-  <a class="btn btn-block btn-social btn-lg btn-google" href="${this.externalLoginUrl('Google')}">
+  <a class="btn btn-block btn-social btn-google" href="${this.externalLoginUrl('Google')}">
     <span class="fa fa-google"></span> Sign in with Google
   </a>
 </body>

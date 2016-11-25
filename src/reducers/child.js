@@ -2,7 +2,7 @@
 
 import update from 'react-addons-update';
 import moment from 'moment';
-import { UPDATE_CHILD, DELETE_CHILD, UPDATE_SCORE } from '../actions/child';
+import { NO_CHILD, UPDATE_CHILD, DELETE_CHILD, UPDATE_SCORE } from '../actions/child';
 import { CLEAR_TOKEN } from '../actions/auth';
 
 import { INITIAL_STATE } from './initialState';
@@ -12,6 +12,9 @@ import type { Action, UpdateScorePayload } from '../types/actions.flow';
 
 export default function (state: ChildrenState = INITIAL_STATE.children, action: Action<any, any>) {
   switch (action.type) {
+    case NO_CHILD: {
+      return {};
+    }
     case UPDATE_CHILD:
       {
         const payload: ScoreResult = action.payload;
@@ -33,7 +36,16 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
             }, {});
             return prev;
           }, {});
-        if (!state[payload.child.id]) {
+
+        if (state.isNotLoaded) {
+          return {
+            [payload.child.id]: {
+              child: payload.child,
+              weeklyScores: weeklyScores
+            }
+          };
+        }
+        else if (!state[payload.child.id]) {
           return update(state, {
             $merge: {
               [payload.child.id]: {
@@ -60,10 +72,11 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
     case DELETE_CHILD:
       {
         const childId: string = action.payload;
-        return Object.keys(state).filter(key => key !== childId).reduce((result: ChildrenState, key: string) => {
+        const newState: ChildrenState = Object.keys(state).filter(key => key !== childId).reduce((result: ChildrenState, key: string) => {
           result[key] = state[key];
           return result;
         }, {});
+        return newState;
       }
     case UPDATE_SCORE:
       {
@@ -85,7 +98,7 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
       }
     case CLEAR_TOKEN:
       {
-        return {};
+        return INITIAL_STATE.children;
       }
     default:
       return state;

@@ -141,12 +141,10 @@ class MainView extends Component {
         this.props.getUserInfoAsync();
       } else if (!this.props.childList) {
         this.props.listChildrenAsync();
-      } else {
-        if (this.props.childList.length === 0) {
-          this.refs.drawer.open();
-        } else {
-          this.refs.drawer.close();
-        }
+      } else if (this.props.childList.length === 0) {
+        this.refs.drawer.open();
+      } else if (this.props.child && Object.keys(this.props.weeklyScores).length === 0) {
+        this.props.refreshAsync(this.props.child.id);
       }
     }
   }
@@ -155,7 +153,7 @@ class MainView extends Component {
     let mainElem = null;
     if (!this.props.auth.user || !this.props.childList) {
       mainElem = <Spinning />;
-    } else if (!this.props.child) {
+    } else if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
       mainElem = (
         <Container theme={theme}>
           <Header>

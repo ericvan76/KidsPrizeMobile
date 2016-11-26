@@ -4,7 +4,7 @@ import moment from 'moment';
 import uuid from 'uuid';
 
 import { clearToken } from '../actions/auth';
-import { noChild, updateChild, deleteChild, updateScore } from '../actions/child';
+import { addChildren, updateChild, deleteChild, updateScore } from '../actions/child';
 import reducer from './child';
 import type { ChildState, ChildrenState, WeeklySectionState, WeeklyScoresState } from '../types/states.flow';
 
@@ -12,9 +12,20 @@ describe('reducers', () => {
   describe('child', () => {
     it('test no child', () => {
       const initState = { isNotLoaded: true };
-      const state: ChildrenState = reducer(initState, noChild());
+      const state: ChildrenState = reducer(initState, addChildren([]));
       expect(state).toBeTruthy();
       expect(state.isNotLoaded).toBeUndefined();
+    });
+
+    it('test add children', () => {
+      const initState = { isNotLoaded: true };
+      const state: ChildrenState = reducer(initState, addChildren([
+        { id: uuid.v4(), name: 'C1', gender: 'M', totalScore: 0 },
+        { id: uuid.v4(), name: 'C2', gender: 'F', totalScore: 0 },
+      ]));
+      expect(state).toBeTruthy();
+      expect(state.isNotLoaded).toBeUndefined();
+      expect(Object.keys(state).length).toBe(2);
     });
 
     it('test add 1st child', () => {

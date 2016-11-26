@@ -8,7 +8,7 @@ import type { Action, UpdateScorePayload } from '../types/actions.flow';
 
 const WEEKS_TO_LOAD: number = 4;
 
-export const NO_CHILD: string = 'NO_CHILD';
+export const ADD_CHILDREN: string = 'ADD_CHILDREN';
 export const SWITCH_CHILD: string = 'SWITCH_CHILD';
 export const DELETE_CHILD: string = 'DELETE_CHILD';
 export const UPDATE_CHILD: string = 'UPDATE_CHILD';
@@ -17,10 +17,10 @@ export const UPDATE_SCORE: string = 'UPDATE_SCORE';
 // to fix formatter
 type nullableString = ?string;
 
-export function noChild(): Action<'NO_CHILD', void> {
+export function addChildren(children: Child[]): Action<'ADD_CHILDREN', Child[]> {
   return {
-    type: 'NO_CHILD',
-    payload: undefined
+    type: 'ADD_CHILDREN',
+    payload: children
   };
 }
 
@@ -63,13 +63,7 @@ export function listChildrenAsync() {
   return async (dispatch: Dispatch) => {
     try {
       const children: Child[] = await api.listChildren();
-      if (children.length === 0) {
-        dispatch(noChild());
-        return;
-      }
-      children.forEach((child: Child) => {
-        dispatch(refreshAsync(child.id));
-      });
+      dispatch(addChildren(children));
     } catch (err) {
       dispatch(failure(err));
     }

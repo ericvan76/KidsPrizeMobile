@@ -2,7 +2,7 @@
 
 import update from 'react-addons-update';
 import moment from 'moment';
-import { NO_CHILD, UPDATE_CHILD, DELETE_CHILD, UPDATE_SCORE } from '../actions/child';
+import { ADD_CHILDREN, UPDATE_CHILD, DELETE_CHILD, UPDATE_SCORE } from '../actions/child';
 import { CLEAR_TOKEN } from '../actions/auth';
 
 import { INITIAL_STATE } from './initialState';
@@ -12,8 +12,15 @@ import type { Action, UpdateScorePayload } from '../types/actions.flow';
 
 export default function (state: ChildrenState = INITIAL_STATE.children, action: Action<any, any>) {
   switch (action.type) {
-    case NO_CHILD: {
-      return {};
+    case ADD_CHILDREN: {
+      const children: Child[] = action.payload;
+      return children.reduce((prev: ChildrenState, child: Child) => {
+        prev[child.id] = {
+          child: child,
+          weeklyScores: {}
+        };
+        return prev;
+      }, {});
     }
     case UPDATE_CHILD:
       {

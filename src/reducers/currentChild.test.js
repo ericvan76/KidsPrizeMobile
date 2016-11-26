@@ -3,13 +3,22 @@
 import * as uuid from 'uuid';
 
 import { clearToken } from '../actions/auth';
-import { switchChild, deleteChild } from '../actions/child';
+import { addChildren, switchChild, deleteChild } from '../actions/child';
 import reducer from './currentChild';
 
 
 describe('reducers', () => {
   describe('currentChild', () => {
-
+    it('test add children', () => {
+      const childId = uuid.v4();
+      const initState = null;
+      const state: ?string = reducer(initState, addChildren([
+        { id: childId, name: 'C1', gender: 'M', totalScore: 0 },
+        { id: uuid.v4(), name: 'C2', gender: 'F', totalScore: 0 },
+      ]));
+      expect(state).toBeTruthy();
+      expect(state).toBe(childId);
+    });
     it('test switch child', () => {
       const initState = uuid.v4();
       const newChild = uuid.v4();

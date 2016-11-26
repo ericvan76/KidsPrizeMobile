@@ -50,7 +50,7 @@ class Row extends Component {
 type Props = {
   navigator: Object,
   value: string[],
-  onChange: (values: string[]) => void
+  onSubmit: (values: string[]) => void
 };
 
 type State = {
@@ -66,7 +66,7 @@ class TaskEditor extends Component {
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
     value: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    onChange: React.PropTypes.func.isRequired
+    onSubmit: React.PropTypes.func.isRequired
   }
 
   constructor(props: Props) {
@@ -89,7 +89,6 @@ class TaskEditor extends Component {
       }
     });
     this.setState(newState);
-    this.onChange(newState);
   }
   onRemove(row: string) {
     const newState = update(this.state, {
@@ -105,7 +104,6 @@ class TaskEditor extends Component {
       }
     });
     this.setState(newState);
-    this.onChange(newState);
   }
   onAdd(text: string) {
     text = text.trim();
@@ -123,12 +121,7 @@ class TaskEditor extends Component {
         }
       });
       this.setState(newState);
-      this.onChange(newState);
     }
-  }
-  onChange(state: State) {
-    const value = state.order.map(i => state.data[i]);
-    this.props.onChange(value);
   }
   onAddPress() {
     this.props.navigator.push(
@@ -150,11 +143,15 @@ class TaskEditor extends Component {
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent onPress={() => this.onAddPress()}>Add</Button>
+          <Button transparent onPress={() => this.props.navigator.pop()}>Cancel</Button>
           <Title>Task List</Title>
-          <Button transparent onPress={() => this.props.navigator.pop()}>Done</Button>
+          <Button transparent onPress={() => this.onAddPress()}><Icon name='ios-add-circle-outline' /></Button>
+          <Button transparent onPress={() => {
+            const value = this.state.order.map(i => this.state.data[i]);
+            this.props.onSubmit(value);
+          } }>Done</Button>
         </Header>
-        <Content horizontal={true} scrollEnabled={false}>
+        <Content horizontal={true} scrollEnabled={false} >
           <SortableListView
             style={styles.listView}
             sortRowStyle={styles.sortRow}

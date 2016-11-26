@@ -131,7 +131,7 @@ class ChildForm extends Component {
               return (
                 <ListItem iconLeft onPress={() => this.props.navigator.push(
                   new TextInputRoute({
-                    title: 'Child Name',
+                    title: 'Name',
                     placeholder: 'Type child name here',
                     autoCapitalize: 'words',
                     defaultValue: props.input.value,
@@ -142,17 +142,17 @@ class ChildForm extends Component {
                   }))
                 }>
                   <Icon name='ios-contact-outline' />
-                  <Text>Child Name</Text>
+                  <Text>Name</Text>
                   <Text note style={theme.listNote}>{props.meta.valid ? props.input.value : '<Name>'}</Text>
                 </ListItem>
               );
             } } />
             <Field name='gender' component={(props: Field.Props) => {
-              const items = { M: 'Male', F: 'Female' };
+              const items = { M: 'Boy', F: 'Girl' };
               return (
                 <ListItem iconLeft onPress={() => this.props.navigator.push(
                   new PickerRoute({
-                    title: 'Select Gender',
+                    title: 'Gender',
                     items: items,
                     defaultValue: props.input.value,
                     onSubmit: (v: Gender) => {
@@ -173,7 +173,10 @@ class ChildForm extends Component {
                 <ListItem iconLeft onPress={() => this.props.navigator.push(
                   new TaskEditorRoute({
                     value: props.input.value,
-                    onChange: props.input.onChange
+                    onSubmit: (v: string[]) => {
+                      props.input.onChange(v);
+                      this.props.navigator.pop();
+                    }
                   }))
                 }>
                   <Icon name='ios-copy-outline' />
@@ -194,8 +197,8 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps): StoreProps => {
   let initialValues = {
     id: uuid.v4(),
     name: '',
-    gender: 'F',
-    tasks: ['Task A', 'Task B', 'Task C']
+    gender: 'M',
+    tasks: ['Task 1', 'Task 2', 'Task 3']
   };
   if (ownProps.childId && state.children[ownProps.childId]) {
     const topWeek = Object.keys(state.children[ownProps.childId].weeklyScores)[0];

@@ -13,7 +13,7 @@ import * as failureActions from '../actions/failure';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
 import Spinning from '../components/Spinning';
-import { EditChildRoute, SettingsRoute, LoginRoute } from '../routes';
+import { EditChildRoute, LoginRoute } from '../routes';
 import theme from '../themes';
 
 import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
@@ -71,10 +71,11 @@ class MainView extends Component {
     if (this.props.childList) {
       childrenRows = this.props.childList.map((c: Child) => {
         return (
-          <ListItem key={c.id} iconLeft button onPress={() => {
-            this.props.switchChild(c.id);
-            this.refs.drawer.close();
-          } }>
+          <ListItem key={c.id} iconLeft button
+            onPress={() => {
+              this.props.switchChild(c.id);
+              this.refs.drawer.close();
+            } }>
             <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
             <Text>{c.name}</Text>
             <Text note style={theme.listNote}>{c.totalScore}</Text>
@@ -94,25 +95,20 @@ class MainView extends Component {
           <List>
             <ListItemDivider title='CHILDREN' />
             {childrenRows}
-            <ListItem iconLeft button onPress={() => {
-              this.props.navigator.push(new EditChildRoute());
-              this.refs.drawer.close();
-            } }>
+            <ListItem iconLeft button
+              onPress={() => {
+                this.props.navigator.push(new EditChildRoute());
+                this.refs.drawer.close();
+              } }>
               <Icon name='ios-person-add-outline' />
               <Text>Add Child</Text>
             </ListItem>
             <ListItemDivider title='OTHERS' />
-            <ListItem iconLeft button onPress={() => {
-              this.props.navigator.push(new SettingsRoute());
-              this.refs.drawer.close();
-            } }>
-              <Icon name='ios-settings-outline' />
-              <Text>Settings</Text>
-            </ListItem>
-            <ListItem iconLeft button onPress={() => {
-              this.props.logoutAsync();
-              this.refs.drawer.close();
-            } }>
+            <ListItem iconLeft button
+              onPress={() => {
+                this.props.logoutAsync();
+                this.refs.drawer.close();
+              } }>
               <Icon name='ios-exit-outline' />
               <Text>Sign Out</Text>
             </ListItem>
@@ -159,10 +155,9 @@ class MainView extends Component {
     let mainElem = null;
     if (!this.props.auth.user || !this.props.childList) {
       mainElem = <Spinning />;
-    }
-    else if (!this.props.child) {
+    } else if (!this.props.child) {
       mainElem = (
-        <Container>
+        <Container theme={theme}>
           <Header>
             <Button transparent onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu' />
@@ -173,17 +168,17 @@ class MainView extends Component {
           </Content>
         </Container>
       );
-    }
-    else {
+    } else {
       mainElem = (
-        <Container>
-          <Header>
+        <Container theme={theme}>
+          <Header onPress={() => this.refs.listView.scrollToTop()} >
             <Button transparent onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu' />
             </Button>
             <Title>{this.props.child.name}</Title>
-            <Button transparent onPress={() => this.refs.listView.scrollToTop()}>
-              <Icon name='ios-arrow-dropup' />
+            <Button transparent
+              onPress={() => this.props.navigator.push(new EditChildRoute({ childId: this.props.child.id }))}>
+              <Icon name='ios-settings-outline' />
             </Button>
           </Header>
           <Content horizontal={true} scrollEnabled={false}>

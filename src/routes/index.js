@@ -4,7 +4,6 @@ import React from 'react';
 
 import LoginView from '../containers/LoginView';
 import MainView from '../containers/MainView';
-import Settings from '../containers/Settings';
 import ChildForm from '../containers/ChildForm';
 import TaskEditor from '../components/TaskEditor';
 import TextInputView from '../components/TextInputView';
@@ -34,18 +33,6 @@ export class MainViewRoute {
   renderScene(navigator: Object) {
     return (
       <MainView navigator={navigator} {...this.props} />
-    );
-  }
-}
-
-export class SettingsRoute {
-  props: any;
-  constructor(props: any) {
-    this.props = props;
-  }
-  renderScene(navigator: Object) {
-    return (
-      <Settings navigator={navigator} {...this.props} />
     );
   }
 }

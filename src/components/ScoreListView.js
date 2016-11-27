@@ -71,7 +71,7 @@ class ScoreListView extends Component {
       const mo = moment(Date.parse(week)).utc().day(i);
       let month = '';
       if (mo.date() === 1) {
-        month = `/${mo.month()}`;
+        month = `/${mo.month() + 1}`;
       }
       return (
         <Text style={styles.date} key={mo.format('YYYY-MM-DD')}>{`${mo.format('ddd')}\n${mo.date()}${month}`}</Text>

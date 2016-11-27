@@ -96,14 +96,13 @@ class ChildForm extends Component {
       'Are you sure you want to delete this child?',
       [
         {
+          text: 'Cancel'
+        }, {
           text: 'Delete', onPress: () => {
             this.markAsDestroyed();
             this.props.deleteChildAsync(this.props.childId);
             this.props.navigator.popToTop();
           }
-        },
-        {
-          text: 'Cancel'
         }
       ]);
   }
@@ -143,7 +142,7 @@ class ChildForm extends Component {
                 }>
                   <Icon name='ios-contact-outline' />
                   <Text>Name</Text>
-                  <Text note style={theme.listNote}>{props.meta.valid ? props.input.value : '<Name>'}</Text>
+                  <Text note style={theme.listNote} numberOfLines={1}>{props.meta.valid ? props.input.value : '<Name>'}</Text>
                 </ListItem>
               );
             } } />

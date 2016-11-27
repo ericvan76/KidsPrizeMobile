@@ -77,7 +77,7 @@ class MainView extends Component {
               this.refs.drawer.close();
             } }>
             <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
-            <Text>{c.name}</Text>
+            <Text numberOfLines={1}>{c.name}</Text>
             <Text note style={theme.listNote}>{c.totalScore}</Text>
           </ListItem>
         );
@@ -89,7 +89,7 @@ class MainView extends Component {
           <Button transparent>
             <Icon name='ios-contact-outline' />
           </Button>
-          <Title>{this.props.auth.user ? this.props.auth.user.name : ''}</Title>
+          <Title numberOfLines={1}>{this.props.auth.user ? this.props.auth.user.given_name : ''}</Title>
         </Header>
         <Content>
           <List>
@@ -173,7 +173,7 @@ class MainView extends Component {
             <Button transparent onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu' />
             </Button>
-            <Title>{this.props.child.name}</Title>
+            <Title numberOfLines={1}>{this.props.child.name}</Title>
             <Button transparent
               onPress={() => this.props.navigator.push(new EditChildRoute({ childId: this.props.child.id }))}>
               <Icon name='ios-settings-outline' />
@@ -187,7 +187,7 @@ class MainView extends Component {
               fetchMoreAsync={this.props.fetchMoreAsync}
               setScoreAsync={this.props.setScoreAsync} />
           </Content>
-        </Container>
+        </Container >
       );
     }
     return (

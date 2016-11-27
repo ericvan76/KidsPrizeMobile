@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 import { Drawer, Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -77,7 +76,7 @@ class MainView extends Component {
               this.refs.drawer.close();
             } }>
             <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
-            <Text numberOfLines={1}>{c.name}</Text>
+            <Text ellipsizeMode='tail' numberOfLines={1}>{c.name}</Text>
             <Text note style={theme.listNote}>{c.totalScore}</Text>
           </ListItem>
         );
@@ -89,7 +88,7 @@ class MainView extends Component {
           <Button transparent>
             <Icon name='ios-contact-outline' />
           </Button>
-          <Title numberOfLines={1}>{this.props.auth.user ? this.props.auth.user.given_name : ''}</Title>
+          <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.auth.user ? this.props.auth.user.given_name : ''}</Title>
         </Header>
         <Content>
           <List>
@@ -158,7 +157,7 @@ class MainView extends Component {
         <Container theme={theme}>
           <Header>
             <Button transparent onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu' />
+              <Icon name='ios-menu-outline' />
             </Button>
             <Title></Title>
           </Header>
@@ -171,17 +170,20 @@ class MainView extends Component {
         <Container theme={theme}>
           <Header onPress={() => this.refs.listView.scrollToTop()} >
             <Button transparent onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu' />
+              <Icon name='ios-menu-outline' />
             </Button>
-            <Title numberOfLines={1}>{this.props.child.name}</Title>
+            <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.name}</Title>
             <Button transparent
               onPress={() => this.props.navigator.push(new EditChildRoute({ childId: this.props.child.id }))}>
               <Icon name='ios-settings-outline' />
             </Button>
           </Header>
           <Content horizontal={true} scrollEnabled={false}>
-            <ScoreListView ref='listView' style={styles.listView}
-              child={this.props.child}
+            <ScoreListView
+              ref='listView'
+              style={{
+                flex: 1, width: theme.screenWidth
+              }} child={this.props.child}
               rows={this.props.weeklyScores}
               refreshAsync={this.props.refreshAsync}
               fetchMoreAsync={this.props.fetchMoreAsync}
@@ -235,12 +237,5 @@ const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
     ...failureActions
   }, dispatch);
 };
-
-const styles = StyleSheet.create({
-  listView: {
-    flex: 1,
-    width: '100%'
-  },
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);

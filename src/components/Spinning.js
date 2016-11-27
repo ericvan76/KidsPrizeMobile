@@ -8,7 +8,12 @@ class Spinning extends Component {
   render() {
     return (
       <Container>
-        <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Content
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
           <Spinner color={theme.subtitleColor} />
         </Content>
       </Container>

@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import theme from '../themes';
 
@@ -13,16 +12,16 @@ class Seperator extends Component {
   }
 
   render() {
-    return <View {...this.props} style={[styles.container, this.props.style]} />;
+    return (
+      <View
+        style={{
+          height: theme.borderWidth,
+          alignSelf: 'stretch',
+          backgroundColor: theme.listDividerBg
+        }}
+        {...this.props} />
+    );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: theme.borderWidth,
-    alignSelf: 'stretch',
-    backgroundColor: theme.listDividerBg
-  }
-});
 
 export default Seperator;

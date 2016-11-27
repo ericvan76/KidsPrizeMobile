@@ -114,7 +114,11 @@ class ChildForm extends Component {
   render() {
     let deleteButton = null;
     if (this.props.childId) {
-      deleteButton = <Button block danger style={{ margin: 10, marginTop: 50 }} onPress={() => this.onDelete()}>Delete Child</Button>;
+      deleteButton = (
+        <Button block danger
+          style={{ margin: 10, marginTop: 50 }}
+          onPress={() => this.onDelete()}>Delete Child</Button>
+      );
     }
     return (
       <Container theme={theme}>

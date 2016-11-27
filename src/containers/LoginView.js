@@ -5,7 +5,6 @@ import { WebView } from 'react-native';
 import update from 'react-addons-update';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import StyleSheet from 'react-native-extended-stylesheet';
 import url from 'url';
 
 import Spinning from '../components/Spinning';
@@ -76,7 +75,7 @@ class LoginView extends Component {
     return (
       <WebView
         ref={WEBVIEW_REF}
-        style={styles.webView}
+        style={{ marginTop: 20 }}
         source={this.state.source}
         onLoadStart={this.onLoadStart.bind(this)} />
     );
@@ -93,8 +92,5 @@ const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
   return bindActionCreators(authActions, dispatch);
 };
 
-const styles = StyleSheet.create({
-  webView: { marginTop: 20 }
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginView);

@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Picker } from 'react-native';
-import { Container, Header, Title, Content, Button, Icon } from 'native-base';
+import { Container, Header, Title, Content, Button } from 'native-base';
 
 import theme from '../themes';
 

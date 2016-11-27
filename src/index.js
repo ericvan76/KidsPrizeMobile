@@ -3,18 +3,10 @@
 import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { initialiseAsync } from './actions/auth';
 import store from './store';
 import { LoginRoute, MainViewRoute } from './routes';
-import theme from './themes';
-
-
-StyleSheet.build({
-  rem: theme.fontSizeBase * 1.1
-});
-
 
 class App extends Component {
   constructor(props: Object) {

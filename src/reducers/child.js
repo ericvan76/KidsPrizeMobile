@@ -62,8 +62,8 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
             }
           });
         } else {
-          const mergedWeeklyScores = update(state[payload.child.id].weeklyScores, { $merge: weeklyScores });
-          const sortedWeeklyScores = Object.keys(mergedWeeklyScores).sort().reverse()
+          const mergedWeeklyScores: WeeklyScoresState = update(state[payload.child.id].weeklyScores, { $merge: weeklyScores });
+          const sortedWeeklyScores: WeeklyScoresState = Object.keys(mergedWeeklyScores).sort().reverse()
             .reduce((prev: WeeklyScoresState, week: string) => {
               prev[week] = mergedWeeklyScores[week];
               return prev;

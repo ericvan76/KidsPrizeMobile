@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 import { Container, Header, Title, Content, Button, Icon, Text } from 'native-base';
 import SortableListView from 'react-native-sortable-listview';
 import update from 'react-addons-update';
@@ -32,13 +31,31 @@ class Row extends Component {
   render() {
     return (
       <View>
-        <View style={styles.row}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: 5,
+            backgroundColor: theme.inverseTextColor
+          }}>
           <Button transparent onPress={this.props.onRemove}>
-            <Icon style={styles.removeIcon} name='ios-remove-circle' />
+            <Icon name='ios-remove-circle' style={{ color: theme.badgeBg }} />
           </Button>
-          <Text style={styles.rowText} ellipsizeMode='tail' numberOfLines={1}>{this.props.title}</Text>
+          <Text
+            style={{
+              flex: 1,
+              textAlign: 'left',
+              paddingLeft: 5,
+              paddingRight: 5,
+              color: theme.textColor,
+              fontSize: theme.inputFontSize
+            }}
+            ellipsizeMode='tail'
+            numberOfLines={1}
+            >{this.props.title}</Text>
           <Button transparent delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
-            <Icon style={styles.draggableIcon} name='ios-reorder' />
+            <Icon name='ios-reorder' style={{ color: theme.listNoteColor }} />
           </Button>
         </View>
         <Seperator />
@@ -145,7 +162,9 @@ class TaskEditor extends Component {
         <Header>
           <Button transparent onPress={() => this.props.navigator.pop()}>Cancel</Button>
           <Title>Task List</Title>
-          <Button transparent onPress={() => this.onAddPress()}><Icon name='ios-add-circle-outline' /></Button>
+          <Button transparent onPress={() => this.onAddPress()}>
+            <Icon name='ios-add-circle-outline' />
+          </Button>
           <Button transparent onPress={() => {
             const value = this.state.order.map(i => this.state.data[i]);
             this.props.onSubmit(value);
@@ -153,8 +172,15 @@ class TaskEditor extends Component {
         </Header>
         <Content horizontal={true} scrollEnabled={false} >
           <SortableListView
-            style={styles.listView}
-            sortRowStyle={styles.sortRow}
+            style={{
+              flex: 1,
+              backgroundColor: theme.inverseTextColor,
+              width: theme.screenWidth
+            }}
+            sortRowStyle={{
+              opacity: theme.shadowOpacity,
+              backgroundColor: theme.inverseTextColor
+            }}
             data={this.state.data}
             order={this.state.order}
             onRowMoved={e => this.onMove(e)}
@@ -164,38 +190,5 @@ class TaskEditor extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  listView: {
-    flex: 1,
-    backgroundColor: theme.inverseTextColor,
-    width: '100%'
-  },
-  sortRow: {
-    opacity: 0.8,
-    backgroundColor: theme.inverseTextColor
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0.3rem',
-    backgroundColor: theme.inverseTextColor
-  },
-  rowText: {
-    flex: 1,
-    textAlign: 'left',
-    paddingLeft: '0.5rem',
-    paddingRight: '0.5rem',
-    color: theme.textColor,
-    fontSize: '1.0rem'
-  },
-  removeIcon: {
-    color: theme.badgeBg
-  },
-  draggableIcon: {
-    color: theme.listNoteColor
-  }
-});
 
 export default TaskEditor;

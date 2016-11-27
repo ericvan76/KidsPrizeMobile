@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import { View, Text, ListView, RefreshControl, TouchableOpacity } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 import { Icon } from 'native-base';
 import update from 'react-addons-update';
 import moment from 'moment';
@@ -18,15 +17,9 @@ function createDataSource() {
       return false;
     },
     rowHasChanged: (r1: TaskRowState, r2: TaskRowState) => {
-      return rowHash(r1) !== rowHash(r2);
+      return r1 !== r2;
     }
   });
-}
-
-function rowHash(row: TaskRowState): string {
-  return Object.keys(row).sort().reduce((prev: string, k: string) => {
-    return `${prev}|${k}:${row[k]}`;
-  }, '');
 }
 
 type Props = {
@@ -68,21 +61,38 @@ class ScoreListView extends Component {
   renderSectionHeader(sectionData: WeeklySectionState, sectionID: string) {
     const week = sectionID;
     const dates = Array.from({ length: 7 }, (v, k) => k).map((i: number) => {
+      const today = moment(Date.now()).format('YYYY-MM-DD');
       const mo = moment(Date.parse(week)).utc().day(i);
+      const key = mo.format('YYYY-MM-DD');
       let month = '';
       if (mo.date() === 1) {
         month = `/${mo.month() + 1}`;
       }
       return (
-        <Text style={styles.date} key={mo.format('YYYY-MM-DD')}>{`${mo.format('ddd')}\n${mo.date()}${month}`}</Text>
+        <Text
+          style={{
+            width: theme.starSize,
+            textAlign: 'center',
+            fontSize: theme.subTitleFontSize,
+            color: theme.subtitleColor,
+            fontWeight: today === key ? 'bold' : 'normal'
+          }}
+          key={key}
+          >{`${mo.format('ddd')}\n${mo.date()}${month}`}</Text>
       );
     });
     return (
       <View>
         <Separator key='s0' />
-        <View style={styles.section}>
-          {dates}
-        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignSelf: 'stretch',
+            justifyContent: 'flex-end',
+            backgroundColor: theme.listDividerBg,
+            paddingLeft: 5,
+            paddingRight: 5
+          }}>{dates}</View>
         <Separator key='s1' />
       </View>
     );
@@ -101,16 +111,36 @@ class ScoreListView extends Component {
         <TouchableOpacity
           key={i}
           onPress={() => this.props.setScoreAsync(this.props.child.id, date, task, newValue)}>
-          <Icon style={styles.star} name={iconName} />
+          <Icon name={iconName}
+            style={{
+              width: theme.starSize,
+              fontSize: theme.starSize,
+              textAlign: 'center'
+            }} />
         </TouchableOpacity>
       );
     });
     return (
-      <View style={styles.row}>
-        <Text style={styles.task} ellipsizeMode='tail' numberOfLines={1}>{task}</Text>
-        <View style={styles.starRow}>
-          {stars}
-        </View>
+      <View
+        style={{
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          paddingLeft: 5,
+          paddingRight: 5
+        }}>
+        <Text
+          style={{
+            margin: 5,
+            fontSize: theme.taskFontSize
+          }}
+          ellipsizeMode='tail'
+          numberOfLines={1}>{task}</Text>
+        <View
+          style={{
+            alignSelf: 'stretch',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}>{stars}</View>
       </View>
     );
   }
@@ -168,45 +198,5 @@ class ScoreListView extends Component {
     this.refs.listView.scrollTo({ y: 0 });
   }
 }
-
-const styles = StyleSheet.create({
-  // section
-  section: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    justifyContent: 'flex-end',
-    backgroundColor: theme.listDividerBg,
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingTop: 5
-  },
-  date: {
-    width: '2.2rem',
-    textAlign: 'center',
-    fontSize: theme.subTitleFontSize,
-    color: theme.subtitleColor
-  },
-  // row
-  row: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    paddingLeft: 5,
-    paddingRight: 5
-  },
-  task: {
-    fontSize: '1rem',
-    margin: 5
-  },
-  starRow: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  star: {
-    width: '2.2rem',
-    fontSize: '2.2rem',
-    textAlign: 'center'
-  }
-});
 
 export default ScoreListView;

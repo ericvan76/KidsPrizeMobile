@@ -18,19 +18,10 @@ type State = {
   value: string
 };
 
-class PickerView extends Component {
+class PickerPage extends Component {
 
   props: Props;
   state: State;
-
-  static propTypes = {
-    ...Picker.propTypes,
-    navigator: React.PropTypes.object.isRequired,
-    title: React.PropTypes.string.isRequired,
-    defaultValue: React.PropTypes.string,
-    items: React.PropTypes.object.isRequired,
-    onSubmit: React.PropTypes.func.isRequired
-  }
 
   constructor(props: Props) {
     super(props);
@@ -69,4 +60,4 @@ class PickerView extends Component {
   }
 }
 
-export default PickerView;
+export default PickerPage;

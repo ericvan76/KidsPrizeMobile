@@ -7,10 +7,6 @@ import theme from '../themes';
 
 class Seperator extends Component {
 
-  static propTypes = {
-    ...View.propTypes
-  }
-
   render() {
     return (
       <View

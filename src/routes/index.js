@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-import LoginView from '../containers/LoginView';
-import MainView from '../containers/MainView';
-import ChildForm from '../containers/ChildForm';
-import TaskEditor from '../components/TaskEditor';
-import TextInputView from '../components/TextInputView';
-import PickerView from '../components/PickerView';
+import LoginPage from '../components/LoginPage';
+import MainView from '../components/MainView';
+import ChildForm from '../components/ChildForm';
+import TaskEditorPage from '../components/TaskEditorPage';
+import TextInputPage from '../components/TextInputPage';
+import PickerPage from '../components/PickerPage';
 
 export type Route = {
   renderScene: (navigator: Object) => any
@@ -20,12 +20,12 @@ export class LoginRoute {
   }
   renderScene(navigator: Object) {
     return (
-      <LoginView navigator={navigator} {...this.props} />
+      <LoginPage navigator={navigator} {...this.props} />
     );
   }
 }
 
-export class MainViewRoute {
+export class MainRoute {
   props: any;
   constructor(props: any) {
     this.props = props;
@@ -56,7 +56,7 @@ export class TaskEditorRoute {
   }
   renderScene(navigator: Object) {
     return (
-      <TaskEditor navigator={navigator} {...this.props} />
+      <TaskEditorPage navigator={navigator} {...this.props} />
     );
   }
 }
@@ -69,7 +69,7 @@ export class TextInputRoute {
   }
   renderScene(navigator: Object) {
     return (
-      <TextInputView navigator={navigator} {...this.props} />
+      <TextInputPage navigator={navigator} {...this.props} />
     );
   }
 }
@@ -81,7 +81,7 @@ export class PickerRoute {
   }
   renderScene(navigator: Object) {
     return (
-      <PickerView navigator={navigator} {...this.props} />
+      <PickerPage navigator={navigator} {...this.props} />
     );
   }
 }

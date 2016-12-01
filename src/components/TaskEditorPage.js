@@ -21,13 +21,6 @@ class Row extends Component {
 
   props: RowProps;
 
-  static propTypes = {
-    title: React.PropTypes.string,
-    onRemove: React.PropTypes.func,
-    onLongPress: React.PropTypes.func,
-    onPressOut: React.PropTypes.func
-  }
-
   render() {
     return (
       <View>
@@ -75,7 +68,7 @@ type State = {
   order: string[]
 };
 
-class TaskEditor extends Component {
+class TaskEditorPage extends Component {
 
   props: Props;
   state: State;
@@ -191,4 +184,4 @@ class TaskEditor extends Component {
   }
 }
 
-export default TaskEditor;
+export default TaskEditorPage;

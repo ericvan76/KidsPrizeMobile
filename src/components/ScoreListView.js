@@ -41,15 +41,6 @@ class ScoreListView extends Component {
   props: Props;
   state: State;
 
-  static propTypes = {
-    child: React.PropTypes.object.isRequired,
-    rows: React.PropTypes.object.isRequired,
-    refreshAsync: React.PropTypes.func.isRequired,
-    fetchMoreAsync: React.PropTypes.func.isRequired,
-    setScoreAsync: React.PropTypes.func.isRequired,
-    style: View.propTypes.style
-  }
-
   constructor(props: Props) {
     super(props);
     this.state = {

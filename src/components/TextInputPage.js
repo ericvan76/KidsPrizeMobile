@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Container, Header, Title, Content, Button, Icon, InputGroup, Input } from 'native-base';
+import { Container, Header, Title, Content, Button, InputGroup, Input } from 'native-base';
 import theme from '../themes';
 
 type Props = {
@@ -15,18 +15,10 @@ type State = {
   value: string
 }
 
-class TextInputView extends Component {
+class TextInputPage extends Component {
 
   props: Props;
   state: State;
-
-  static propTypes = {
-    ...Input.propTypes,
-    navigator: React.PropTypes.object.isRequired,
-    title: React.PropTypes.string.isRequired,
-    defaultValue: React.PropTypes.string,
-    onSubmit: React.PropTypes.func.isRequired
-  }
 
   constructor(props: Props) {
     super(props);
@@ -63,4 +55,4 @@ class TextInputView extends Component {
   }
 }
 
-export default TextInputView;
+export default TextInputPage;

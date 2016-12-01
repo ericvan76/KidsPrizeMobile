@@ -10,6 +10,12 @@ export default Object.assign({}, theme, {
   inputFontSize: theme.fontSizeBase * 1.1,
 
   // my themes
+  /* $FlowFixMe */
+  icon: require('../../img/icon.png'),
+
+  facebookColor: '#3b5998',
+  googleColor: '#d34836',
+
   screenWidth: width,
   screenHeight: height,
 

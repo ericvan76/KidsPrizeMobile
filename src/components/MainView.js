@@ -26,6 +26,7 @@ type StoreProps = {
 }
 
 type ActionProps = {
+  requestTokenAsync: (code: string) => void,
   switchChild: (childId: string) => void,
   getUserInfoAsync: () => void,
   listChildrenAsync: () => void,
@@ -43,23 +44,6 @@ type Props = StoreProps & ActionProps & {
 class MainView extends Component {
 
   props: Props;
-
-  static propTypes = {
-    navigator: React.PropTypes.object.isRequired,
-    auth: React.PropTypes.object.isRequired,
-    childList: React.PropTypes.arrayOf(React.PropTypes.object),
-    child: React.PropTypes.object,
-    weeklyScores: React.PropTypes.object,
-    // actions
-    switchChild: React.PropTypes.func.isRequired,
-    getUserInfoAsync: React.PropTypes.func.isRequired,
-    listChildrenAsync: React.PropTypes.func.isRequired,
-    logoutAsync: React.PropTypes.func.isRequired,
-    refreshAsync: React.PropTypes.func.isRequired,
-    fetchMoreAsync: React.PropTypes.func.isRequired,
-    setScoreAsync: React.PropTypes.func.isRequired,
-    resetFailure: React.PropTypes.func.isRequired,
-  };
 
   constructor(props: Props) {
     super(props);
@@ -118,7 +102,7 @@ class MainView extends Component {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    if (this.props.errors.length > 0 && nextProps.errors.length > 0) {
+    if (this.props.errors.length > 0 && nextProps.errors.length !== 0) {
       return false;
     }
     return true;
@@ -132,8 +116,7 @@ class MainView extends Component {
         [
           { text: 'OK', onPress: () => { this.props.resetFailure(); } }
         ]);
-    }
-    if (this.props.auth.initialised) {
+    } else if (this.props.auth.initialised) {
       if (!this.props.auth.token) {
         this.props.navigator.push(new LoginRoute());
       } else if (!this.props.auth.user) {
@@ -189,7 +172,7 @@ class MainView extends Component {
               fetchMoreAsync={this.props.fetchMoreAsync}
               setScoreAsync={this.props.setScoreAsync} />
           </Content>
-        </Container >
+        </Container>
       );
     }
     return (

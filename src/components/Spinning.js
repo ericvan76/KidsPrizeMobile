@@ -7,7 +7,7 @@ import theme from '../themes';
 class Spinning extends Component {
   render() {
     return (
-      <Container>
+      <Container theme={theme}>
         <Content
           contentContainerStyle={{
             flex: 1,
@@ -16,7 +16,7 @@ class Spinning extends Component {
           }}>
           <Spinner color={theme.subtitleColor} />
         </Content>
-      </Container>
+      </Container >
     );
   }
 }

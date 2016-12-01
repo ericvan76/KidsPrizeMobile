@@ -13,7 +13,6 @@ export const SET_TOKEN: string = 'SET_TOKEN';
 export const CLEAR_TOKEN: string = 'CLEAR_TOKEN';
 export const SET_USER: string = 'SET_USER';
 
-
 export function initialised(discovery: Discovery, token: ?Token): Action<'INITIALISED', InitialisedPayload> {
   return {
     type: 'INITIALISED',

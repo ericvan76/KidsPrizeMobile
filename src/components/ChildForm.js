@@ -51,13 +51,6 @@ class ChildForm extends Component {
   props: Props;
   state: State;
 
-  static propTypes = {
-    ...propTypes, // react-form propTypes
-    childId: React.PropTypes.string,
-    navigator: React.PropTypes.object.isRequired,
-    formValues: React.PropTypes.object
-  }
-
   constructor(props: Props) {
     super(props);
     this.state = {

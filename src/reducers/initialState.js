@@ -5,6 +5,7 @@ export const INITIAL_STATE: AppState = {
   auth: {
     initialised: false,
     discovery: null,
+    authCode: null,
     token: null,
     user: null
   },

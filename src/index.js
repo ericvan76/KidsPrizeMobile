@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 
 import { initialiseAsync } from './actions/auth';
 import store from './store';
-import { LoginRoute, MainViewRoute } from './routes';
+import { LoginRoute, MainRoute } from './routes';
 
 class App extends Component {
   constructor(props: Object) {
@@ -26,7 +26,7 @@ class App extends Component {
   }
 
   render() {
-    let route = new MainViewRoute();
+    const route = new MainRoute();
     return (
       <Provider store={store}>
         <Navigator

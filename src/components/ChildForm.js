@@ -5,7 +5,7 @@ import { Alert } from 'react-native';
 import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem, Badge } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { reduxForm, propTypes, Field } from 'redux-form';
+import { reduxForm, Field } from 'redux-form';
 import * as uuid from 'uuid';
 
 import ListItemDivider from '../components/ListItemDivider';
@@ -114,7 +114,7 @@ class ChildForm extends Component {
       );
     }
     return (
-      <Container theme={theme}>
+      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Header>
           <Button transparent onPress={() => this.onClose()}>Cancel</Button>
           <Title>{this.isNew() ? 'Add Child' : 'Edit Child'}</Title>
@@ -139,7 +139,7 @@ class ChildForm extends Component {
                 }>
                   <Icon name='ios-contact-outline' />
                   <Text>Name</Text>
-                  <Text note style={theme.listNote} numberOfLines={1}>{props.meta.valid ? props.input.value : '<Name>'}</Text>
+                  <Text note style={theme.listNote} numberOfLines={1}>{props.input.value}</Text>
                 </ListItem>
               );
             } } />

@@ -23,7 +23,7 @@ class Row extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{ backgroundColor: theme.backgroundColor }}>
         <View
           style={{
             flexDirection: 'row',

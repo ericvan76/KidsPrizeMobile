@@ -7,7 +7,7 @@ import theme from '../themes';
 class Spinning extends Component {
   render() {
     return (
-      <Container theme={theme}>
+      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Content
           contentContainerStyle={{
             flex: 1,

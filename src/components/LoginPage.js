@@ -78,7 +78,7 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <Container theme={theme}>
+      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Content contentContainerStyle={{
           flex: 1,
           justifyContent: 'center',

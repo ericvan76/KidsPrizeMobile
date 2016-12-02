@@ -137,7 +137,7 @@ class MainView extends Component {
       mainElem = <Spinning />;
     } else if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
       mainElem = (
-        <Container theme={theme}>
+        <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header>
             <Button transparent onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu-outline' />
@@ -150,7 +150,7 @@ class MainView extends Component {
       );
     } else {
       mainElem = (
-        <Container theme={theme}>
+        <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header onPress={() => this.refs.listView.scrollToTop()} >
             <Button transparent onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu-outline' />

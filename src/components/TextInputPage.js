@@ -33,7 +33,7 @@ class TextInputPage extends Component {
   }
   render() {
     return (
-      <Container theme={theme}>
+      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Header>
           <Button transparent onPress={() => this.props.navigator.pop()}>Cancel</Button>
           <Title>{this.props.title}</Title>

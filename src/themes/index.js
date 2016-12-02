@@ -13,6 +13,8 @@ export default Object.assign({}, theme, {
   /* $FlowFixMe */
   icon: require('../../img/icon.png'),
 
+  backgroundColor: '#fff',
+
   facebookColor: '#3b5998',
   googleColor: '#d34836',
 

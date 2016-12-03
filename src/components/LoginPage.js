@@ -86,7 +86,7 @@ class LoginPage extends Component {
           marginLeft: 40,
           marginRight: 40
         }}>
-          <Thumbnail square source={theme.icon}
+          <Thumbnail round source={theme.icon}
             size={80}
             style={{
               marginTop: -80,
@@ -96,7 +96,7 @@ class LoginPage extends Component {
             borderColor: theme.facebookColor,
             margin: 5,
             justifyContent: 'flex-start',
-            paddingLeft: 30
+            paddingLeft: 20
           }} textStyle={{
             color: theme.facebookColor
           }} onPress={() => this.openLoginUrl('Facebook')}>
@@ -107,7 +107,7 @@ class LoginPage extends Component {
             borderColor: theme.googleColor,
             margin: 5,
             justifyContent: 'flex-start',
-            paddingLeft: 30
+            paddingLeft: 20
           }} textStyle={{
             color: theme.googleColor
           }} onPress={() => this.openLoginUrl('Google')}>

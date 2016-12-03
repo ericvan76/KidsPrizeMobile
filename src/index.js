@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Navigator } from 'react-native';
+import { Navigator, View, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { initialiseAsync } from './actions/auth';
@@ -29,10 +29,13 @@ class App extends Component {
     const route = new MainRoute();
     return (
       <Provider store={store}>
-        <Navigator
-          initialRoute={route}
-          renderScene={this.renderScene.bind(this)}
-          configureScene={this.configureScene.bind(this)} />
+        <View style={{ flex: 1 }}>
+          <StatusBar barStyle="light-content" />
+          <Navigator
+            initialRoute={route}
+            renderScene={this.renderScene.bind(this)}
+            configureScene={this.configureScene.bind(this)} />
+        </View>
       </Provider>
     );
   }

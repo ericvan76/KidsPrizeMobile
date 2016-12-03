@@ -97,7 +97,8 @@ class ChildForm extends Component {
             this.props.navigator.popToTop();
           }
         }
-      ]);
+      ]
+    );
   }
   componentWillUnmount() {
     if (this.state.destroyed) {
@@ -113,19 +114,22 @@ class ChildForm extends Component {
           onPress={() => this.onDelete()}>Delete Child</Button>
       );
     }
+    const saveButton = this.props.valid
+      ? <Button transparent onPress={() => this.onSubmit()}>Save</Button>
+      : null;
     return (
       <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Header>
           <Button transparent onPress={() => this.onClose()}>Cancel</Button>
           <Title>{this.isNew() ? 'Add Child' : 'Edit Child'}</Title>
-          <Button transparent disabled={!this.props.valid} onPress={() => this.onSubmit()}>Save</Button>
+          {saveButton}
         </Header>
         <Content>
           <List>
             <ListItemDivider title='BASIC INFO' />
             <Field name='name' component={(props: Field.Props) => {
               return (
-                <ListItem iconLeft onPress={() => this.props.navigator.push(
+                <ListItem button iconLeft onPress={() => this.props.navigator.push(
                   new TextInputRoute({
                     title: 'Name',
                     placeholder: 'Type child name here',
@@ -146,7 +150,7 @@ class ChildForm extends Component {
             <Field name='gender' component={(props: Field.Props) => {
               const items = { M: 'Boy', F: 'Girl' };
               return (
-                <ListItem iconLeft onPress={() => this.props.navigator.push(
+                <ListItem button iconLeft onPress={() => this.props.navigator.push(
                   new PickerRoute({
                     title: 'Gender',
                     items: items,
@@ -166,7 +170,7 @@ class ChildForm extends Component {
             <ListItemDivider title='TASKS' />
             <Field name='tasks' component={(props: Field.Props) => {
               return (
-                <ListItem iconLeft onPress={() => this.props.navigator.push(
+                <ListItem button iconLeft onPress={() => this.props.navigator.push(
                   new TaskEditorRoute({
                     value: props.input.value,
                     onSubmit: (v: string[]) => {
@@ -177,7 +181,7 @@ class ChildForm extends Component {
                 }>
                   <Icon name='ios-copy-outline' />
                   <Text>Tasks</Text>
-                  <Badge info={props.meta.valid}>{props.input.value.length}</Badge>
+                  <Text note style={theme.listNote}>{props.input.value.length}</Text>
                 </ListItem>
               );
             } } />

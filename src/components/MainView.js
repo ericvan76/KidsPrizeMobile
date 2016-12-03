@@ -49,6 +49,23 @@ class MainView extends Component {
     super(props);
   }
 
+  logout() {
+    Alert.alert(
+      'Confirm',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'No'
+        }, {
+          text: 'Yes', onPress: () => {
+            this.props.logoutAsync();
+            this.refs.drawer.close();
+          }
+        }
+      ]
+    );
+  }
+
   renderDrawer() {
     let childrenRows = [];
     if (this.props.childList) {
@@ -69,7 +86,7 @@ class MainView extends Component {
     return (
       <Container theme={theme}>
         <Header>
-          <Button transparent>
+          <Button transparent header>
             <Icon name='ios-contact-outline' />
           </Button>
           <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.auth.user ? this.props.auth.user.given_name : ''}</Title>
@@ -88,10 +105,7 @@ class MainView extends Component {
             </ListItem>
             <ListItemDivider title='OTHERS' />
             <ListItem iconLeft button
-              onPress={() => {
-                this.props.logoutAsync();
-                this.refs.drawer.close();
-              } }>
+              onPress={this.logout.bind(this)}>
               <Icon name='ios-exit-outline' />
               <Text>Sign Out</Text>
             </ListItem>
@@ -139,7 +153,8 @@ class MainView extends Component {
       mainElem = (
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header>
-            <Button transparent onPress={() => this.refs.drawer.open()}>
+            <Button transparent header
+              onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu-outline' />
             </Button>
             <Title></Title>
@@ -152,11 +167,12 @@ class MainView extends Component {
       mainElem = (
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header onPress={() => this.refs.listView.scrollToTop()} >
-            <Button transparent onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu-outline' />
+            <Button transparent header
+              onPress={() => this.refs.drawer.open()}>
+              <Icon name='ios-menu' />
             </Button>
             <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.name}</Title>
-            <Button transparent
+            <Button transparent header
               onPress={() => this.props.navigator.push(new EditChildRoute({ childId: this.props.child.id }))}>
               <Icon name='ios-settings-outline' />
             </Button>

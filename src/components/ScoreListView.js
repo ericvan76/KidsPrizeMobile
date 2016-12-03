@@ -1,8 +1,8 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { View, Text, ListView, RefreshControl, TouchableOpacity } from 'react-native';
-import { Icon } from 'native-base';
+import { View, ListView, RefreshControl, TouchableOpacity } from 'react-native';
+import { Icon, Text } from 'native-base';
 import update from 'react-addons-update';
 import moment from 'moment';
 
@@ -66,6 +66,7 @@ class ScoreListView extends Component {
             textAlign: 'center',
             fontSize: theme.subTitleFontSize,
             color: theme.subtitleColor,
+            lineHeight: theme.lineHeight * 0.8,
             fontWeight: today === key ? 'bold' : 'normal'
           }}
           key={key}
@@ -119,9 +120,10 @@ class ScoreListView extends Component {
           paddingLeft: 5,
           paddingRight: 5
         }}>
-        <Text
+        <Text large
           style={{
             margin: 5,
+            marginBottom: 0,
             fontSize: theme.taskFontSize
           }}
           ellipsizeMode='tail'

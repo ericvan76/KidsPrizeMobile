@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Container, Content, Spinner } from 'native-base';
+import { Container, Content, Spinner, Thumbnail } from 'native-base';
 import theme from '../themes';
 
 class Spinning extends Component {
@@ -14,7 +14,13 @@ class Spinning extends Component {
             justifyContent: 'center',
             alignItems: 'center'
           }}>
-          <Spinner color={theme.subtitleColor} />
+          <Thumbnail round source={theme.icon}
+            size={80}
+            style={{
+              marginTop: -40,
+              marginBottom: 20
+            }} />
+          <Spinner color={theme.inverseSpinnerColor} />
         </Content>
       </Container >
     );

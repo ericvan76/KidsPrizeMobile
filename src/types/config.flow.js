@@ -1,12 +1,9 @@
 /* @flow */
 
 export type AuthConfig = {
-  authority: string,
-  response_type: string,
-  scope: string,
+  auth0_domain: string,
   client_id: string,
-  client_secret: string,
-  redirect_uri: string
+  client_secret: string
 };
 
 export type ApiConfig = {

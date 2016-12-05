@@ -2,31 +2,30 @@
 
 import moment from 'moment';
 import store from '../store';
-import { setToken, clearToken } from '../actions/auth';
-import oidc from './oidc';
-import * as storage from './storage';
-import type { AppState } from '../types/states.flow';
+import { saveTokenAsync, clearTokenAsync } from '../actions/auth';
+import * as auth0 from './auth0';
 
-export async function getAccessToken(): Promise<string> {
+import type { AppState } from '../types/states.flow';
+import type { Token } from '../types/auth.flow';
+
+export async function getBearerToken(): Promise<string> {
   try {
     const state: AppState = store.getState();
-    if (state.auth.token) {
+    if (state.auth.token && state.auth.token.id_token) {
       const token = state.auth.token;
       if (moment(Date.now()).add(5, 'minutes').isAfter(token.expires_at)) {
         if (token.refresh_token) {
-          const newToken = await oidc.refreshToken(token.refresh_token);
-          await storage.saveToken(newToken);
-          store.dispatch(setToken(newToken));
-          return newToken.access_token;
+          const delegation: Token = await auth0.obtainDelegationToken(token.refresh_token);
+          store.dispatch(saveTokenAsync(delegation));
+          return delegation.id_token;
         }
       } else {
-        return token.access_token;
+        return token.id_token;
       }
     }
   } catch (err) {
     // do nothing
   }
-  await storage.clearToken();
-  store.dispatch(clearToken());
-  throw new Error('Failed to get access_token.');
+  store.dispatch(clearTokenAsync());
+  throw new Error('Failed to get bearer token.');
 }

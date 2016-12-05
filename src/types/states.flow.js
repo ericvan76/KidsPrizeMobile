@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { Token, Profile } from './auth.flow';
+
 export type AppState = {
   auth: AuthState,
   currentChild: ?string,
@@ -12,9 +14,8 @@ export type AppState = {
 
 export type AuthState = {
   initialised: boolean,
-  discovery: ?Discovery,
   token: ?Token,
-  user: ?User
+  profile: ?Profile
 };
 
 export type ChildrenState = {

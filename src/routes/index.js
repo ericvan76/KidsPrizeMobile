@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import LoginPage from '../components/LoginPage';
+import SplashPage from '../components/SplashPage';
 import MainView from '../components/MainView';
 import ChildForm from '../components/ChildForm';
 import TaskEditorPage from '../components/TaskEditorPage';
@@ -13,14 +13,14 @@ export type Route = {
   renderScene: (navigator: Object) => any
 }
 
-export class LoginRoute {
+export class SplashRoute {
   props: any;
   constructor(props: any) {
     this.props = props;
   }
   renderScene(navigator: Object) {
     return (
-      <LoginPage navigator={navigator} {...this.props} />
+      <SplashPage navigator={navigator} {...this.props} />
     );
   }
 }

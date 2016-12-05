@@ -4,14 +4,12 @@ import React, { Component } from 'react';
 import { Navigator, View, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { initialiseAsync } from './actions/auth';
 import store from './store';
-import { LoginRoute, MainRoute } from './routes';
+import { SplashRoute, MainRoute } from './routes';
 
 class App extends Component {
   constructor(props: Object) {
     super(props);
-    store.dispatch(initialiseAsync());
   }
 
   renderScene(route: Object, navigator: Object) {
@@ -19,14 +17,14 @@ class App extends Component {
   }
 
   configureScene(route: Object) {
-    if (route instanceof LoginRoute) {
+    if (route instanceof MainRoute) {
       return Navigator.SceneConfigs.FloatFromBottom;
     }
     return Navigator.SceneConfigs.PushFromRight;
   }
 
   render() {
-    const route = new MainRoute();
+    const route = new SplashRoute();
     return (
       <Provider store={store}>
         <View style={{ flex: 1 }}>

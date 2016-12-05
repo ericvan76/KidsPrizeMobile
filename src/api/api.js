@@ -1,11 +1,11 @@
 /* @flow */
 
 import * as url from '../utils/url';
-import { getAccessToken } from './token';
+import { getBearerToken } from './token';
 import config from '../__config__';
 
 export async function callApi(uri: string, init?: Object = {}): Promise<any> {
-  const access_token = await getAccessToken();
+  const bearer = await getBearerToken();
   const url = `${config.api.baseUrl}${uri}`;
 
   if (!init.headers) {
@@ -15,7 +15,7 @@ export async function callApi(uri: string, init?: Object = {}): Promise<any> {
     init.body = JSON.stringify(init.body);
     init.headers.set('Content-Type', 'application/json');
   }
-  init.headers.set('Authorization', `Bearer ${access_token}`);
+  init.headers.set('Authorization', `Bearer ${bearer}`);
   return await fetchOrThrow(url, init);
 }
 

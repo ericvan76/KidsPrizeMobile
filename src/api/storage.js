@@ -1,6 +1,7 @@
 /* @flow */
 
 import { AsyncStorage, Alert } from 'react-native';
+import type { Token } from '../types/auth.flow';
 
 const TOKEN = 'token';
 
@@ -12,7 +13,7 @@ export async function saveToken(token: Token) {
   }
 }
 
-export async function loadToken(): Promise<?Token> {
+export async function loadToken(): Promise<Token | null> {
   try {
     const value = await AsyncStorage.getItem(TOKEN);
     const token: Token = JSON.parse(value);

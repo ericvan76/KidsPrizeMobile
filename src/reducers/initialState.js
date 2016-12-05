@@ -4,10 +4,8 @@ import type { AppState } from '../types/states.flow';
 export const INITIAL_STATE: AppState = {
   auth: {
     initialised: false,
-    discovery: null,
-    authCode: null,
     token: null,
-    user: null
+    profile: null
   },
   currentChild: null,
   children: {

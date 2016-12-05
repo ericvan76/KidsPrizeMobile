@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Drawer, Container, Header, Title, Content, Button, Icon, Text, List, ListItem } from 'native-base';
+import { Drawer, Container, Header, Title, Content, Button, Icon, Text, List, ListItem, Thumbnail } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -11,8 +11,7 @@ import * as childActions from '../actions/child';
 import * as failureActions from '../actions/failure';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
-import Spinning from '../components/Spinning';
-import { EditChildRoute, LoginRoute } from '../routes';
+import { SplashRoute, EditChildRoute } from '../routes';
 import theme from '../themes';
 
 import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
@@ -26,9 +25,7 @@ type StoreProps = {
 }
 
 type ActionProps = {
-  requestTokenAsync: (code: string) => void,
   switchChild: (childId: string) => void,
-  getUserInfoAsync: () => void,
   listChildrenAsync: () => void,
   logoutAsync: () => void,
   refreshAsync: (childId: string) => void,
@@ -83,16 +80,18 @@ class MainView extends Component {
         );
       });
     }
+    if (!this.props.auth.profile) {
+      return (<Container theme={theme}></Container>);
+    }
     return (
       <Container theme={theme}>
-        <Header>
-          <Button transparent header>
-            <Icon name='ios-contact-outline' />
-          </Button>
-          <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.auth.user ? this.props.auth.user.given_name : ''}</Title>
-        </Header>
         <Content>
           <List>
+            <ListItem>
+              <Thumbnail style={{ marginTop: 10, marginBottom: 10 }} size={60} source={{ url: this.props.auth.profile.picture }} />
+              <Text>{this.props.auth.profile.given_name}</Text>
+              <Text note>{this.props.auth.profile.email}</Text>
+            </ListItem>
             <ListItemDivider title='CHILDREN' />
             {childrenRows}
             <ListItem iconLeft button
@@ -122,6 +121,10 @@ class MainView extends Component {
     return true;
   }
 
+  componentDidMount() {
+    this.props.listChildrenAsync();
+  }
+
   componentDidUpdate() {
     if (this.props.errors.length > 0) {
       Alert.alert(
@@ -130,26 +133,18 @@ class MainView extends Component {
         [
           { text: 'OK', onPress: () => { this.props.resetFailure(); } }
         ]);
-    } else if (this.props.auth.initialised) {
-      if (!this.props.auth.token) {
-        this.props.navigator.push(new LoginRoute());
-      } else if (!this.props.auth.user) {
-        this.props.getUserInfoAsync();
-      } else if (!this.props.childList) {
-        this.props.listChildrenAsync();
-      } else if (this.props.childList.length === 0) {
-        this.refs.drawer.open();
-      } else if (this.props.child && Object.keys(this.props.weeklyScores).length === 0) {
-        this.props.refreshAsync(this.props.child.id);
-      }
+    } else if (!this.props.auth.profile) {
+      this.props.navigator.replace(new SplashRoute());
+    } else if (this.props.childList.length === 0) {
+      this.refs.drawer.open();
+    } else if (this.props.child && Object.keys(this.props.weeklyScores).length === 0) {
+      this.props.refreshAsync(this.props.child.id);
     }
   }
 
   render() {
     let mainElem = null;
-    if (!this.props.auth.user || !this.props.childList) {
-      mainElem = <Spinning />;
-    } else if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
+    if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
       mainElem = (
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header>

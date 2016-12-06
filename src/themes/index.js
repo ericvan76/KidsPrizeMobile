@@ -228,7 +228,7 @@ export default {
   // My themes
 
   /* $FlowFixMe */
-  icon: require('../../img/icon.png'),
+  icon: require('../img/icon.png'),
 
   backgroundColor: '#fff',
 

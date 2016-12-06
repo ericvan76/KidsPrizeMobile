@@ -3,7 +3,8 @@
 export type AuthConfig = {
   auth0_domain: string,
   client_id: string,
-  client_secret: string
+  client_secret: string,
+  redirect_uri: string
 };
 
 export type ApiConfig = {

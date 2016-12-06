@@ -1,8 +1,8 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Alert } from 'react-native';
-import { Container, Content, Thumbnail, Spinner } from 'native-base';
+import { Alert, View } from 'react-native';
+import { Container, Content, Thumbnail, Spinner, Text } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth0Lock from 'react-native-lock';
@@ -38,7 +38,7 @@ type LoginToken = {
   refreshToken?: string
 };
 
-class SplashPage extends Component {
+class LaunchScreen extends Component {
 
   lock: Auth0Lock
 
@@ -53,7 +53,8 @@ class SplashPage extends Component {
   showLogin() {
     this.lock.show({
       authParams: {
-        scope: 'openid offline_access'
+        scope: 'openid offline_access',
+        redirect_uri: config.auth.redirect_uri
       }
     }, (err: ?Error, profile: ?Profile, token: ?LoginToken) => {
       if (token && token.refreshToken) {
@@ -73,7 +74,9 @@ class SplashPage extends Component {
   }
 
   componentDidMount() {
-    this.props.initialiseAsync();
+    setTimeout(() => {
+      this.props.initialiseAsync();
+    }, 1500);
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -83,7 +86,6 @@ class SplashPage extends Component {
     }
     return true;
   }
-
 
   componentDidUpdate() {
     if (this.props.errors.length > 0) {
@@ -107,20 +109,14 @@ class SplashPage extends Component {
   render() {
     return (
       <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
-        <Content contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginLeft: 40,
-          marginRight: 40
-        }}>
-          <Thumbnail round source={theme.icon}
-            size={80}
-            style={{
-              marginTop: -40,
-              marginBottom: 20
-            }} />
-          <Spinner color={theme.inverseSpinnerColor} />
+        <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ flex: 0.2 }}></View>
+          <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
+            <Thumbnail style={{ margin: 20 }} round size={80} source={theme.icon} />
+            <Text style={{ fontSize: theme.titleFontSize }}>KidsPrize</Text>
+          </View>
+          <Spinner style={{ flex: 0.3 }} color={theme.inverseSpinnerColor} />
+          <Text style={{ flex: 0.1 }}>Powered by React Native</Text>
         </Content>
       </Container>
     );
@@ -141,4 +137,4 @@ const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
   }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SplashPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LaunchScreen);

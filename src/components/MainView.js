@@ -11,7 +11,7 @@ import * as childActions from '../actions/child';
 import * as failureActions from '../actions/failure';
 import ScoreListView from '../components/ScoreListView';
 import ListItemDivider from '../components/ListItemDivider';
-import { SplashRoute, EditChildRoute } from '../routes';
+import { LaunchRoute, EditChildRoute } from '../routes';
 import theme from '../themes';
 
 import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
@@ -134,7 +134,7 @@ class MainView extends Component {
           { text: 'OK', onPress: () => { this.props.resetFailure(); } }
         ]);
     } else if (!this.props.auth.profile) {
-      this.props.navigator.replace(new SplashRoute());
+      this.props.navigator.replace(new LaunchRoute());
     } else if (this.props.childList.length === 0) {
       this.refs.drawer.open();
     } else if (this.props.child && Object.keys(this.props.weeklyScores).length === 0) {

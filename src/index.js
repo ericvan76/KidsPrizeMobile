@@ -5,7 +5,7 @@ import { Navigator, View, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 
 import store from './store';
-import { SplashRoute, MainRoute } from './routes';
+import { LaunchRoute, MainRoute } from './routes';
 
 class App extends Component {
   constructor(props: Object) {
@@ -24,7 +24,7 @@ class App extends Component {
   }
 
   render() {
-    const route = new SplashRoute();
+    const route = new LaunchRoute();
     return (
       <Provider store={store}>
         <View style={{ flex: 1 }}>

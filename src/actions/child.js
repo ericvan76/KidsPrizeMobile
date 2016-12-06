@@ -62,6 +62,10 @@ export function updateScore(childId: string, date: string, task: string, value: 
 export function listChildrenAsync() {
   return async (dispatch: Dispatch) => {
     try {
+      // todo: implement preference state
+      await api.setPreference({
+        timeZoneOffset: new Date().getTimezoneOffset()
+      });
       const children: Child[] = await api.listChildren();
       dispatch(addChildren(children));
     } catch (err) {

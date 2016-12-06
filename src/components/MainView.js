@@ -15,6 +15,7 @@ import { LaunchRoute, EditChildRoute } from '../routes';
 import theme from '../themes';
 
 import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
+import type { Profile } from '../types/auth.flow';
 
 type StoreProps = {
   auth: AuthState,
@@ -49,7 +50,7 @@ class MainView extends Component {
   logout() {
     Alert.alert(
       'Confirm',
-      'Are you sure you want to logout?',
+      'Are you sure you want to sign out?',
       [
         {
           text: 'No'
@@ -61,6 +62,13 @@ class MainView extends Component {
         }
       ]
     );
+  }
+
+  getDisplayName(profile: ?Profile) {
+    if (profile) {
+      return profile.given_name || profile.nickname || profile.name || 'Unknown';
+    }
+    return 'Unknown';
   }
 
   renderDrawer() {
@@ -89,7 +97,7 @@ class MainView extends Component {
           <List>
             <ListItem>
               <Thumbnail style={{ marginTop: 10, marginBottom: 10 }} size={60} source={{ url: this.props.auth.profile.picture }} />
-              <Text>{this.props.auth.profile.given_name}</Text>
+              <Text>{this.getDisplayName(this.props.auth.profile)}</Text>
               <Text note>{this.props.auth.profile.email}</Text>
             </ListItem>
             <ListItemDivider title='CHILDREN' />
@@ -114,15 +122,15 @@ class MainView extends Component {
     );
   }
 
+  componentDidMount() {
+    this.props.listChildrenAsync();
+  }
+
   shouldComponentUpdate(nextProps: Props) {
     if (this.props.errors.length > 0 && nextProps.errors.length !== 0) {
       return false;
     }
     return true;
-  }
-
-  componentDidMount() {
-    this.props.listChildrenAsync();
   }
 
   componentDidUpdate() {
@@ -135,7 +143,7 @@ class MainView extends Component {
         ]);
     } else if (!this.props.auth.profile) {
       this.props.navigator.replace(new LaunchRoute());
-    } else if (this.props.childList.length === 0) {
+    } else if (this.props.childList && this.props.childList.length === 0) {
       this.refs.drawer.open();
     } else if (this.props.child && Object.keys(this.props.weeklyScores).length === 0) {
       this.props.refreshAsync(this.props.child.id);

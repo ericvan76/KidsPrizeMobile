@@ -1,8 +1,7 @@
 /* @flow */
 
-import moment from 'moment';
+import jwtDecode from 'jwt-decode';
 import config from '../__config__';
-import { getBearerToken } from './token';
 import * as url from '../utils/url';
 
 import { fetchOrThrow } from './api';
@@ -20,31 +19,20 @@ export async function obtainDelegationToken(refresh_token: string): Promise<Toke
       grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
       refresh_token: refresh_token,
       target: config.auth.client_id,
-      scope: 'openid profile'
+      scope: 'openid profile email'
     })
   });
   if (token.id_token) {
     token['refresh_token'] = refresh_token;
-    token['expires_at'] = moment(Date.now()).add(token.expires_in, 'seconds').toDate();
     return token;
   } else {
     throw new Error('Failed to obtain delegation token.');
   }
 }
 
-export async function getUserProfile(): Promise<Profile> {
-  // jwt
-  const access_token = await getBearerToken();
-  const profile = await fetchOrThrow(`https://${config.auth.auth0_domain}/tokeninfo`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: url.encodeQueryString({
-      id_token: access_token
-    })
-  });
-  return profile;
+export function decodeJwt(id_token: string): Profile {
+  var decoded = jwtDecode(id_token);
+  return decoded;
 }
 
 export async function logout() {

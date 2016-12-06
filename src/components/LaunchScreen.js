@@ -7,7 +7,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth0Lock from 'react-native-lock';
 
-import * as auth0 from '../api/auth0';
 import * as authActions from '../actions/auth';
 import * as failureActions from '../actions/failure';
 import { MainRoute } from '../routes';
@@ -15,7 +14,7 @@ import config from '../__config__';
 import theme from '../themes';
 
 import type { AppState, AuthState } from '../types/states.flow';
-import type { Token, Profile } from '../types/auth.flow';
+import type { Token } from '../types/auth.flow';
 
 type StoreProps = {
   auth: AuthState,
@@ -25,7 +24,6 @@ type StoreProps = {
 type ActionProps = {
   initialiseAsync: () => void,
   saveTokenAsync: (token: Token) => void,
-  getUserProfileAsync: () => void,
   failure: (err: Error) => void,
   resetFailure: () => void
 };
@@ -34,13 +32,10 @@ type Props = StoreProps & ActionProps & {
   navigator: Object
 };
 
-type LoginToken = {
-  refreshToken?: string
-};
-
 class LaunchScreen extends Component {
 
-  lock: Auth0Lock
+  props: Props;
+  lock: Auth0Lock;
 
   constructor(props: Props) {
     super(props);
@@ -53,16 +48,19 @@ class LaunchScreen extends Component {
   showLogin() {
     this.lock.show({
       authParams: {
-        scope: 'openid offline_access',
-        redirect_uri: config.auth.redirect_uri
+        scope: 'openid profile email offline_access',
+        device: 'my-device' // todo: get device info
       }
-    }, (err: ?Error, profile: ?Profile, token: ?LoginToken) => {
-      if (token && token.refreshToken) {
-        auth0.obtainDelegationToken(token.refreshToken).then((delegation: Token) => {
-          this.props.saveTokenAsync(delegation);
-        }, (err: Error) => {
-          this.props.failure(err || new Error('Unable to login.'));
-        });
+    }, (err: ?Error, profile: any, token: any) => {
+      if (token) {
+        const toSave: Token = {
+          token_type: token.tokenType,
+          access_token: token.accessToken,
+          id_token: token.idToken,
+          refresh_token: token.refreshToken,
+          expires_in: token.expiresIn
+        };
+        this.props.saveTokenAsync(toSave);
       } else {
         this.props.failure(err || new Error('Unable to login.'));
       }
@@ -96,10 +94,8 @@ class LaunchScreen extends Component {
           { text: 'OK', onPress: () => { this.props.resetFailure(); } }
         ]);
     } else if (this.props.auth.initialised) {
-      if (!this.props.auth.token) {
+      if (!this.props.auth.profile) {
         this.showLogin();
-      } else if (!this.props.auth.profile) {
-        this.props.getUserProfileAsync();
       } else {
         this.showMain();
       }
@@ -110,12 +106,12 @@ class LaunchScreen extends Component {
     return (
       <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ flex: 0.2 }}></View>
+          <View style={{ flex: 0.1 }}></View>
           <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
             <Thumbnail style={{ margin: 20 }} round size={80} source={theme.icon} />
             <Text style={{ fontSize: theme.titleFontSize }}>KidsPrize</Text>
           </View>
-          <Spinner style={{ flex: 0.3 }} color={theme.inverseSpinnerColor} />
+          <Spinner style={{ flex: 0.4, justifyContent: 'flex-start' }} color={theme.inverseSpinnerColor} />
           <Text style={{ flex: 0.1 }}>Powered by React Native</Text>
         </Content>
       </Container>

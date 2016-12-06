@@ -13,7 +13,8 @@ export async function getBearerToken(): Promise<string> {
     const state: AppState = store.getState();
     if (state.auth.token && state.auth.token.id_token) {
       const token = state.auth.token;
-      if (moment(Date.now()).add(5, 'minutes').isAfter(token.expires_at)) {
+      const decoded = auth0.decodeJwt(token.id_token);
+      if (moment(Date.now()).add(5, 'minutes').isAfter(new Date(decoded.exp * 1000))) {
         if (token.refresh_token) {
           const delegation: Token = await auth0.obtainDelegationToken(token.refresh_token);
           store.dispatch(saveTokenAsync(delegation));
@@ -24,8 +25,8 @@ export async function getBearerToken(): Promise<string> {
       }
     }
   } catch (err) {
-    // do nothing
+    // do nothings
   }
   store.dispatch(clearTokenAsync());
-  throw new Error('Failed to get bearer token.');
+  throw new Error('Could not find a valid token, please re-login.');
 }

@@ -1,18 +1,15 @@
 /* @flow */
 
 import * as auth0 from '../api/auth0';
-import * as api from '../api/api';
 import * as storage from '../api/storage';
 import { failure } from './failure';
 
 import type { Token, Profile } from '../types/auth.flow';
-import type { AppState } from '../types/states.flow';
 import type { Action, InitialisedPayload } from '../types/actions.flow';
 
 export const INITIALISED: string = 'INITIALISED';
 export const UPDATE_TOKEN: string = 'UPDATE_TOKEN';
 export const CLEAR_TOKEN: string = 'CLEAR_TOKEN';
-export const SET_PROFILE: string = 'SET_PROFILE';
 
 export function initialised(token: ?Token): Action<'INITIALISED', InitialisedPayload> {
   return {
@@ -35,20 +32,17 @@ export function clearToken(): Action<'CLEAR_TOKEN', void> {
   };
 }
 
-export function setProfile(profile: Profile) {
-  return {
-    type: 'SET_PROFILE',
-    payload: profile
-  };
-}
-
 // Async actions
 
 export function initialiseAsync() {
   return async (dispatch: Dispatch) => {
     try {
       const token = await storage.loadToken();
-      dispatch(initialised(token));
+      if (token && token.id_token) {
+        dispatch(initialised(token));
+      } else {
+        dispatch(initialised(null));
+      }
     } catch (err) {
       dispatch(failure(err));
     }
@@ -71,21 +65,6 @@ export function clearTokenAsync() {
     try {
       await storage.clearToken();
       dispatch(clearToken());
-    } catch (err) {
-      dispatch(failure(err));
-    }
-  };
-}
-
-export function getUserProfileAsync() {
-  return async (dispatch: Dispatch) => {
-    try {
-      // set current timezone before get user
-      await api.setPreference({
-        timeZoneOffset: new Date().getTimezoneOffset()
-      });
-      const profile = await auth0.getUserProfile();
-      dispatch(setProfile(profile));
     } catch (err) {
       dispatch(failure(err));
     }

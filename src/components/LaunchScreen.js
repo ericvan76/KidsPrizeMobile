@@ -6,6 +6,7 @@ import { Container, Content, Thumbnail, Spinner, Text } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth0Lock from 'react-native-lock';
+import DeviceInfo from 'react-native-device-info';
 
 import * as authActions from '../actions/auth';
 import * as failureActions from '../actions/failure';
@@ -49,7 +50,7 @@ class LaunchScreen extends Component {
     this.lock.show({
       authParams: {
         scope: 'openid profile email offline_access',
-        device: 'my-device' // todo: get device info
+        device: DeviceInfo.getDeviceName()
       }
     }, (err: ?Error, profile: any, token: any) => {
       if (token) {

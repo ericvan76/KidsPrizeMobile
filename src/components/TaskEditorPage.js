@@ -6,7 +6,7 @@ import { Container, Header, Title, Content, Button, Icon, Text } from 'native-ba
 import SortableListView from 'react-native-sortable-listview';
 import update from 'react-addons-update';
 
-import Seperator from '../components/Seperator';
+import Seperator from './Seperator';
 import theme from '../themes';
 import { TextInputRoute } from '../routes';
 

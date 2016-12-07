@@ -39,6 +39,7 @@ describe('reducers', () => {
         },
         profile: {
           email: 'name@domain.com',
+          email_verified: true,
           given_name: 'Eric',
           family_name: 'Fan',
           name: 'Eric Fan',
@@ -75,6 +76,7 @@ describe('reducers', () => {
         },
         profile: {
           email: 'name@domain.com',
+          email_verified: true,
           given_name: 'Eric',
           family_name: 'Fan',
           name: 'Eric Fan',

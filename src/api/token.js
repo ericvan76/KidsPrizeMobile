@@ -28,5 +28,5 @@ export async function getBearerToken(): Promise<string> {
     // do nothings
   }
   store.dispatch(clearTokenAsync());
-  throw new Error('Could not find a valid token, please re-login.');
+  throw new Error('Something went wrong with the auth token, please re-login.');
 }

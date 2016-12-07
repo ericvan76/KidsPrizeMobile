@@ -10,6 +10,7 @@ export type Token = {
 
 export type Profile = {
   email: string,
+  email_verified: bool,
   given_name?: string,
   family_name?: string,
   name?: string,

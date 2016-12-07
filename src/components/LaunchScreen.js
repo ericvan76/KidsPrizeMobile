@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Alert, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Container, Content, Thumbnail, Spinner, Text } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,7 +10,9 @@ import DeviceInfo from 'react-native-device-info';
 
 import * as authActions from '../actions/auth';
 import * as failureActions from '../actions/failure';
+import * as auth0 from '../api/auth0';
 import { MainRoute } from '../routes';
+import { alert } from '../utils/alert';
 import config from '../__config__';
 import theme from '../themes';
 
@@ -49,19 +51,24 @@ class LaunchScreen extends Component {
   showLogin() {
     this.lock.show({
       authParams: {
-        scope: 'openid profile email offline_access',
+        scope: 'openid profile email email_verified offline_access',
         device: DeviceInfo.getDeviceName()
       }
     }, (err: ?Error, profile: any, token: any) => {
-      if (token) {
-        const toSave: Token = {
-          token_type: token.tokenType,
-          access_token: token.accessToken,
-          id_token: token.idToken,
-          refresh_token: token.refreshToken,
-          expires_in: token.expiresIn
-        };
-        this.props.saveTokenAsync(toSave);
+      if (token && token.idToken) {
+        const decoded = auth0.decodeJwt(token.idToken);
+        if (decoded.email && decoded.email_verified) {
+          const toSave: Token = {
+            token_type: token.tokenType,
+            access_token: token.accessToken,
+            id_token: token.idToken,
+            refresh_token: token.refreshToken,
+            expires_in: token.expiresIn
+          };
+          this.props.saveTokenAsync(toSave);
+        } else {
+          this.props.failure(new Error('Email is not verified.'));
+        }
       } else {
         this.props.failure(err || new Error('Unable to login.'));
       }
@@ -73,13 +80,16 @@ class LaunchScreen extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
+    if (!this.props.auth.initialised && Platform.OS !== 'ios') {
+      setTimeout(() => {
+        this.props.initialiseAsync();
+      }, 1000);
+    } else {
       this.props.initialiseAsync();
-    }, 1500);
+    }
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    // stop update until previous errors been reset.
     if (this.props.errors.length > 0 && nextProps.errors.length !== 0) {
       return false;
     }
@@ -88,33 +98,40 @@ class LaunchScreen extends Component {
 
   componentDidUpdate() {
     if (this.props.errors.length > 0) {
-      Alert.alert(
-        'Oops!',
-        this.props.errors[0].message,
-        [
-          { text: 'OK', onPress: () => { this.props.resetFailure(); } }
-        ]);
+      alert(this.props.errors);
     } else if (this.props.auth.initialised) {
-      if (!this.props.auth.profile) {
-        this.showLogin();
-      } else {
+      if (this.props.auth.token && this.props.auth.profile) {
         this.showMain();
+      } else {
+        this.showLogin();
       }
     }
   }
 
   render() {
-    return (
-      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
+    let content = null;
+    if (Platform.OS === 'ios') {
+      content = (
+        <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Spinner inverse />
+        </Content>
+      );
+    } else {
+      content = (
         <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ flex: 0.1 }}></View>
           <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
             <Thumbnail style={{ margin: 20 }} round size={80} source={theme.icon} />
-            <Text style={{ fontSize: theme.titleFontSize }}>KidsPrize</Text>
+            <Text style={{ fontSize: theme.titleFontSize * 1.2 }}>KidsPrize</Text>
           </View>
-          <Spinner style={{ flex: 0.4, justifyContent: 'flex-start' }} color={theme.inverseSpinnerColor} />
-          <Text style={{ flex: 0.1 }}>Powered by React Native</Text>
+          <Spinner inverse style={{ flex: 0.4, justifyContent: 'flex-start' }} />
+          <Text style={{ flex: 0.1, fontSize: theme.fontSizeBase * 1.2 }}>Powered by React Native</Text>
         </Content>
+      );
+    }
+    return (
+      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
+        {content}
       </Container>
     );
   }

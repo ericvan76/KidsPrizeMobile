@@ -29,7 +29,7 @@ export async function fetchOrThrow(input: string, init?: Object): Promise<any> {
       throw new Error(`${response.status} ${text}`);
     }
   } catch (err) {
-    throw err;
+    throw new Error(`Error: ${err.message}`);
   }
 }
 

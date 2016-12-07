@@ -12,10 +12,6 @@ class ListItemDivider extends Component {
 
   props: Props;
 
-  static propTypes = {
-    title: React.PropTypes.string
-  }
-
   render() {
     return (
       <ListItem itemDivider
@@ -28,7 +24,7 @@ class ListItemDivider extends Component {
             fontSize: theme.subTitleFontSize,
             fontWeight: 'normal'
           }}>{this.props.title}</Text>
-      </ListItem >
+      </ListItem>
     );
   }
 }

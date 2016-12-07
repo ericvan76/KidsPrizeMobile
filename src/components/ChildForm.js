@@ -2,14 +2,14 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem, Badge } from 'native-base';
+import { Container, Header, Title, Content, Button, Icon, Text, List, ListItem, Picker, Input, Badge } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
 import * as uuid from 'uuid';
 
-import ListItemDivider from '../components/ListItemDivider';
-import { TextInputRoute, PickerRoute, TaskEditorRoute } from '../routes';
+import ListItemDivider from './ListItemDivider';
+import { TaskEditorRoute } from '../routes';
 import theme from '../themes';
 import { createChildAsync, updateChildAsync, deleteChildAsync } from '../actions/child';
 
@@ -35,7 +35,6 @@ type Props = OwnProps & StoreProps & ActionProps & {
 };
 
 type State = {
-  showGenderPicker: boolean,
   destroyed: boolean
 };
 
@@ -54,18 +53,13 @@ class ChildForm extends Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showGenderPicker: false,
       destroyed: false
     };
   }
   isNew(): boolean {
     return !this.props.childId;
   }
-  toggleGenderPicker() {
-    this.setState({
-      showGenderPicker: !this.state.showGenderPicker
-    });
-  }
+
   markAsDestroyed() {
     this.setState(Object.assign({}, this.state, { destroyed: true }));
   }
@@ -75,7 +69,6 @@ class ChildForm extends Component {
   }
 
   onSubmit() {
-
     this.markAsDestroyed();
     if (this.props.dirty) {
       this.props.submit();
@@ -100,11 +93,13 @@ class ChildForm extends Component {
       ]
     );
   }
+
   componentWillUnmount() {
     if (this.state.destroyed) {
       this.props.destroy('childForm');
     }
   }
+
   render() {
     let deleteButton = null;
     if (this.props.childId) {
@@ -114,56 +109,45 @@ class ChildForm extends Component {
           onPress={() => this.onDelete()}>Delete Child</Button>
       );
     }
-    const saveButton = this.props.valid
-      ? <Button transparent onPress={() => this.onSubmit()}>Save</Button>
-      : null;
+
     return (
       <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
         <Header>
           <Button transparent onPress={() => this.onClose()}>Cancel</Button>
           <Title>{this.isNew() ? 'Add Child' : 'Edit Child'}</Title>
-          {saveButton}
+          {this.props.valid ? <Button transparent onPress={() => this.onSubmit()}>Save</Button> : null}
         </Header>
         <Content>
           <List>
             <ListItemDivider title='BASIC INFO' />
             <Field name='name' component={(props: Field.Props) => {
               return (
-                <ListItem button iconLeft onPress={() => this.props.navigator.push(
-                  new TextInputRoute({
-                    title: 'Name',
-                    placeholder: 'Type child name here',
-                    autoCapitalize: 'words',
-                    defaultValue: props.input.value,
-                    onSubmit: (text: string) => {
-                      props.input.onChange(text.trim());
-                      this.props.navigator.pop();
-                    }
-                  }))
-                }>
+                <ListItem iconLeft>
                   <Icon name='ios-contact-outline' />
-                  <Text>Name</Text>
-                  <Text note style={theme.listNote} numberOfLines={1}>{props.input.value}</Text>
+                  <Text style={{ alignSelf: 'center' }}>Name</Text>
+                  <Input
+                    style={{ textAlign: 'right', paddingTop: 0, paddingBottom: 0 }}
+                    placeholder='Type child name here'
+                    autoCapitalize='words'
+                    maxLength={50}
+                    defaultValue={props.input.value}
+                    onSubmitEditing={(event: any) => { props.input.onChange(event.nativeEvent.text.trim()); } }
+                    />
                 </ListItem>
               );
             } } />
             <Field name='gender' component={(props: Field.Props) => {
-              const items = { M: 'Boy', F: 'Girl' };
               return (
-                <ListItem button iconLeft onPress={() => this.props.navigator.push(
-                  new PickerRoute({
-                    title: 'Gender',
-                    items: items,
-                    defaultValue: props.input.value,
-                    onSubmit: (v: Gender) => {
-                      props.input.onChange(v);
-                      this.props.navigator.pop();
-                    }
-                  }))
-                }>
+                <ListItem iconLeft>
                   <Icon name={props.input.value === 'M' ? 'ios-male' : 'ios-female'} />
                   <Text>Gender</Text>
-                  <Text note style={theme.listNote}>{items[props.input.value]}</Text>
+                  <Picker textStyle={{ color: theme.textColor }}
+                    mode='dialog'
+                    selectedValue={props.input.value}
+                    onValueChange={props.input.onChange.bind(this)} >
+                    <Picker.Item label='Boy' value='M' />
+                    <Picker.Item label='Girl' value='F' />
+                  </Picker>
                 </ListItem>
               );
             } } />
@@ -181,7 +165,7 @@ class ChildForm extends Component {
                 }>
                   <Icon name='ios-copy-outline' />
                   <Text>Tasks</Text>
-                  <Text note style={theme.listNote}>{props.input.value.length}</Text>
+                  <Badge style={{ marginTop: 3, marginBottom: 3 }} primary={props.input.value.length > 0}>{props.input.value.length}</Badge>
                 </ListItem>
               );
             } } />

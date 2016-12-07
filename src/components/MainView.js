@@ -2,20 +2,20 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Drawer, Container, Header, Title, Content, Button, Icon, Text, List, ListItem, Thumbnail } from 'native-base';
+import { Drawer, Container, Header, Title, Content, Button, Icon, Spinner } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as authActions from '../actions/auth';
 import * as childActions from '../actions/child';
 import * as failureActions from '../actions/failure';
-import ScoreListView from '../components/ScoreListView';
-import ListItemDivider from '../components/ListItemDivider';
+import ScoreListView from './ScoreListView';
+import DrawerBar from './DrawerBar';
 import { LaunchRoute, EditChildRoute } from '../routes';
+import { alert } from '../utils/alert';
 import theme from '../themes';
 
 import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
-import type { Profile } from '../types/auth.flow';
 
 type StoreProps = {
   auth: AuthState,
@@ -64,65 +64,10 @@ class MainView extends Component {
     );
   }
 
-  getDisplayName(profile: ?Profile) {
-    if (profile) {
-      return profile.given_name || profile.nickname || profile.name || 'Unknown';
-    }
-    return 'Unknown';
-  }
-
-  renderDrawer() {
-    let childrenRows = [];
-    if (this.props.childList) {
-      childrenRows = this.props.childList.map((c: Child) => {
-        return (
-          <ListItem key={c.id} iconLeft button
-            onPress={() => {
-              this.props.switchChild(c.id);
-              this.refs.drawer.close();
-            } }>
-            <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
-            <Text ellipsizeMode='tail' numberOfLines={1}>{c.name}</Text>
-            <Text note style={theme.listNote}>{c.totalScore}</Text>
-          </ListItem>
-        );
-      });
-    }
-    if (!this.props.auth.profile) {
-      return (<Container theme={theme}></Container>);
-    }
-    return (
-      <Container theme={theme}>
-        <Content>
-          <List>
-            <ListItem>
-              <Thumbnail style={{ marginTop: 10, marginBottom: 10 }} size={60} source={{ url: this.props.auth.profile.picture }} />
-              <Text>{this.getDisplayName(this.props.auth.profile)}</Text>
-              <Text note>{this.props.auth.profile.email}</Text>
-            </ListItem>
-            <ListItemDivider title='CHILDREN' />
-            {childrenRows}
-            <ListItem iconLeft button
-              onPress={() => {
-                this.props.navigator.push(new EditChildRoute());
-                this.refs.drawer.close();
-              } }>
-              <Icon name='ios-person-add-outline' />
-              <Text>Add Child</Text>
-            </ListItem>
-            <ListItemDivider title='OTHERS' />
-            <ListItem iconLeft button
-              onPress={this.logout.bind(this)}>
-              <Icon name='ios-exit-outline' />
-              <Text>Sign Out</Text>
-            </ListItem>
-          </List>
-        </Content>
-      </Container>
-    );
-  }
-
   componentDidMount() {
+    if (this.props.errors.length > 0) {
+      alert(this.props.errors);
+    }
     this.props.listChildrenAsync();
   }
 
@@ -135,12 +80,7 @@ class MainView extends Component {
 
   componentDidUpdate() {
     if (this.props.errors.length > 0) {
-      Alert.alert(
-        'Oops!',
-        this.props.errors[0].message,
-        [
-          { text: 'OK', onPress: () => { this.props.resetFailure(); } }
-        ]);
+      alert(this.props.errors);
     } else if (!this.props.auth.profile) {
       this.props.navigator.replace(new LaunchRoute());
     } else if (this.props.childList && this.props.childList.length === 0) {
@@ -150,19 +90,33 @@ class MainView extends Component {
     }
   }
 
+  renderDrawer() {
+    if (!this.props.auth.profile) {
+      return <Container theme={theme}></Container>;
+    }
+    return (
+      <DrawerBar
+        navigator={this.props.navigator}
+        drawer={this.refs.drawer}
+        profile={this.props.auth.profile}
+        childList={this.props.childList}
+        ></DrawerBar>
+    );
+  }
+
   render() {
     let mainElem = null;
     if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
       mainElem = (
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header>
-            <Button transparent header
-              onPress={() => this.refs.drawer.open()}>
+            <Button transparent header onPress={() => this.refs.drawer.open()}>
               <Icon name='ios-menu-outline' />
             </Button>
             <Title></Title>
           </Header>
-          <Content horizontal={true} scrollEnabled={false}>
+          <Content>
+            <Spinner inverse animating={!this.props.childList} />
           </Content>
         </Container>
       );
@@ -170,9 +124,8 @@ class MainView extends Component {
       mainElem = (
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header onPress={() => this.refs.listView.scrollToTop()} >
-            <Button transparent header
-              onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu' />
+            <Button transparent header onPress={() => this.refs.drawer.open()}>
+              <Icon name='ios-menu-outline' />
             </Button>
             <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.name}</Title>
             <Button transparent header

@@ -19,7 +19,7 @@ export async function obtainDelegationToken(refresh_token: string): Promise<Toke
       grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
       refresh_token: refresh_token,
       target: config.auth.client_id,
-      scope: 'openid profile email'
+      scope: 'openid profile email email_verified'
     })
   });
   if (token.id_token) {
@@ -36,5 +36,5 @@ export function decodeJwt(id_token: string): Profile {
 }
 
 export async function logout() {
-  return await fetch(`https://${config.auth.auth0_domain}/v2/logout?client_id=${config.auth.client_id}`);
+  return await fetch(`https://${config.auth.auth0_domain}/v2/logout?federated`);
 }

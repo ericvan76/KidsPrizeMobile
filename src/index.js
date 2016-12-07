@@ -5,7 +5,7 @@ import { Navigator, View, StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 
 import store from './store';
-import { LaunchRoute, MainRoute } from './routes';
+import { LaunchRoute } from './routes';
 
 class App extends Component {
   constructor(props: Object) {
@@ -16,10 +16,7 @@ class App extends Component {
     return route.renderScene(navigator);
   }
 
-  configureScene(route: Object) {
-    if (route instanceof MainRoute) {
-      return Navigator.SceneConfigs.FloatFromBottom;
-    }
+  configureScene() {
     return Navigator.SceneConfigs.PushFromRight;
   }
 

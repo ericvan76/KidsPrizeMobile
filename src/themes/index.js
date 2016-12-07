@@ -130,7 +130,7 @@ export default {
 
   // Icon
   iconFamily: 'Ionicons',
-  iconFontSize: (Platform.OS === 'ios') ? 30 : 28,
+  iconFontSize: (Platform.OS === 'ios') ? 28 : 26,
   iconMargin: 7,
 
 
@@ -144,7 +144,7 @@ export default {
     return this.textColor;
   },
   get inputColorPlaceholder() {
-    return '#575757';
+    return this.subtitleColor;
   },
 
   inputGroupMarginBottom: 10,
@@ -161,14 +161,14 @@ export default {
   lineHeightH1: 32,
   lineHeightH2: 27,
   lineHeightH3: 22,
-  iconLineHeight: (Platform.OS === 'ios') ? 37 : 30,
-  lineHeight: (Platform.OS === 'ios') ? 24 : 28,
+  iconLineHeight: (Platform.OS === 'ios') ? 37 : 35,
+  lineHeight: (Platform.OS === 'ios') ? 22 : 24,
 
   // List
   listBorderColor: '#ddd',
   listDividerBg: '#ddd',
   listItemHeight: 45,
-  listItemPadding: 7,
+  listItemPadding: 10,
   listNoteColor: '#808080',
   listNoteSize: 16,
 
@@ -204,8 +204,8 @@ export default {
 
 
   // Title
-  titleFontSize: (Platform.OS === 'ios') ? 20 : 22,
-  subTitleFontSize: (Platform.OS === 'ios') ? 12 : 14,
+  titleFontSize: (Platform.OS === 'ios') ? 20 : 20,
+  subTitleFontSize: (Platform.OS === 'ios') ? 14 : 14,
   subtitleColor: '#8e8e93',
 
 
@@ -232,17 +232,14 @@ export default {
 
   backgroundColor: '#fff',
 
-  facebookColor: '#3b5998',
-  googleColor: '#d34836',
-
   screenWidth: width,
   screenHeight: height,
 
   shadowColor: '#000000',
   shadowOpacity: 0.8,
 
-  taskFontSize: 16,
-  starSize: 32,
+  taskFontSize: 18,
+  starSize: 36,
 
   get listNote() {
     return {

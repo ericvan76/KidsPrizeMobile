@@ -7,7 +7,6 @@ import MainView from '../components/MainView';
 import ChildForm from '../components/ChildForm';
 import TaskEditorPage from '../components/TaskEditorPage';
 import TextInputPage from '../components/TextInputPage';
-import PickerPage from '../components/PickerPage';
 
 export type Route = {
   renderScene: (navigator: Object) => any
@@ -60,7 +59,6 @@ export class TaskEditorRoute {
     );
   }
 }
-
 // Resuable Routes
 export class TextInputRoute {
   props: any;
@@ -70,18 +68,6 @@ export class TextInputRoute {
   renderScene(navigator: Object) {
     return (
       <TextInputPage navigator={navigator} {...this.props} />
-    );
-  }
-}
-
-export class PickerRoute {
-  props: any;
-  constructor(props: any) {
-    this.props = props;
-  }
-  renderScene(navigator: Object) {
-    return (
-      <PickerPage navigator={navigator} {...this.props} />
     );
   }
 }

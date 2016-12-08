@@ -41,6 +41,7 @@ buck-out/
 android/app/libs
 *.keystore
 
+ios/Pods/
 .vscode/launchReactNative.js
 .vscode/.react/
 .vscode/typings/

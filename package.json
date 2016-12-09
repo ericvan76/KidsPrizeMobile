@@ -12,7 +12,7 @@
     "native-base": "0.5.18",
     "react": "15.4.1",
     "react-addons-update": "15.4.1",
-    "react-native": "0.39.0",
+    "react-native": "0.39.1",
     "react-native-cookies": "^2.0.0",
     "react-native-device-info": "^0.9.7",
     "react-native-lock": "^0.4.0",
@@ -20,29 +20,31 @@
     "react-native-vector-icons": "^3.0.0",
     "react-redux": "^4.4.6",
     "redux": "^3.6.0",
-    "redux-form": "^6.2.1",
+    "redux-form": "6.3.1",
     "redux-thunk": "^2.1.0",
     "url": "^0.11.0",
     "uuid": "^3.0.1"
   },
   "jest": {
     "verbose": true,
-    "preset": "jest-react-native",
+    "preset": "react-native",
     "testRegex": "(/__tests__/.(test|spec)|\\.(test|spec))\\.(js|jsx)$",
     "setupFiles": [
       "__tests__/setup.js"
-    ]
+    ],
+    "moduleNameMapper": {
+      "redux-form": "<rootDir>/node_modules/redux-form/dist/redux-form.min.js"
+    }
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
-    "babel-jest": "^17.0.2",
-    "babel-preset-react-native": "^1.9.0",
+    "babel-jest": "17.0.2",
+    "babel-preset-react-native": "1.9.0",
     "eslint": "^3.11.1",
     "eslint-plugin-flowtype": "^2.29.1",
     "eslint-plugin-react": "^6.8.0",
     "flow-bin": "^0.36.0",
     "jest": "17.0.3",
-    "jest-react-native": "17.1.0",
     "react-test-renderer": "15.4.1",
     "redux-devtools": "^3.3.1",
     "whatwg-fetch": "^2.0.1"

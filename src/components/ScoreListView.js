@@ -66,7 +66,7 @@ class ScoreListView extends Component {
             textAlign: 'center',
             fontSize: theme.subTitleFontSize,
             color: theme.subtitleColor,
-            lineHeight: Math.round(theme.lineHeight * 0.8),
+            lineHeight: theme.subtitleLineHeight,
             fontWeight: today === key ? 'bold' : 'normal'
           }}
           key={key}

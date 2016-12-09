@@ -113,19 +113,21 @@ class LaunchScreen extends Component {
     if (Platform.OS === 'ios') {
       content = (
         <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Spinner inverse />
+          <Spinner inverse size='small' />
         </Content>
       );
     } else {
       content = (
-        <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ flex: 0.1 }}></View>
-          <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
-            <Thumbnail style={{ margin: 20 }} round size={80} source={theme.icon} />
-            <Text style={{ fontSize: theme.titleFontSize * 1.2 }}>KidsPrize</Text>
+        <Content contentContainerStyle={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ flex: 0.5, justifyContent: 'flex-end' }}>
+            <Thumbnail round size={100} source={theme.icon} />
           </View>
-          <Spinner inverse style={{ flex: 0.4, justifyContent: 'flex-start' }} />
-          <Text style={{ flex: 0.1, fontSize: theme.fontSizeBase * 1.2 }}>Powered by React Native</Text>
+          <View style={{ flex: 0.4, justifyContent: 'center' }}>
+            <Spinner inverse size='small' />
+          </View>
+          <View style={{ flex: 0.1, justifyContent: 'center' }}>
+            <Text style={{ fontSize: theme.fontSizeBase * 1.2 }}>Powered by React Native</Text>
+          </View>
         </Content>
       );
     }

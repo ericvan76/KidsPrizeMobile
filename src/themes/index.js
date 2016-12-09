@@ -238,8 +238,12 @@ export default {
   shadowColor: '#000000',
   shadowOpacity: 0.8,
 
-  taskFontSize: 18,
+  taskFontSize: 17,
   starSize: 36,
+
+  get subtitleLineHeight() {
+    return Math.floor(this.lineHeight * 0.8);
+  },
 
   get listNote() {
     return {

@@ -20,7 +20,7 @@
     "react-native-vector-icons": "^3.0.0",
     "react-redux": "^4.4.6",
     "redux": "^3.6.0",
-    "redux-form": "6.3.1",
+    "redux-form": "6.3.2",
     "redux-thunk": "^2.1.0",
     "url": "^0.11.0",
     "uuid": "^3.0.1"
@@ -31,10 +31,7 @@
     "testRegex": "(/__tests__/.(test|spec)|\\.(test|spec))\\.(js|jsx)$",
     "setupFiles": [
       "__tests__/setup.js"
-    ],
-    "moduleNameMapper": {
-      "redux-form": "<rootDir>/node_modules/redux-form/dist/redux-form.min.js"
-    }
+    ]
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

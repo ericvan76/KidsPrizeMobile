@@ -115,8 +115,8 @@ class MainView extends Component {
             </Button>
             <Title></Title>
           </Header>
-          <Content>
-            <Spinner inverse animating={!this.props.childList} />
+          <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Spinner inverse size='small' style={{ marginTop: -1 * theme.toolbarHeight }} animating={!this.props.childList} />
           </Content>
         </Container>
       );

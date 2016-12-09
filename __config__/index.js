@@ -1,8 +1,6 @@
 /* @flow */
 
-import type { Config } from '../types/config.flow';
-
-const config: Config = {
+export default {
   auth: {
     auth0_domain: 'apperic.auth0.com',
     client_id: 'npeMSLRd6HPDGyegxzhGfnHrkIu83F8B',
@@ -12,5 +10,3 @@ const config: Config = {
     baseUrl: 'https://api.kids-prize.com'
   }
 };
-
-export default config;

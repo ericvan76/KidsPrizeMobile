@@ -1,7 +1,7 @@
 /* @flow */
 
 import jwtDecode from 'jwt-decode';
-import config from '../__config__';
+import config from '../../__config__';
 import * as url from '../utils/url';
 
 import { fetchOrThrow } from './api';

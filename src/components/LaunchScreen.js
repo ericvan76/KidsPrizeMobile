@@ -13,7 +13,7 @@ import * as failureActions from '../actions/failure';
 import * as auth0 from '../api/auth0';
 import { MainRoute } from '../routes';
 import { alert } from '../utils/alert';
-import config from '../__config__';
+import config from '../../__config__';
 import theme from '../themes';
 
 import type { AppState, AuthState } from '../types/states.flow';

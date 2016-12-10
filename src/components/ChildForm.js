@@ -52,9 +52,6 @@ class ChildForm extends Component {
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      destroyed: false
-    };
   }
   isNew(): boolean {
     return !this.props.childId;
@@ -63,13 +60,12 @@ class ChildForm extends Component {
   markAsDestroyed() {
     this.setState(Object.assign({}, this.state, { destroyed: true }));
   }
+
   onClose() {
-    this.markAsDestroyed();
     this.props.navigator.popToTop();
   }
 
   onSubmit() {
-    this.markAsDestroyed();
     if (this.props.dirty) {
       this.props.submit();
     }
@@ -85,7 +81,6 @@ class ChildForm extends Component {
           text: 'Cancel'
         }, {
           text: 'Delete', onPress: () => {
-            this.markAsDestroyed();
             this.props.deleteChildAsync(this.props.childId);
             this.props.navigator.popToTop();
           }
@@ -95,9 +90,7 @@ class ChildForm extends Component {
   }
 
   componentWillUnmount() {
-    if (this.state.destroyed) {
-      this.props.destroy('childForm');
-    }
+    this.props.destroy('childForm');
   }
 
   render() {
@@ -230,7 +223,6 @@ const onSubmit = (values: FormValues, dispatch: Dispatch, props: Props) => {
 export default connect(mapStateToProps, mapDispatchToProps)(
   reduxForm({
     form: 'childForm',
-    destroyOnUnmount: false,
     validate: validate,
     onSubmit: onSubmit
   })(ChildForm));

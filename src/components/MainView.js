@@ -111,7 +111,7 @@ class MainView extends Component {
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header>
             <Button transparent header onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu-outline' />
+              <Icon name='ios-menu' />
             </Button>
             <Title></Title>
           </Header>
@@ -125,7 +125,7 @@ class MainView extends Component {
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header onPress={() => this.refs.listView.scrollToTop()} >
             <Button transparent header onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu-outline' />
+              <Icon name='ios-menu' />
             </Button>
             <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.name}</Title>
             <Button transparent header

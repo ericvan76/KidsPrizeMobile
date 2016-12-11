@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import com.psykar.cookiemanager.CookieManagerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.auth0.lock.react.LockReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -29,7 +28,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new CookieManagerPackage(),
             new RNDeviceInfo(),
             new LockReactPackage(),
             new VectorIconsPackage()

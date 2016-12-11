@@ -1,5 +1,4 @@
 /* @flow */
-import CookieManager from 'react-native-cookies';
 
 import * as auth0 from '../api/auth0';
 import * as storage from '../api/storage';
@@ -79,7 +78,6 @@ export function logoutAsync() {
   return async (dispatch: Dispatch) => {
     try {
       await storage.clearToken();
-      await CookieManager.clearAll(() => { });
       await auth0.logout();
       dispatch(clearToken());
     } catch (err) {

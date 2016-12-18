@@ -132,7 +132,7 @@ class ChildForm extends Component {
             <Field name='gender' component={(props: Field.Props) => {
               return (
                 <ListItem iconLeft>
-                  <Icon name={props.input.value === 'M' ? 'ios-male' : 'ios-female'} />
+                  <Icon name={props.input.value === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
                   <Text>Gender</Text>
                   <Picker textStyle={{ color: theme.textColor }}
                     mode='dialog'

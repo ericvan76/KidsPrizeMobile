@@ -12,12 +12,12 @@
     "native-base": "0.5.18",
     "react": "15.4.1",
     "react-addons-update": "15.4.1",
-    "react-native": "0.39.1",
+    "react-native": "0.39.2",
     "react-native-device-info": "^0.9.7",
     "react-native-lock": "^0.4.0",
     "react-native-sortable-listview": "^0.1.1",
     "react-native-vector-icons": "^3.0.0",
-    "react-redux": "^4.4.6",
+    "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-form": "6.3.2",
     "redux-thunk": "^2.1.0",
@@ -28,19 +28,17 @@
     "verbose": true,
     "preset": "react-native",
     "testRegex": "(/__tests__/.(test|spec)|\\.(test|spec))\\.(js|jsx)$",
-    "setupFiles": [
-      "__tests__/setup.js"
-    ]
+    "setupFiles": []
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
-    "babel-jest": "17.0.2",
-    "babel-preset-react-native": "1.9.0",
-    "eslint": "^3.11.1",
+    "babel-jest": "18.0.0",
+    "babel-preset-react-native": "1.9.1",
+    "eslint": "^3.12.2",
     "eslint-plugin-flowtype": "^2.29.1",
     "eslint-plugin-react": "^6.8.0",
-    "flow-bin": "^0.36.0",
-    "jest": "17.0.3",
+    "flow-bin": "^0.37.0",
+    "jest": "18.0.0",
     "react-test-renderer": "15.4.1",
     "redux-devtools": "^3.3.1",
     "whatwg-fetch": "^2.0.1"

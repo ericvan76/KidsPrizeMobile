@@ -154,7 +154,7 @@ class TaskEditorPage extends Component {
       <Container theme={theme}>
         <Header>
           <Button transparent onPress={() => this.props.navigator.pop()}>Cancel</Button>
-          <Title>Task List</Title>
+          <Title>Tasks</Title>
           <Button transparent onPress={() => this.onAddPress()}>
             <Icon name='ios-add-circle-outline' />
           </Button>

@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Drawer, Container, Header, Title, Content, Button, Icon, Spinner } from 'native-base';
+import { Drawer, Container, Header, Title, Content, Button, Icon, Spinner, Text } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -107,6 +107,9 @@ class MainView extends Component {
   render() {
     let mainElem = null;
     if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
+      var spinnerOrHint = this.props.childList
+        ? <Text style={{ color: theme.subtitleColor, marginTop: -1 * theme.toolbarHeight }}>No Child</Text>
+        : <Spinner inverse size='small' style={{ marginTop: -1 * theme.toolbarHeight }} animating={!this.props.childList} />;
       mainElem = (
         <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
           <Header>
@@ -116,7 +119,7 @@ class MainView extends Component {
             <Title></Title>
           </Header>
           <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Spinner inverse size='small' style={{ marginTop: -1 * theme.toolbarHeight }} animating={!this.props.childList} />
+            {spinnerOrHint}
           </Content>
         </Container>
       );

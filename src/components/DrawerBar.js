@@ -93,7 +93,7 @@ class DrawerBar extends Component {
             <ListItemDivider title='OTHERS' />
             <ListItem iconLeft button
               onPress={this.logout.bind(this)}>
-              <Icon name='ios-exit-outline' />
+              <Icon name='ios-log-out-outline' />
               <Text>Sign Out</Text>
             </ListItem>
           </List>

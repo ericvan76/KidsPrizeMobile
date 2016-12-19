@@ -35,7 +35,6 @@ type Props = OwnProps & StoreProps & ActionProps & {
 };
 
 type State = {
-  destroyed: boolean
 };
 
 type FormValues = {
@@ -53,12 +52,9 @@ class ChildForm extends Component {
   constructor(props: Props) {
     super(props);
   }
+
   isNew(): boolean {
     return !this.props.childId;
-  }
-
-  markAsDestroyed() {
-    this.setState(Object.assign({}, this.state, { destroyed: true }));
   }
 
   onClose() {
@@ -132,9 +128,9 @@ class ChildForm extends Component {
             <Field name='gender' component={(props: Field.Props) => {
               return (
                 <ListItem iconLeft>
-                  <Icon name={props.input.value === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
+                  <Icon name={props.input.value === 'M' ? 'ios-male-outline' : 'ios-female-outline'} />
                   <Text>Gender</Text>
-                  <Picker textStyle={{ color: theme.textColor }}
+                  <Picker textStyle={{ color: theme.textColor, fontSize: theme.inputFontSize }}
                     mode='dialog'
                     selectedValue={props.input.value}
                     onValueChange={props.input.onChange.bind(this)} >

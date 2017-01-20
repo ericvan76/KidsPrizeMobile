@@ -2,13 +2,13 @@
 
 import update from 'react-addons-update';
 import moment from 'moment';
-import { ADD_CHILDREN, UPDATE_CHILD, DELETE_CHILD, UPDATE_SCORE } from '../actions/child';
+import { ADD_CHILDREN, UPDATE_CHILD, DELETE_CHILD, UPDATE_SCORE, ADD_REDEEMS } from '../actions/child';
 import { CLEAR_TOKEN } from '../actions/auth';
 
 import { INITIAL_STATE } from './initialState';
 
 import type { ChildrenState, WeeklyScoresState } from '../types/states.flow';
-import type { Action, UpdateScorePayload } from '../types/actions.flow';
+import type { Action, UpdateScorePayload, AddRedeemsPayload } from '../types/actions.flow';
 
 export default function (state: ChildrenState = INITIAL_STATE.children, action: Action<any, any>) {
   switch (action.type) {
@@ -17,7 +17,8 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
       return children.reduce((prev: ChildrenState, child: Child) => {
         prev[child.id] = {
           child: child,
-          weeklyScores: {}
+          weeklyScores: {},
+          redeems: []
         };
         return prev;
       }, {});
@@ -27,9 +28,7 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
         const payload: ScoreResult = action.payload;
         const weeklyScores: WeeklyScoresState = payload.weeklyScores
           .sort((a: WeeklyScore, b: WeeklyScore) => {
-            if (a.week < b.week) return 1;
-            if (a.week > b.week) return -1;
-            return 0;
+            return a.week < b.week ? 1 : a.week > b.week ? -1 : 0;
           })
           .reduce((prev: WeeklyScoresState, weeklyScore: WeeklyScore) => {
             const week = moment(Date.parse(weeklyScore.week)).utc().format('YYYY-MM-DD');
@@ -106,6 +105,25 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
     case CLEAR_TOKEN:
       {
         return INITIAL_STATE.children;
+      }
+    case ADD_REDEEMS:
+      {
+        const payload: AddRedeemsPayload = action.payload;
+        const sortedRedeems = update(state[payload.childId].redeems, { $push: payload.redeems }).sort((a: Redeem, b: Redeem) => {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        });
+        return update(state, {
+          [payload.childId]: {
+            child: {
+              totalScore: {
+                $apply: (x: number) => {
+                  return payload.updateTotal ? payload.redeems.reduce((prev: number, i: Redeem) => { return prev - i.value; }, x) : x;
+                }
+              }
+            },
+            redeems: { $set: sortedRedeems }
+          }
+        });
       }
     default:
       return state;

@@ -25,7 +25,8 @@ export type ChildrenState = {
 
 export type ChildState = {
   child: Child,
-  weeklyScores: WeeklyScoresState
+  weeklyScores: WeeklyScoresState,
+  redeems: Redeem[]
 };
 
 export type WeeklyScoresState = {
@@ -39,3 +40,4 @@ export type WeeklySectionState = {
 export type TaskRowState = {
   [date: string]: number
 };
+

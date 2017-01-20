@@ -17,3 +17,9 @@ export type UpdateScorePayload = {
   task: string,
   value: number
 };
+
+export type AddRedeemsPayload = {
+  childId: string,
+  redeems: Redeem[],
+  updateTotal: boolean
+};

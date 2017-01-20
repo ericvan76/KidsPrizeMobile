@@ -32,3 +32,9 @@ declare type Score = {
   task: string,
   value: number
 };
+
+declare type Redeem = {
+  timestamp: string,
+  description: string,
+  value: number
+};

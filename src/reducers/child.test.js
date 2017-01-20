@@ -4,7 +4,7 @@ import moment from 'moment';
 import uuid from 'uuid';
 
 import { clearToken } from '../actions/auth';
-import { addChildren, updateChild, deleteChild, updateScore } from '../actions/child';
+import { addChildren, updateChild, deleteChild, updateScore, addRedeems } from '../actions/child';
 import reducer from './child';
 import type { ChildState, ChildrenState, WeeklySectionState, WeeklyScoresState } from '../types/states.flow';
 
@@ -174,6 +174,56 @@ describe('reducers', () => {
       expect(state).toBeTruthy();
       expect(state).toEqual({ isNotLoaded: true });
     });
+
+    it('test create redeem', () => {
+      const childId = uuid.v4();
+      const initState = {
+        [childId]: new ChildStateBuilder()
+          .withChild(childId, 'Child1', 'F')
+          .withWeek('2016-11-13', ['A', 'B', 'C'])
+          .withScore('2016-11-13', 'B', 10)
+          .withRedeem('2017-01-01T05:00:00Z', 'x', 1)
+          .withRedeem('2017-01-01T01:00:00Z', 'y', 1)
+          .build()
+      };
+
+      const state: ChildrenState = reducer(initState, addRedeems(childId, [
+        { timestamp: '2017-01-01T06:00:00Z', description: 'x', value: 1 },
+      ], true));
+
+      expect(state).toBeTruthy();
+      expect(state[childId].child.totalScore).toBe(9);
+      expect(state[childId].redeems.length).toBe(3);
+    });
+
+    it('test add redeems', () => {
+      const childId = uuid.v4();
+      const initState = {
+        [childId]: new ChildStateBuilder()
+          .withChild(childId, 'Child1', 'F')
+          .withWeek('2016-11-13', ['A', 'B', 'C'])
+          .withScore('2016-11-13', 'B', 10)
+          .withRedeem('2017-01-01T05:00:00Z', 'x', 1)
+          .withRedeem('2017-01-01T01:00:00Z', 'y', 1)
+          .build()
+      };
+
+      const state: ChildrenState = reducer(initState, addRedeems(childId, [
+        { timestamp: '2017-01-01T03:00:00Z', description: 'x', value: 1 },
+        { timestamp: '2017-01-01T04:00:00Z', description: 'x', value: 1 },
+        { timestamp: '2017-01-01T02:00:00Z', description: 'x', value: 1 }
+      ], false));
+
+      expect(state).toBeTruthy();
+      expect(state[childId].child.totalScore).toBe(10);
+      expect(state[childId].redeems.length).toBe(5);
+      expect(state[childId].redeems[0].timestamp).toBe('2017-01-01T05:00:00Z');
+      expect(state[childId].redeems[1].timestamp).toBe('2017-01-01T04:00:00Z');
+      expect(state[childId].redeems[2].timestamp).toBe('2017-01-01T03:00:00Z');
+      expect(state[childId].redeems[3].timestamp).toBe('2017-01-01T02:00:00Z');
+      expect(state[childId].redeems[4].timestamp).toBe('2017-01-01T01:00:00Z');
+    });
+
   });
 });
 
@@ -228,6 +278,7 @@ class ChildStateBuilder {
 
   child: Child;
   weeklyScores: WeeklyScoresState;
+  redeems: Redeem[];
 
   constructor() {
     this.child = {
@@ -237,9 +288,10 @@ class ChildStateBuilder {
       totalScore: 0
     };
     this.weeklyScores = {};
+    this.redeems = [];
   }
   build(): ChildState {
-    return { child: this.child, weeklyScores: this.weeklyScores };
+    return { child: this.child, weeklyScores: this.weeklyScores, redeems: this.redeems };
   }
   withChild(id: string, name: string, gender: Gender) {
     this.child.id = id;
@@ -258,6 +310,10 @@ class ChildStateBuilder {
     const week: string = moment(Date.parse(date)).utc().day(0).format('YYYY-MM-DD');
     this.weeklyScores[week][task][date] = value;
     this.child.totalScore += value;
+    return this;
+  }
+  withRedeem(timestamp: string, description: string, value: number) {
+    this.redeems.push({ timestamp: timestamp, description: description, value: value });
     return this;
   }
 }

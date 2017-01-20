@@ -4,7 +4,7 @@ import * as api from '../api/api';
 import { failure } from './failure';
 
 import type { AppState } from '../types/states.flow';
-import type { Action, UpdateScorePayload } from '../types/actions.flow';
+import type { Action, UpdateScorePayload, AddRedeemsPayload } from '../types/actions.flow';
 
 const WEEKS_TO_LOAD: number = 4;
 
@@ -13,6 +13,7 @@ export const SWITCH_CHILD: string = 'SWITCH_CHILD';
 export const DELETE_CHILD: string = 'DELETE_CHILD';
 export const UPDATE_CHILD: string = 'UPDATE_CHILD';
 export const UPDATE_SCORE: string = 'UPDATE_SCORE';
+export const ADD_REDEEMS: string = 'ADD_REDEEMS';
 
 // to fix formatter
 type nullableString = ?string;
@@ -53,6 +54,17 @@ export function updateScore(childId: string, date: string, task: string, value: 
       date: date,
       task: task,
       value: value
+    }
+  };
+}
+
+export function addRedeems(childId: string, redeems: Redeem[], updateTotal: boolean): Action<'ADD_REDEEMS', AddRedeemsPayload> {
+  return {
+    type: 'ADD_REDEEMS',
+    payload: {
+      childId: childId,
+      redeems: redeems,
+      updateTotal: updateTotal
     }
   };
 }
@@ -156,4 +168,27 @@ export function fetchMoreAsync(childId: string) {
   };
 }
 
+export function createRedeem(childId: string, description: string, value: number) {
+  return async (dispatch: Dispatch) => {
+    try {
+      const redeem = await api.createRedeem(childId, description, value);
+      dispatch(addRedeems(childId, [redeem], true));
+    } catch (err) {
+      dispatch(failure(err));
+    }
+  };
+}
+
+export function getRedeems(childId: string) {
+  return async (dispatch: Dispatch, getState: Function) => {
+    try {
+      const state: AppState = getState();
+      const offset = state.children[childId].redeems.length;
+      const redeems = await api.getRedeems(childId, 25, offset);
+      dispatch(addRedeems(childId, redeems, false));
+    } catch (err) {
+      dispatch(failure(err));
+    }
+  };
+}
 

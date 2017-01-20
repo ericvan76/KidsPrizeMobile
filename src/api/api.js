@@ -98,3 +98,20 @@ export async function setScore(childId: string, date: string, task: string, valu
   });
 }
 
+export async function createRedeem(childId: string, description: string, value: number): Promise<Redeem> {
+  return await callApi(`/children/${childId}/redeems`, {
+    method: 'POST',
+    body: {
+      childId: childId,
+      description: description,
+      value: value
+    }
+  });
+}
+
+export async function getRedeems(childId: string, limit: number, offset: number): Promise<Redeem[]> {
+  return await callApi(`/children/${childId}/redeems?${url.encodeQueryString({
+    limit: limit,
+    offset: offset
+  })}`);
+}

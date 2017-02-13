@@ -116,7 +116,7 @@ export function deleteChildAsync(childId: string) {
       const state: AppState = getState();
       if (state.currentChild === childId) {
         const childIdArray = Object.keys(state.children);
-        const nextChildId: ?string = childIdArray.find((id: string) => { return id !== childId; });
+        const nextChildId = childIdArray.find((id: string) => { return id !== childId; });
         dispatch(switchChild(nextChildId || null));
       }
       dispatch(deleteChild(childId));
@@ -140,8 +140,8 @@ export function setScoreAsync(childId: string, date: string, task: string, value
 export function refreshAsync(childId: string) {
   return async (dispatch: Dispatch) => {
     try {
-      const rewindFrom = moment(Date.now()).utcOffset(0, true).startOf('day').day(7);
-      const result = await api.getScores(childId, rewindFrom.format('YYYY-MM-DD'), WEEKS_TO_LOAD);
+      const rewindFrom = moment().day(7).format('YYYY-MM-DD');
+      const result = await api.getScores(childId, rewindFrom, WEEKS_TO_LOAD);
       dispatch(updateChild(result));
     } catch (err) {
       dispatch(failure(err));
@@ -159,8 +159,7 @@ export function fetchMoreAsync(childId: string) {
         return;
       }
       const lastWeek = loadedWeeks[loadedWeeks.length - 1];
-      const rewindFrom = moment(Date.parse(lastWeek)).utc();
-      const result = await api.getScores(childId, rewindFrom.format('YYYY-MM-DD'), WEEKS_TO_LOAD);
+      const result = await api.getScores(childId, lastWeek, WEEKS_TO_LOAD);
       dispatch(updateChild(result));
     } catch (err) {
       dispatch(failure(err));

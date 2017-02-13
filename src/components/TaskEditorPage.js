@@ -1,13 +1,14 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Container, Header, Title, Content, Button, Icon, Text } from 'native-base';
+
+import { Container, Header, Left, Body, ListItem, Right, Title, Content, Button, Icon, Text, StyleProvider } from 'native-base';
+
+import theme from '../native-base-theme';
+
 import SortableListView from 'react-native-sortable-listview';
 import update from 'react-addons-update';
 
-import Seperator from './Seperator';
-import theme from '../themes';
 import { TextInputRoute } from '../routes';
 
 type RowProps = {
@@ -23,36 +24,21 @@ class Row extends Component {
 
   render() {
     return (
-      <View style={{ backgroundColor: theme.backgroundColor }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: 5,
-            backgroundColor: theme.inverseTextColor
-          }}>
-          <Button transparent onPress={this.props.onRemove}>
-            <Icon name='ios-remove-circle' style={{ color: theme.badgeBg }} />
+      <ListItem icon last>
+        <Left >
+          <Button style={{ padding: 0 }} transparent danger onPress={this.props.onRemove} >
+            <Icon name={theme.icons.remove} active />
           </Button>
-          <Text
-            style={{
-              flex: 1,
-              textAlign: 'left',
-              paddingLeft: 5,
-              paddingRight: 5,
-              color: theme.textColor,
-              fontSize: theme.inputFontSize
-            }}
-            ellipsizeMode='tail'
-            numberOfLines={1}
-            >{this.props.title}</Text>
-          <Button transparent delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
-            <Icon name='ios-reorder' style={{ color: theme.listNoteColor }} />
+        </Left>
+        <Body>
+          <Text ellipsizeMode='tail' numberOfLines={1}>{this.props.title}</Text>
+        </Body>
+        <Right>
+          <Button style={{ padding: 0 }} transparent info delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
+            <Icon name={theme.icons.reorder} />
           </Button>
-        </View>
-        <Seperator />
-      </View>
+        </Right>
+      </ListItem>
     );
   }
 }
@@ -138,6 +124,8 @@ class TaskEditorPage extends Component {
       new TextInputRoute({
         title: 'New Task',
         placeholder: 'Type new task here',
+        autoCapitalize: 'words',
+        maxLength: 50,
         onSubmit: (text: string) => {
           this.onAdd(text);
           this.props.navigator.pop();
@@ -151,37 +139,52 @@ class TaskEditorPage extends Component {
   }
   render() {
     return (
-      <Container theme={theme}>
-        <Header>
-          <Button transparent onPress={() => this.props.navigator.pop()}>Cancel</Button>
-          <Title>Tasks</Title>
-          <Button transparent onPress={() => this.onAddPress()}>
-            <Icon name='ios-add-circle-outline' />
-          </Button>
-          <Button transparent onPress={() => {
-            const value = this.state.order.map(i => this.state.data[i]);
-            this.props.onSubmit(value);
-          } }>Done</Button>
-        </Header>
-        <Content horizontal={true} scrollEnabled={false} >
-          <SortableListView
-            style={{
-              flex: 1,
-              backgroundColor: theme.inverseTextColor,
-              width: theme.screenWidth
-            }}
-            sortRowStyle={{
-              opacity: theme.shadowOpacity,
-              backgroundColor: theme.inverseTextColor
-            }}
-            data={this.state.data}
-            order={this.state.order}
-            onRowMoved={e => this.onMove(e)}
-            renderRow={row => this.renderRow(row)} />
-        </Content>
-      </Container>
+      <StyleProvider style={theme}>
+        <Container>
+          <Header>
+            <Left>
+              <Button transparent onPress={() => this.props.navigator.pop()}>
+                <Text>Cancel</Text>
+              </Button>
+            </Left>
+            <Body>
+              <Title>Tasks</Title>
+            </Body>
+            <Right>
+              <Button transparent onPress={this.onAddPress.bind(this)}>
+                <Icon name={theme.icons.addTask} />
+              </Button>
+              <Button transparent onPress={() => {
+                const value = this.state.order.map(i => this.state.data[i]);
+                this.props.onSubmit(value);
+              }}>
+                <Text>Done</Text>
+              </Button>
+            </Right>
+          </Header>
+          <Content horizontal={true} scrollEnabled={false} >
+            <SortableListView
+              style={styles.list}
+              sortRowStyle={styles.row}
+              data={this.state.data}
+              order={this.state.order}
+              onRowMoved={e => this.onMove(e)}
+              renderRow={row => this.renderRow(row)} />
+          </Content>
+        </Container>
+      </StyleProvider>
     );
   }
 }
+
+const styles = {
+  list: {
+    flex: 1,
+    width: theme.variables.deviceWidth
+  },
+  row: {
+    opacity: 0.8
+  }
+};
 
 export default TaskEditorPage;

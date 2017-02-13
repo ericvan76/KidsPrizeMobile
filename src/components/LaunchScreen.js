@@ -2,11 +2,13 @@
 
 import React, { Component } from 'react';
 import { Platform, View } from 'react-native';
-import { Container, Content, Thumbnail, Spinner, Text } from 'native-base';
+import { Container, Content, Thumbnail, Spinner, Text, StyleProvider } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth0Lock from 'react-native-lock';
 import DeviceInfo from 'react-native-device-info';
+
+import theme from '../native-base-theme';
 
 import * as authActions from '../actions/auth';
 import * as failureActions from '../actions/failure';
@@ -14,7 +16,6 @@ import * as auth0 from '../api/auth0';
 import { MainRoute } from '../routes';
 import { alert } from '../utils/alert';
 import config from '../../__config__';
-import theme from '../themes';
 
 import type { AppState, AuthState } from '../types/states.flow';
 import type { Token } from '../types/auth.flow';
@@ -108,33 +109,37 @@ class LaunchScreen extends Component {
     }
   }
 
-  render() {
-    let content = null;
-    if (Platform.OS === 'ios') {
-      content = (
-        <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Spinner inverse size='small' />
-        </Content>
-      );
-    } else {
-      content = (
-        <Content contentContainerStyle={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ flex: 0.5, justifyContent: 'flex-end' }}>
-            <Thumbnail round size={100} source={theme.icon} />
-          </View>
-          <View style={{ flex: 0.4, justifyContent: 'center' }}>
-            <Spinner inverse size='small' />
-          </View>
-          <View style={{ flex: 0.1, justifyContent: 'center' }}>
-            <Text style={{ fontSize: theme.fontSizeBase * 1.2 }}>Powered by React Native</Text>
-          </View>
-        </Content>
-      );
-    }
+  renderIOS() {
     return (
-      <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
-        {content}
-      </Container>
+      <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Spinner inverse size='small' />
+      </Content>
+    );
+  }
+
+  renderAndroid() {
+    return (
+      <Content contentContainerStyle={{ flex: 1, alignItems: 'center' }}>
+        <View style={{ flex: 0.5, justifyContent: 'flex-end' }}>
+          <Thumbnail round size={100} source={require('../img/icon.png')} />
+        </View>
+        <View style={{ flex: 0.4, justifyContent: 'center' }}>
+          <Spinner inverse size='small' />
+        </View>
+        <View style={{ flex: 0.1, justifyContent: 'center' }}>
+          <Text>Powered by React Native</Text>
+        </View>
+      </Content>
+    );
+  }
+
+  render() {
+    return (
+      <StyleProvider style={theme}>
+        <Container>
+          {Platform.OS === 'ios' ? this.renderIOS() : this.renderAndroid()}
+        </Container>
+      </StyleProvider>
     );
   }
 }

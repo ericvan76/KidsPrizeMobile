@@ -14,7 +14,7 @@ export async function getBearerToken(): Promise<string> {
     if (state.auth.token && state.auth.token.id_token) {
       const token = state.auth.token;
       const decoded = auth0.decodeJwt(token.id_token);
-      if (moment(Date.now()).add(5, 'minutes').isAfter(new Date(decoded.exp * 1000))) {
+      if (moment().add(5, 'minutes').isAfter(moment(decoded.exp * 1000))) {
         if (token.refresh_token) {
           const delegation: Token = await auth0.obtainDelegationToken(token.refresh_token);
           store.dispatch(saveTokenAsync(delegation));

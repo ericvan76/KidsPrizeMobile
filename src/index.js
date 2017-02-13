@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Navigator, View, StatusBar } from 'react-native';
+import { Navigator, View } from 'react-native';
 import { Provider } from 'react-redux';
 
 import store from './store';
@@ -24,8 +24,7 @@ class App extends Component {
     const route = new LaunchRoute();
     return (
       <Provider store={store}>
-        <View style={{ flex: 1 }}>
-          <StatusBar barStyle="light-content" />
+        <View style={styles.container}>
           <Navigator
             initialRoute={route}
             renderScene={this.renderScene.bind(this)}
@@ -35,5 +34,11 @@ class App extends Component {
     );
   }
 }
+
+const styles = {
+  container: {
+    flex: 1
+  }
+};
 
 export default App;

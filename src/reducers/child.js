@@ -27,14 +27,11 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
       {
         const payload: ScoreResult = action.payload;
         const weeklyScores: WeeklyScoresState = payload.weeklyScores
-          .sort((a: WeeklyScore, b: WeeklyScore) => {
-            return a.week < b.week ? 1 : a.week > b.week ? -1 : 0;
-          })
           .reduce((prev: WeeklyScoresState, weeklyScore: WeeklyScore) => {
-            const week = moment(Date.parse(weeklyScore.week)).utc().format('YYYY-MM-DD');
+            const week = moment(weeklyScore.week).format('YYYY-MM-DD');
             prev[week] = weeklyScore.tasks.reduce((prev: { [task: string]: { [date: string]: number } }, task: string) => {
               prev[task] = weeklyScore.scores.filter(s => s.task == task).reduce((prev: { [date: string]: number }, score: Score) => {
-                const date = moment(Date.parse(score.date)).utc().format('YYYY-MM-DD');
+                const date = moment(score.date).format('YYYY-MM-DD');
                 prev[date] = score.value;
                 return prev;
               }, {});
@@ -87,7 +84,7 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
     case UPDATE_SCORE:
       {
         const payload: UpdateScorePayload = action.payload;
-        const week = moment(Date.parse(payload.date)).utc().day(0).utc().format('YYYY-MM-DD');
+        const week = moment(payload.date).day(0).format('YYYY-MM-DD');
         const currentValue = state[payload.childId].weeklyScores[week][payload.task][payload.date] || 0;
         return update(state, {
           [payload.childId]: {
@@ -109,15 +106,17 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
     case ADD_REDEEMS:
       {
         const payload: AddRedeemsPayload = action.payload;
-        const sortedRedeems = update(state[payload.childId].redeems, { $push: payload.redeems }).sort((a: Redeem, b: Redeem) => {
-          return new Date(b.timestamp) - new Date(a.timestamp);
-        });
+        const sortedRedeems = update(state[payload.childId].redeems, { $push: payload.redeems })
+          .sort((a: Redeem, b: Redeem) => {
+            return moment(a.timestamp).isBefore(moment(b.timestamp));
+          });
         return update(state, {
           [payload.childId]: {
             child: {
               totalScore: {
                 $apply: (x: number) => {
-                  return payload.updateTotal ? payload.redeems.reduce((prev: number, i: Redeem) => { return prev - i.value; }, x) : x;
+                  return payload.updateTotal ?
+                    payload.redeems.reduce((prev: number, i: Redeem) => { return prev - i.value; }, x) : x;
                 }
               }
             },

@@ -1,14 +1,14 @@
 /* @flow */
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Container, Content, Icon, Text, List, ListItem, Thumbnail } from 'native-base';
+import { Container, Content, Icon, Text, Left, Body, Right, ListItem, Badge, Separator, Thumbnail, StyleProvider } from 'native-base';
+
+import theme from '../native-base-theme';
 
 import { logoutAsync } from '../actions/auth';
 import { switchChild } from '../actions/child';
-import ListItemDivider from './ListItemDivider';
 import { EditChildRoute } from '../routes';
 import store from '../store';
-import theme from '../themes';
 
 import type { Profile } from '../types/auth.flow';
 
@@ -33,12 +33,12 @@ class DrawerBar extends Component {
 
   switchChild(id: string) {
     store.dispatch(switchChild(id));
-    this.props.drawer.close();
+    this.props.drawer._root.close();
   }
 
   addChild() {
     this.props.navigator.push(new EditChildRoute());
-    this.props.drawer.close();
+    this.props.drawer._root.close();
   }
 
   logout() {
@@ -51,56 +51,86 @@ class DrawerBar extends Component {
         }, {
           text: 'Yes', onPress: () => {
             store.dispatch(logoutAsync());
-            this.props.drawer.close();
+            this.props.drawer._root.close();
           }
         }
       ]
     );
   }
 
-  render() {
-    let childrenRows = [];
-    if (this.props.childList) {
-      childrenRows = this.props.childList.map((c: Child) => {
-        return (
-          <ListItem key={c.id} iconLeft button
-            onPress={this.switchChild.bind(this, c.id)}>
-            <Icon name={c.gender === 'M' ? 'ios-man-outline' : 'ios-woman-outline'} />
-            <Text ellipsizeMode='tail' numberOfLines={1}>{c.name}</Text>
-            <Text note style={theme.listNote}>{c.totalScore}</Text>
-          </ListItem>
-        );
-      });
-    }
+  renderChildRow(child: Child) {
     return (
-      <Container theme={theme}>
-        <Content>
-          <List>
-            <ListItem>
-              <Thumbnail style={{ marginTop: 10, marginBottom: 10 }} round size={40} source={{ uri: this.props.profile.picture }} />
-              <Text style={{ fontSize: theme.titleFontSize }}
-                ellipsizeMode='tail' numberOfLines={1}>{this.getDisplayName(this.props.profile)}</Text>
-              <Text note style={{ fontSize: theme.subTitleFontSize, lineHeight: Math.round(theme.lineHeight * 0.8) }}
-                ellipsizeMode='middle' numberOfLines={1}>{this.props.profile.email}</Text>
+      <ListItem key={child.id} icon
+        onPress={this.switchChild.bind(this, child.id)}>
+        <Left>
+          <Icon name={child.gender === 'M' ? theme.icons.male : theme.icons.female} />
+        </Left>
+        <Body>
+          <Text ellipsizeMode='tail' numberOfLines={1}>{child.name}</Text>
+        </Body>
+        <Right>
+          <Badge info danger={child.totalScore < 0}>
+            <Text>{child.totalScore}</Text>
+          </Badge>
+        </Right>
+      </ListItem>
+    );
+  }
+
+  render() {
+    return (
+      <StyleProvider style={theme}>
+        <Container>
+          <Content>
+            <ListItem thumbnail last style={styles.header}>
+              <Left>
+                <Thumbnail round size={60} source={{ uri: this.props.profile.picture }} />
+              </Left>
+              <Body style={styles.headerText}>
+                <Text ellipsizeMode='tail' numberOfLines={1}>{this.getDisplayName(this.props.profile)}</Text>
+                <Text note ellipsizeMode='middle' numberOfLines={1}>{this.props.profile.email}</Text>
+              </Body>
             </ListItem>
-            <ListItemDivider title='CHILDREN' />
-            {childrenRows}
-            <ListItem iconLeft button
+            <Separator bordered>
+              <Text>CHILDREN</Text>
+            </Separator>
+            {this.props.childList && this.props.childList.map((child: Child) => this.renderChildRow(child))}
+            <ListItem icon last
               onPress={this.addChild.bind(this)}>
-              <Icon name='ios-person-add-outline' />
-              <Text>Add Child</Text>
+              <Left>
+                <Icon name={theme.icons.addChild} />
+              </Left>
+              <Body>
+                <Text>Add Child</Text>
+              </Body>
             </ListItem>
-            <ListItemDivider title='OTHERS' />
-            <ListItem iconLeft button
+            <Separator bordered>
+              <Text>OTHERS</Text>
+            </Separator>
+            <ListItem icon last
               onPress={this.logout.bind(this)}>
-              <Icon name='ios-log-out-outline' />
-              <Text>Sign Out</Text>
+              <Left>
+                <Icon name={theme.icons.signOut} />
+              </Left>
+              <Body>
+                <Text>Sign Out</Text>
+              </Body>
             </ListItem>
-          </List>
-        </Content>
-      </Container>
+          </Content>
+        </Container>
+      </StyleProvider>
     );
   }
 }
+
+const styles = {
+  header: {
+    height: 100
+  },
+  headerText: {
+    paddingTop: 35,
+    paddingBottom: 35
+  }
+};
 
 export default DrawerBar;

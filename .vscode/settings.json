@@ -11,5 +11,6 @@
     "**/.idea": true
   },
   "javascript.validate.enable": false,
-  "typescript.disableAutomaticTypeAcquisition": true
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "vsicons.presets.angular": false
 }

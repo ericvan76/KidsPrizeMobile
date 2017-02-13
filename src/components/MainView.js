@@ -2,9 +2,12 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Drawer, Container, Header, Title, Content, Button, Icon, Spinner, Text } from 'native-base';
+import { Drawer, Container, Header, Left, Body, Right, Title, Content, Footer, FooterTab, List, ListItem, Button, Icon, Spinner, Text, StyleProvider } from 'native-base';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import moment from 'moment';
+
+import theme from '../native-base-theme';
 
 import * as authActions from '../actions/auth';
 import * as childActions from '../actions/child';
@@ -13,15 +16,13 @@ import ScoreListView from './ScoreListView';
 import DrawerBar from './DrawerBar';
 import { LaunchRoute, EditChildRoute } from '../routes';
 import { alert } from '../utils/alert';
-import theme from '../themes';
 
-import type { AppState, AuthState, WeeklyScoresState } from '../types/states.flow';
+import type { AppState, AuthState, ChildState } from '../types/states.flow';
 
 type StoreProps = {
   auth: AuthState,
   childList: ?Array<Child>,
-  child: ?Child,
-  weeklyScores: WeeklyScoresState,
+  child: ?ChildState,
   errors: Error[]
 }
 
@@ -39,12 +40,30 @@ type Props = StoreProps & ActionProps & {
   navigator: Object
 }
 
+type TabId = 'main' | 'redeem';
+
+type State = {
+  activeTab: TabId
+}
+
 class MainView extends Component {
 
   props: Props;
+  state: State;
 
   constructor(props: Props) {
     super(props);
+    this.state = {
+      activeTab: 'main'
+    };
+  }
+
+  changeTab(tabId: TabId) {
+    if (this.state.activeTab !== tabId) {
+      this.setState({
+        activeTab: tabId
+      });
+    }
   }
 
   logout() {
@@ -62,6 +81,10 @@ class MainView extends Component {
         }
       ]
     );
+  }
+
+  onAddRedeeem() {
+
   }
 
   componentDidMount() {
@@ -84,96 +107,155 @@ class MainView extends Component {
     } else if (!this.props.auth.profile) {
       this.props.navigator.replace(new LaunchRoute());
     } else if (this.props.childList && this.props.childList.length === 0) {
-      this.refs.drawer.open();
-    } else if (this.props.child && Object.keys(this.props.weeklyScores).length === 0) {
-      this.props.refreshAsync(this.props.child.id);
+      this.refs._drawer._root.open();
+    } else if (this.props.child && Object.keys(this.props.child.weeklyScores).length === 0) {
+      this.props.refreshAsync(this.props.child.child.id);
     }
   }
 
   renderDrawer() {
     if (!this.props.auth.profile) {
-      return <Container theme={theme}></Container>;
+      return <Container></Container>;
     }
     return (
       <DrawerBar
         navigator={this.props.navigator}
-        drawer={this.refs.drawer}
+        drawer={this.refs._drawer}
         profile={this.props.auth.profile}
         childList={this.props.childList}
-        ></DrawerBar>
+      ></DrawerBar>
+    );
+  }
+
+  renderEmpty() {
+    return (
+      <Container>
+        <Header>
+          <Left>
+            <Button transparent onPress={() => this.refs._drawer._root.open()}>
+              <Icon name={theme.icons.menu} />
+            </Button>
+          </Left>
+        </Header>
+        <Content contentContainerStyle={styles.spinnerContainer}>
+          <Spinner size='small' inverse animating={!this.props.childList} />
+        </Content>
+      </Container>
+    );
+  }
+
+  renderMain() {
+    return (
+      <Container>
+        <Header>
+          <Left>
+            <Button transparent onPress={() =>
+              this.refs._drawer._root.open()}>
+              <Icon name={theme.icons.menu} />
+            </Button>
+          </Left>
+          <Body>
+            <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.child.name}</Title>
+          </Body>
+          <Right>
+            <Button transparent onPress={() =>
+              this.props.navigator.push(new EditChildRoute({ childId: this.props.child.child.id }))}>
+              <Icon name={theme.icons.settings} />
+            </Button>
+          </Right>
+        </Header>
+        <Content horizontal={true} scrollEnabled={false}>
+          <ScoreListView
+            ref='listView'
+            child={this.props.child}
+            refreshAsync={this.props.refreshAsync}
+            fetchMoreAsync={this.props.fetchMoreAsync}
+            setScoreAsync={this.props.setScoreAsync} />
+        </Content>
+        {this.renderFooter()}
+      </Container>
+    );
+  }
+
+  renderRedeem() {
+    return (
+      <Container>
+        <Header>
+          <Left>
+            <Button transparent onPress={this.changeTab.bind(this, 'main')}>
+              <Icon name={theme.icons.back} />
+              <Text> Main</Text>
+            </Button>
+          </Left>
+          <Body>
+            <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.child.name}</Title>
+            <Text note>Available: {this.props.child.child.totalScore}</Text>
+          </Body>
+          <Right>
+            <Button transparent onPress={this.onAddRedeeem.bind(this)}>
+              <Text>Add</Text>
+            </Button>
+          </Right>
+        </Header>
+        <Content horizontal={true} scrollEnabled={false}>
+          <List dataArray={this.props.child.redeems} renderRow={(redeem: Redeem) =>
+            <ListItem>
+              <Left>
+                <Text>{moment(redeem.timestamp).format('YYYY-MMM-DD HH:mm')}</Text>
+              </Left>
+              <Body>
+                <Text>{redeem.description}</Text>
+              </Body>
+              <Right>
+                <Text note>{redeem.value}</Text>
+              </Right>
+            </ListItem>
+          } />
+        </Content>
+        {this.renderFooter()}
+      </Container>
+    );
+  }
+
+  renderFooter() {
+    return (
+      <Footer>
+        <FooterTab>
+          <Button active={this.state.activeTab === 'main'} onPress={this.changeTab.bind(this, 'main')}>
+            <Icon name={theme.icons.tabMain} active={this.state.activeTab === 'main'} />
+            <Text>Main</Text>
+          </Button>
+          <Button active={this.state.activeTab === 'redeem'} onPress={this.changeTab.bind(this, 'redeem')}>
+            <Icon name={theme.icons.tabRedeem} active={this.state.activeTab === 'redeem'} />
+            <Text>Redeem</Text>
+          </Button>
+        </FooterTab>
+      </Footer>
     );
   }
 
   render() {
-    let mainElem = null;
-    if (!this.props.child || Object.keys(this.props.weeklyScores).length === 0) {
-      var spinnerOrHint = this.props.childList
-        ? <Text style={{ color: theme.subtitleColor, marginTop: -1 * theme.toolbarHeight }}>No Child</Text>
-        : <Spinner inverse size='small' style={{ marginTop: -1 * theme.toolbarHeight }} animating={!this.props.childList} />;
-      mainElem = (
-        <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
-          <Header>
-            <Button transparent header onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu' />
-            </Button>
-            <Title></Title>
-          </Header>
-          <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            {spinnerOrHint}
-          </Content>
-        </Container>
-      );
-    } else {
-      mainElem = (
-        <Container theme={theme} style={{ backgroundColor: theme.backgroundColor }}>
-          <Header onPress={() => this.refs.listView.scrollToTop()} >
-            <Button transparent header onPress={() => this.refs.drawer.open()}>
-              <Icon name='ios-menu' />
-            </Button>
-            <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.name}</Title>
-            <Button transparent header
-              onPress={() => this.props.navigator.push(new EditChildRoute({ childId: this.props.child.id }))}>
-              <Icon name='ios-settings-outline' />
-            </Button>
-          </Header>
-          <Content horizontal={true} scrollEnabled={false}>
-            <ScoreListView
-              ref='listView'
-              style={{
-                flex: 1, width: theme.screenWidth
-              }} child={this.props.child}
-              rows={this.props.weeklyScores}
-              refreshAsync={this.props.refreshAsync}
-              fetchMoreAsync={this.props.fetchMoreAsync}
-              setScoreAsync={this.props.setScoreAsync} />
-          </Content>
-        </Container>
-      );
-    }
     return (
-      <Drawer
-        ref='drawer'
-        type='overlay'
-        content={this.renderDrawer()}
-        tapToClose
-        openDrawerOffset={0.2}
-        styles={{
-          drawer: {
-            backgroundColor: theme.inverseTextColor,
-            shadowColor: theme.shadowColor,
-            shadowOpacity: theme.shadowOpacity,
-            shadowRadius: 0
-          }
-        }}
-        tweenHandler={(ratio: number) => {
-          return {
-            drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
-            main: { opacity: (2 - ratio) / 2 },
-          };
-        } }
-        negotiatePan>
-        {mainElem}
-      </Drawer>
+      <StyleProvider style={theme}>
+        <Drawer
+          ref='_drawer'
+          type='overlay'
+          content={this.renderDrawer()}
+          tapToClose
+          openDrawerOffset={0.2}
+          styles={styles.drawer}
+          tweenHandler={(ratio: number) => {
+            return {
+              drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
+              main: { opacity: (2 - ratio) / 2 },
+            };
+          }}
+          negotiatePan>
+          {this.props.child ? (
+            this.state.activeTab === 'main' ? this.renderMain() : this.renderRedeem()
+          ) : this.renderEmpty()}
+        </Drawer>
+      </StyleProvider >
     );
   }
 }
@@ -182,8 +264,7 @@ const mapStateToProps = (state: AppState): StoreProps => {
   return {
     auth: state.auth,
     childList: state.children.isNotLoaded ? null : Object.keys(state.children).map(k => state.children[k].child),
-    child: state.currentChild ? state.children[state.currentChild].child : null,
-    weeklyScores: state.currentChild ? state.children[state.currentChild].weeklyScores : {},
+    child: state.currentChild ? state.children[state.currentChild] : null,
     errors: state.errors
   };
 };
@@ -194,6 +275,22 @@ const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
     ...childActions,
     ...failureActions
   }, dispatch);
+};
+
+const styles = {
+  drawer: {
+    drawer: {
+      shadowColor: '#000',
+      shadowOpacity: 0.8,
+      shadowRadius: 0
+    }
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: theme.variables.toolbarHeight
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);

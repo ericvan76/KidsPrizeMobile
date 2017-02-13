@@ -260,7 +260,7 @@ class ScoreResultBuilder {
     return this;
   }
   withScore(date: string, task: string, value: number) {
-    const week: Date = new Date(moment(Date.parse(date)).utc().day(0).format('YYYY-MM-DD'));
+    const week = moment(date).day(0).format('YYYY-MM-DD');
     const weekScore = this.weeklyScores.find((w: WeeklyScore) => w.week === week);
     if (weekScore) {
       weekScore.scores.push({
@@ -307,7 +307,7 @@ class ChildStateBuilder {
     return this;
   }
   withScore(date: string, task: string, value: number) {
-    const week: string = moment(Date.parse(date)).utc().day(0).format('YYYY-MM-DD');
+    const week: string = moment(date).day(0).format('YYYY-MM-DD');
     this.weeklyScores[week][task][date] = value;
     this.child.totalScore += value;
     return this;

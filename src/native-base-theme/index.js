@@ -45,7 +45,10 @@ theme.icons = {
 
   remove: 'remove-circle',
   reorder: 'reorder',
-  addTask: 'add-circle'
+  addTask: 'add-circle',
+
+  success: 'checkmark-circle',
+  error: 'close-circle'
 };
 
 export default theme;

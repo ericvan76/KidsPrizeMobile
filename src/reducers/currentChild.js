@@ -5,6 +5,7 @@ import { CLEAR_TOKEN } from '../actions/auth';
 import { INITIAL_STATE } from './initialState';
 
 import type { Action } from '../types/actions.flow';
+import type { Child, ScoreResult } from '../types/api.flow';
 
 export default function reducer(state: ?string = INITIAL_STATE.currentChild, action: Action<any, any>) {
   switch (action.type) {

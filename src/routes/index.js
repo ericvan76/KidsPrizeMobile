@@ -4,9 +4,10 @@ import React from 'react';
 
 import LaunchScreen from '../components/LaunchScreen';
 import MainView from '../components/MainView';
-import ChildForm from '../components/ChildForm';
-import TaskEditorPage from '../components/TaskEditorPage';
-import TextInputPage from '../components/TextInputPage';
+import ChildEditor from '../components/ChildEditor';
+import TaskEditor from '../components/TaskEditor';
+import TextEditor from '../components/TextEditor';
+import RedeemEditor from '../components/RedeemEditor';
 
 export type Route = {
   renderScene: (navigator: Object) => any
@@ -36,14 +37,14 @@ export class MainRoute {
   }
 }
 
-export class EditChildRoute {
+export class ChildEditorRoute {
   props: any;
   constructor(props: any) {
     this.props = props;
   }
   renderScene(navigator: Object) {
     return (
-      <ChildForm navigator={navigator} {...this.props} />
+      <ChildEditor navigator={navigator} {...this.props} />
     );
   }
 }
@@ -55,19 +56,32 @@ export class TaskEditorRoute {
   }
   renderScene(navigator: Object) {
     return (
-      <TaskEditorPage navigator={navigator} {...this.props} />
+      <TaskEditor navigator={navigator} {...this.props} />
     );
   }
 }
-// Resuable Routes
-export class TextInputRoute {
+
+
+export class TextEditorRoute {
   props: any;
   constructor(props: any) {
     this.props = props;
   }
   renderScene(navigator: Object) {
     return (
-      <TextInputPage navigator={navigator} {...this.props} />
+      <TextEditor navigator={navigator} {...this.props} />
+    );
+  }
+}
+
+export class RedeemEditorRoute {
+  props: any;
+  constructor(props: any) {
+    this.props = props;
+  }
+  renderScene(navigator: Object) {
+    return (
+      <RedeemEditor navigator={navigator} {...this.props} />
     );
   }
 }

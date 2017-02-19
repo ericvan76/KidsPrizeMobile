@@ -1,7 +1,6 @@
 /* @flow */
 
 import { combineReducers } from 'redux';
-import { reducer as formReducer } from 'redux-form';
 
 import authReducer from '../reducers/auth';
 import currentChildReducer from '../reducers/currentChild';
@@ -12,7 +11,6 @@ const rootReducer = combineReducers({
   auth: authReducer,
   currentChild: currentChildReducer,
   children: childReducer,
-  form: formReducer,
   errors: failureReducer
 });
 

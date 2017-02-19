@@ -11,8 +11,5 @@ export const INITIAL_STATE: AppState = {
   children: {
     isNotLoaded: true
   },
-  form: {
-    childForm: null
-  },
   errors: []
 };

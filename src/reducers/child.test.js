@@ -6,7 +6,9 @@ import uuid from 'uuid';
 import { clearToken } from '../actions/auth';
 import { addChildren, updateChild, deleteChild, updateScore, addRedeems } from '../actions/child';
 import reducer from './child';
+
 import type { ChildState, ChildrenState, WeeklySectionState, WeeklyScoresState } from '../types/states.flow';
+import type { Child, Gender, ScoreResult, Redeem, WeeklyScore } from '../types/api.flow';
 
 describe('reducers', () => {
   describe('child', () => {

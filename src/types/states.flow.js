@@ -1,14 +1,12 @@
 /* @flow */
 
 import type { Token, Profile } from './auth.flow';
+import type { Child, Redeem } from './api.flow';
 
 export type AppState = {
   auth: AuthState,
   currentChild: ?string,
   children: ChildrenState,
-  form: {
-    childForm: any
-  },
   errors: Error[]
 };
 

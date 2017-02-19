@@ -2,38 +2,38 @@
 /* eslint no-undef: off */
 
 // Preference
-declare type Preference = {
+export type Preference = {
   timeZoneOffset: number
 };
 
 // Child & Score
-declare type Gender = 'M' | 'F';
+export type Gender = 'M' | 'F';
 
-declare type Child = {
+export type Child = {
   id: string,
   name: string,
   gender: Gender,
   totalScore: number,
 };
 
-declare type ScoreResult = {
+export type ScoreResult = {
   child: Child,
   weeklyScores: WeeklyScore[]
 };
 
-declare type WeeklyScore = {
+export type WeeklyScore = {
   week: string,
   tasks: string[],
   scores: Score[]
 };
 
-declare type Score = {
+export type Score = {
   date: string,
   task: string,
   value: number
 };
 
-declare type Redeem = {
+export type Redeem = {
   timestamp: string,
   description: string,
   value: number

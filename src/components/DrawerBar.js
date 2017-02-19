@@ -1,16 +1,20 @@
 /* @flow */
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Container, Content, Icon, Text, Left, Body, Right, ListItem, Badge, Separator, Thumbnail, StyleProvider } from 'native-base';
+import {
+  Container, Content, Icon, Text, Left, Body, Right,
+  ListItem, Separator, Thumbnail, StyleProvider
+} from 'native-base';
 
 import theme from '../native-base-theme';
 
 import { logoutAsync } from '../actions/auth';
 import { switchChild } from '../actions/child';
-import { EditChildRoute } from '../routes';
+import { ChildEditorRoute } from '../routes';
 import store from '../store';
 
 import type { Profile } from '../types/auth.flow';
+import type { Child } from '../types/api.flow';
 
 type Props = {
   navigator: Object,
@@ -37,7 +41,7 @@ class DrawerBar extends Component {
   }
 
   addChild() {
-    this.props.navigator.push(new EditChildRoute());
+    this.props.navigator.push(new ChildEditorRoute());
     this.props.drawer._root.close();
   }
 
@@ -60,8 +64,7 @@ class DrawerBar extends Component {
 
   renderChildRow(child: Child) {
     return (
-      <ListItem key={child.id} icon
-        onPress={this.switchChild.bind(this, child.id)}>
+      <ListItem key={child.id} icon onPress={this.switchChild.bind(this, child.id)}>
         <Left>
           <Icon name={child.gender === 'M' ? theme.icons.male : theme.icons.female} />
         </Left>
@@ -69,9 +72,7 @@ class DrawerBar extends Component {
           <Text ellipsizeMode='tail' numberOfLines={1}>{child.name}</Text>
         </Body>
         <Right>
-          <Badge info danger={child.totalScore < 0}>
-            <Text>{child.totalScore}</Text>
-          </Badge>
+          <Text note>{child.totalScore}</Text>
         </Right>
       </ListItem>
     );
@@ -86,13 +87,14 @@ class DrawerBar extends Component {
               <Left>
                 <Thumbnail round size={60} source={{ uri: this.props.profile.picture }} />
               </Left>
-              <Body style={styles.headerText}>
+              <Body style={styles.headerBody}>
                 <Text ellipsizeMode='tail' numberOfLines={1}>{this.getDisplayName(this.props.profile)}</Text>
                 <Text note ellipsizeMode='middle' numberOfLines={1}>{this.props.profile.email}</Text>
               </Body>
+              <Right />
             </ListItem>
             <Separator bordered>
-              <Text>CHILDREN</Text>
+              <Text note>CHILDREN</Text>
             </Separator>
             {this.props.childList && this.props.childList.map((child: Child) => this.renderChildRow(child))}
             <ListItem icon last
@@ -103,18 +105,19 @@ class DrawerBar extends Component {
               <Body>
                 <Text>Add Child</Text>
               </Body>
+              <Right />
             </ListItem>
             <Separator bordered>
-              <Text>OTHERS</Text>
+              <Text note>OTHERS</Text>
             </Separator>
-            <ListItem icon last
-              onPress={this.logout.bind(this)}>
+            <ListItem icon last onPress={this.logout.bind(this)}>
               <Left>
                 <Icon name={theme.icons.signOut} />
               </Left>
               <Body>
                 <Text>Sign Out</Text>
               </Body>
+              <Right />
             </ListItem>
           </Content>
         </Container>
@@ -127,9 +130,9 @@ const styles = {
   header: {
     height: 100
   },
-  headerText: {
-    paddingTop: 35,
-    paddingBottom: 35
+  headerBody: {
+    marginTop: 15,
+    borderBottomColor: 'transparent'
   }
 };
 

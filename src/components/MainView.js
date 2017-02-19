@@ -2,7 +2,13 @@
 
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
-import { Drawer, Container, Header, Left, Body, Right, Title, Content, Footer, FooterTab, List, ListItem, Button, Icon, Spinner, Text, StyleProvider } from 'native-base';
+
+import {
+  Drawer, Container, Header, Left, Body, Right, Title, Content,
+  Footer, FooterTab, List, ListItem, Button, Icon, Spinner, Text,
+  StyleProvider
+} from 'native-base';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -12,12 +18,13 @@ import theme from '../native-base-theme';
 import * as authActions from '../actions/auth';
 import * as childActions from '../actions/child';
 import * as failureActions from '../actions/failure';
-import ScoreListView from './ScoreListView';
+import ScoreList from './ScoreList';
 import DrawerBar from './DrawerBar';
-import { LaunchRoute, EditChildRoute } from '../routes';
+import { LaunchRoute, ChildEditorRoute, RedeemEditorRoute } from '../routes';
 import { alert } from '../utils/alert';
 
 import type { AppState, AuthState, ChildState } from '../types/states.flow';
+import type { Child, Redeem } from '../types/api.flow';
 
 type StoreProps = {
   auth: AuthState,
@@ -33,6 +40,8 @@ type ActionProps = {
   refreshAsync: (childId: string) => void,
   fetchMoreAsync: (childId: string) => void,
   setScoreAsync: (childId: string, date: string, task: string, value: number) => void,
+  createRedeemAsync: (childId: string, description: string, value: number) => void,
+  getRedeemsAsync: () => void,
   resetFailure: () => void
 };
 
@@ -81,10 +90,6 @@ class MainView extends Component {
         }
       ]
     );
-  }
-
-  onAddRedeeem() {
-
   }
 
   componentDidMount() {
@@ -156,16 +161,17 @@ class MainView extends Component {
           </Left>
           <Body>
             <Title ellipsizeMode='tail' numberOfLines={1}>{this.props.child.child.name}</Title>
+            <Text note>Total: {this.props.child.child.totalScore}</Text>
           </Body>
           <Right>
             <Button transparent onPress={() =>
-              this.props.navigator.push(new EditChildRoute({ childId: this.props.child.child.id }))}>
+              this.props.navigator.push(new ChildEditorRoute({ child: this.props.child }))}>
               <Icon name={theme.icons.settings} />
             </Button>
           </Right>
         </Header>
-        <Content horizontal={true} scrollEnabled={false}>
-          <ScoreListView
+        <Content>
+          <ScoreList
             ref='listView'
             child={this.props.child}
             refreshAsync={this.props.refreshAsync}
@@ -184,7 +190,6 @@ class MainView extends Component {
           <Left>
             <Button transparent onPress={this.changeTab.bind(this, 'main')}>
               <Icon name={theme.icons.back} />
-              <Text> Main</Text>
             </Button>
           </Left>
           <Body>
@@ -192,25 +197,34 @@ class MainView extends Component {
             <Text note>Available: {this.props.child.child.totalScore}</Text>
           </Body>
           <Right>
-            <Button transparent onPress={this.onAddRedeeem.bind(this)}>
+            <Button transparent onPress={() =>
+              this.props.navigator.push(new RedeemEditorRoute({
+                child: this.props.child.child,
+                onSubmit: (description: string, value: number) => {
+                  this.props.createRedeemAsync(this.props.child.child.id, description, value);
+                  this.props.navigator.pop();
+                }
+              }))}>
               <Text>Add</Text>
             </Button>
           </Right>
         </Header>
-        <Content horizontal={true} scrollEnabled={false}>
-          <List dataArray={this.props.child.redeems} renderRow={(redeem: Redeem) =>
-            <ListItem>
-              <Left>
-                <Text>{moment(redeem.timestamp).format('YYYY-MMM-DD HH:mm')}</Text>
-              </Left>
-              <Body>
-                <Text>{redeem.description}</Text>
-              </Body>
-              <Right>
-                <Text note>{redeem.value}</Text>
-              </Right>
-            </ListItem>
-          } />
+        <Content>
+          <List
+            dataArray={this.props.child.redeems}
+            onEndReached={() => this.props.getRedeemsAsync(this.props.child.child.id)}
+            onEndReachedThreshold={0}
+            renderRow={(redeem: Redeem) =>
+              <ListItem>
+                <Body>
+                  <Text ellipsizeMode='middle' numberOfLines={1}>{redeem.description}</Text>
+                  <Text note>{moment(redeem.timestamp).format('DD-MMM-YYYY HH:mm')}</Text>
+                </Body>
+                <Right>
+                  <Text>{redeem.value}</Text>
+                </Right>
+              </ListItem>
+            } />
         </Content>
         {this.renderFooter()}
       </Container>
@@ -225,7 +239,12 @@ class MainView extends Component {
             <Icon name={theme.icons.tabMain} active={this.state.activeTab === 'main'} />
             <Text>Main</Text>
           </Button>
-          <Button active={this.state.activeTab === 'redeem'} onPress={this.changeTab.bind(this, 'redeem')}>
+          <Button active={this.state.activeTab === 'redeem'} onPress={() => {
+            this.changeTab('redeem');
+            if (this.props.child.redeems.length === 0) {
+              this.props.getRedeemsAsync(this.props.child.child.id);
+            }
+          }}>
             <Icon name={theme.icons.tabRedeem} active={this.state.activeTab === 'redeem'} />
             <Text>Redeem</Text>
           </Button>
@@ -255,7 +274,7 @@ class MainView extends Component {
             this.state.activeTab === 'main' ? this.renderMain() : this.renderRedeem()
           ) : this.renderEmpty()}
         </Drawer>
-      </StyleProvider >
+      </StyleProvider>
     );
   }
 }

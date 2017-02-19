@@ -9,6 +9,7 @@ import { INITIAL_STATE } from './initialState';
 
 import type { ChildrenState, WeeklyScoresState } from '../types/states.flow';
 import type { Action, UpdateScorePayload, AddRedeemsPayload } from '../types/actions.flow';
+import type { Child, ScoreResult, Redeem, WeeklyScore, Score } from '../types/api.flow';
 
 export default function (state: ChildrenState = INITIAL_STATE.children, action: Action<any, any>) {
   switch (action.type) {
@@ -108,7 +109,7 @@ export default function (state: ChildrenState = INITIAL_STATE.children, action: 
         const payload: AddRedeemsPayload = action.payload;
         const sortedRedeems = update(state[payload.childId].redeems, { $push: payload.redeems })
           .sort((a: Redeem, b: Redeem) => {
-            return moment(a.timestamp).isBefore(moment(b.timestamp));
+            return moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf();
           });
         return update(state, {
           [payload.childId]: {

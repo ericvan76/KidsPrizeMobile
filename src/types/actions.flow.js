@@ -1,5 +1,6 @@
 /* @flow */
 
+import type { Redeem } from './api.flow';
 import type { Token } from '../types/auth.flow';
 
 export type Action<Type, Payload> = {

@@ -4,6 +4,8 @@ import * as url from '../utils/url';
 import { getBearerToken } from './token';
 import config from '../../__config__';
 
+import type { Child, Preference, Gender, ScoreResult, Redeem } from '../types/api.flow';
+
 export async function callApi(uri: string, init?: Object = {}): Promise<any> {
   const bearer = await getBearerToken();
   const url = `${config.api.baseUrl}${uri}`;

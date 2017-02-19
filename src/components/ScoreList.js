@@ -34,7 +34,7 @@ type State = {
   dataSource: any
 };
 
-class ScoreListView extends Component {
+class ScoreList extends Component {
 
   props: Props;
   state: State;
@@ -60,7 +60,10 @@ class ScoreListView extends Component {
 
       return (
         <Text key={key}
-          style={{ ...styles.sectionText, fontWeight: today === key ? 'bold' : 'normal' }}
+          style={{
+            ...styles.sectionText,
+            fontWeight: today === key ? 'bold' : 'normal'
+          }}
         >{`${mo.format('ddd')}\n${mo.date()}${month}`}</Text>
       );
     });
@@ -146,7 +149,7 @@ class ScoreListView extends Component {
         renderRow={(rowData, sectionID, rowID) => this.renderRow(rowData, sectionID, rowID)}
         renderSeparator={(sectionID, rowID) => this.renderSeparator(sectionID, rowID)}
         refreshControl={refreshControl}
-        onEndReached={() => this.onEndReached()}
+        onEndReached={this.onEndReached.bind(this)}
         onEndReachedThreshold={0}
       />
     );
@@ -162,6 +165,8 @@ const styles = {
     alignSelf: 'stretch',
     justifyContent: 'flex-end',
     backgroundColor: theme.variables.listDividerBg,
+    paddingTop: 3,
+    paddingBottom: 3,
     paddingLeft: 5,
     paddingRight: 5
   },
@@ -195,4 +200,4 @@ const styles = {
   }
 };
 
-export default ScoreListView;
+export default ScoreList;

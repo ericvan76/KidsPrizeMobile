@@ -9,7 +9,7 @@ import theme from '../native-base-theme';
 import SortableListView from 'react-native-sortable-listview';
 import update from 'react-addons-update';
 
-import { TextInputRoute } from '../routes';
+import { TextEditorRoute } from '../routes';
 
 type RowProps = {
   title: string,
@@ -25,16 +25,16 @@ class Row extends Component {
   render() {
     return (
       <ListItem icon last>
-        <Left >
-          <Button style={{ padding: 0 }} transparent danger onPress={this.props.onRemove} >
+        <Left>
+          <Button transparent danger onPress={this.props.onRemove} >
             <Icon name={theme.icons.remove} active />
           </Button>
         </Left>
         <Body>
           <Text ellipsizeMode='tail' numberOfLines={1}>{this.props.title}</Text>
         </Body>
-        <Right>
-          <Button style={{ padding: 0 }} transparent info delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
+        <Right style={{ padding: 0 }}>
+          <Button transparent delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
             <Icon name={theme.icons.reorder} />
           </Button>
         </Right>
@@ -49,12 +49,17 @@ type Props = {
   onSubmit: (values: string[]) => void
 };
 
-type State = {
+type FormState = {
   data: { [key: string]: string },
   order: string[]
 };
 
-class TaskEditorPage extends Component {
+type State = {
+  initial: FormState,
+  current: FormState
+}
+
+class TaskEditor extends Component {
 
   props: Props;
   state: State;
@@ -67,7 +72,7 @@ class TaskEditorPage extends Component {
 
   constructor(props: Props) {
     super(props);
-    this.state = {
+    const initial: FormState = {
       data: Object.assign({}, ...props.value.map((task: string) => {
         return {
           [task]: task
@@ -75,59 +80,77 @@ class TaskEditorPage extends Component {
       })),
       order: props.value
     };
+    this.state = {
+      initial: initial,
+      current: initial
+    };
+  }
+  isDirty(): boolean {
+    return this.state.initial !== this.state.current;
+  }
+  isValid(): boolean {
+    return this.state.current.order.length > 0;
+  }
+  onSubmit() {
+    if (this.isDirty() && this.isValid()) {
+      const value = this.state.current.order.map(i => this.state.current.data[i]);
+      this.props.onSubmit(value);
+    }
   }
   onMove(e: any) {
-    let order = this.state.order.slice();
+    let order = this.state.current.order.slice();
     order.splice(e.to, 0, order.splice(e.from, 1)[0]);
-    const newState = update(this.state, {
-      order: {
-        $set: order
-      }
-    });
-    this.setState(newState);
+    this.setState(
+      update(this.state, {
+        current: {
+          order: { $set: order }
+        }
+      }));
   }
   onRemove(row: string) {
-    const newState = update(this.state, {
-      order: {
-        $splice: [
-          [this.state.order.indexOf(row), 1]
-        ]
-      },
-      data: {
-        $merge: {
-          [row]: null
-        }
-      }
-    });
-    this.setState(newState);
-  }
-  onAdd(text: string) {
-    text = text.trim();
-    if (text.length > 0 && !this.state.order.find(x => x.toLowerCase() === text.toLowerCase())) {
-      const newState = update(this.state, {
+    this.setState(update(this.state, {
+      current: {
         order: {
-          $push: [
-            text
+          $splice: [
+            [this.state.current.order.indexOf(row), 1]
           ]
         },
         data: {
           $merge: {
-            [text]: text
+            [row]: null
           }
         }
-      });
-      this.setState(newState);
+      }
+    }));
+  }
+  onAddTask(text: string) {
+    if (text.length > 0 && !this.state.current.order.find(x => x.toLowerCase() === text.toLowerCase())) {
+      this.setState(update(this.state, {
+        current: {
+          order: {
+            $push: [
+              text
+            ]
+          },
+          data: {
+            $merge: {
+              [text]: text
+            }
+          }
+        }
+      }));
+
     }
   }
-  onAddPress() {
+  onAdd() {
     this.props.navigator.push(
-      new TextInputRoute({
+      new TextEditorRoute({
         title: 'New Task',
         placeholder: 'Type new task here',
         autoCapitalize: 'words',
         maxLength: 50,
         onSubmit: (text: string) => {
-          this.onAdd(text);
+          this.onAddTask(text.trim());
           this.props.navigator.pop();
         }
       }));
@@ -144,30 +167,30 @@ class TaskEditorPage extends Component {
           <Header>
             <Left>
               <Button transparent onPress={() => this.props.navigator.pop()}>
-                <Text>Cancel</Text>
+                <Icon name={theme.icons.close} />
               </Button>
             </Left>
             <Body>
               <Title>Tasks</Title>
             </Body>
             <Right>
-              <Button transparent onPress={this.onAddPress.bind(this)}>
-                <Icon name={theme.icons.addTask} />
+              <Button transparent onPress={this.onAdd.bind(this)}>
+                <Text>Add</Text>
               </Button>
-              <Button transparent onPress={() => {
-                const value = this.state.order.map(i => this.state.data[i]);
-                this.props.onSubmit(value);
-              }}>
-                <Text>Done</Text>
-              </Button>
+              {
+                this.isDirty() && this.isValid() &&
+                <Button transparent onPress={this.onSubmit.bind(this)}>
+                  <Text>Done</Text>
+                </Button>
+              }
             </Right>
           </Header>
           <Content horizontal={true} scrollEnabled={false} >
             <SortableListView
               style={styles.list}
               sortRowStyle={styles.row}
-              data={this.state.data}
-              order={this.state.order}
+              data={this.state.current.data}
+              order={this.state.current.order}
               onRowMoved={e => this.onMove(e)}
               renderRow={row => this.renderRow(row)} />
           </Content>
@@ -187,4 +210,4 @@ const styles = {
   }
 };
 
-export default TaskEditorPage;
+export default TaskEditor;

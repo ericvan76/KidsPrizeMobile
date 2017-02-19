@@ -5,6 +5,7 @@ import { failure } from './failure';
 
 import type { AppState } from '../types/states.flow';
 import type { Action, UpdateScorePayload, AddRedeemsPayload } from '../types/actions.flow';
+import type { Child, ScoreResult, Redeem, Gender } from '../types/api.flow';
 
 const WEEKS_TO_LOAD: number = 4;
 
@@ -167,7 +168,7 @@ export function fetchMoreAsync(childId: string) {
   };
 }
 
-export function createRedeem(childId: string, description: string, value: number) {
+export function createRedeemAsync(childId: string, description: string, value: number) {
   return async (dispatch: Dispatch) => {
     try {
       const redeem = await api.createRedeem(childId, description, value);
@@ -178,13 +179,20 @@ export function createRedeem(childId: string, description: string, value: number
   };
 }
 
-export function getRedeems(childId: string) {
+// hack: avoid called multiple times
+let locked = false;
+
+export function getRedeemsAsync(childId: string) {
   return async (dispatch: Dispatch, getState: Function) => {
     try {
       const state: AppState = getState();
       const offset = state.children[childId].redeems.length;
-      const redeems = await api.getRedeems(childId, 25, offset);
-      dispatch(addRedeems(childId, redeems, false));
+      if (!locked) {
+        locked = true;
+        const redeems = await api.getRedeems(childId, 25, offset);
+        dispatch(addRedeems(childId, redeems, false));
+        locked = false;
+      }
     } catch (err) {
       dispatch(failure(err));
     }

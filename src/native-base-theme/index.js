@@ -12,10 +12,10 @@ if (variables.platform === 'ios') {
   variables.footerDefaultBg = '#f4f4f4';
   variables.footerHeight = 55;
   variables.tabActiveBgColor = undefined;
-
 }
 
 // new variables
+variables.defaultBg = '#fff';
 variables.starColor = '#333';
 variables.starSize = 36;
 

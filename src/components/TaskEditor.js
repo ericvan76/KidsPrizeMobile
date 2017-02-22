@@ -185,7 +185,7 @@ class TaskEditor extends Component {
               }
             </Right>
           </Header>
-          <Content horizontal={true} scrollEnabled={false} >
+          <Content scrollEnabled={false} horizontal={true} >
             <SortableListView
               style={styles.list}
               sortRowStyle={styles.row}
@@ -206,7 +206,7 @@ const styles = {
     width: theme.variables.deviceWidth
   },
   row: {
-    opacity: 0.8
+    opacity: theme.variables.defaultShadowOpacity
   }
 };
 

@@ -85,7 +85,7 @@ class DrawerBar extends Component {
           <Content>
             <ListItem thumbnail last style={styles.header}>
               <Left>
-                <Thumbnail round size={60} source={{ uri: this.props.profile.picture }} />
+                <Thumbnail round size={50} source={{ uri: this.props.profile.picture }} />
               </Left>
               <Body style={styles.headerBody}>
                 <Text ellipsizeMode='tail' numberOfLines={1}>{this.getDisplayName(this.props.profile)}</Text>
@@ -128,10 +128,10 @@ class DrawerBar extends Component {
 
 const styles = {
   header: {
-    height: 100
+    height: 100,
+    paddingTop: 10
   },
   headerBody: {
-    marginTop: 15,
     borderBottomColor: 'transparent'
   }
 };

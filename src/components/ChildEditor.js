@@ -172,6 +172,7 @@ class ChildEditor extends Component {
               </Body>
               <Right>
                 <Picker note
+                  ref='_picker'
                   mode='dialog'
                   selectedValue={this.state.current.gender}
                   onValueChange={(text: string) => {
@@ -208,7 +209,7 @@ class ChildEditor extends Component {
             </ListItem>
             {
               this.props.child &&
-              <Button block rounded danger style={styles.deleteButton} onPress={this.onDelete.bind(this)}>
+              <Button block danger style={styles.deleteButton} onPress={this.onDelete.bind(this)}>
                 <Text>Delete Child</Text>
               </Button>
             }

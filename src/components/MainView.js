@@ -170,7 +170,7 @@ class MainView extends Component {
             </Button>
           </Right>
         </Header>
-        <Content>
+        <Content scrollEnabled={false} horizontal={true}>
           <ScoreList
             ref='listView'
             child={this.props.child}
@@ -209,7 +209,7 @@ class MainView extends Component {
             </Button>
           </Right>
         </Header>
-        <Content>
+        <Content scrollEnabled={false}>
           <List
             dataArray={this.props.child.redeems}
             onEndReached={() => this.props.getRedeemsAsync(this.props.child.child.id)}
@@ -299,6 +299,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
 const styles = {
   drawer: {
     drawer: {
+      backgroundColor: theme.variables.defaultBg,
       shadowColor: '#000',
       shadowOpacity: 0.8,
       shadowRadius: 0

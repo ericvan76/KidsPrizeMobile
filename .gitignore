@@ -53,7 +53,6 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 
-ios/Pods/
 .vscode/launchReactNative.js
 .vscode/.react/
 .vscode/typings/

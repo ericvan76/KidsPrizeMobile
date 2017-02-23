@@ -16,7 +16,7 @@ import store from '../store';
 import { TaskEditorRoute, TextEditorRoute } from '../routes';
 import { createChildAsync, updateChildAsync, deleteChildAsync } from '../actions/child';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 import type { ChildState } from '../types/states.flow';
 import type { Gender } from '../types/api.flow';

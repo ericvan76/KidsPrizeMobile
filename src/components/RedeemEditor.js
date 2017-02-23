@@ -7,7 +7,7 @@ import { Container, Header, Left, Body, Right, Text, Title, Content, Button, Ico
 
 import type { Child } from '../types/api.flow';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 type Props = {
   navigator: Object,

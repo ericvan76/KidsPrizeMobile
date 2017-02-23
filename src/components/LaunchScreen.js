@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Auth0Lock from 'react-native-lock';
 import DeviceInfo from 'react-native-device-info';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 import * as authActions from '../actions/auth';
 import * as failureActions from '../actions/failure';

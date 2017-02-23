@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 
 import { Container, Header, Left, Body, ListItem, Right, Title, Content, Button, Icon, Text, StyleProvider } from 'native-base';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 import SortableListView from 'react-native-sortable-listview';
 import update from 'react-addons-update';

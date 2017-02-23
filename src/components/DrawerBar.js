@@ -6,7 +6,7 @@ import {
   ListItem, Separator, Thumbnail, StyleProvider
 } from 'native-base';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 import { logoutAsync } from '../actions/auth';
 import { switchChild } from '../actions/child';

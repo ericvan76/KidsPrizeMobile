@@ -8,7 +8,7 @@ import {
   Content, Button, Icon, Form, Item, Input, StyleProvider
 } from 'native-base';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 type Props = {
   navigator: Object,

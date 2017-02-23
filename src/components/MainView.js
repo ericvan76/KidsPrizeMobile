@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 import * as authActions from '../actions/auth';
 import * as childActions from '../actions/child';

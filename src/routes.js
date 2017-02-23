@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-import LaunchScreen from '../components/LaunchScreen';
-import MainView from '../components/MainView';
-import ChildEditor from '../components/ChildEditor';
-import TaskEditor from '../components/TaskEditor';
-import TextEditor from '../components/TextEditor';
-import RedeemEditor from '../components/RedeemEditor';
+import LaunchScreen from './components/LaunchScreen';
+import MainView from './components/MainView';
+import ChildEditor from './components/ChildEditor';
+import TaskEditor from './components/TaskEditor';
+import TextEditor from './components/TextEditor';
+import RedeemEditor from './components/RedeemEditor';
 
 export type Route = {
   renderScene: (navigator: Object) => any

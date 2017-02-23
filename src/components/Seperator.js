@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 class Seperator extends Component {
 

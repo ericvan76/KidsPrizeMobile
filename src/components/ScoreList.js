@@ -7,7 +7,7 @@ import update from 'react-addons-update';
 import moment from 'moment';
 
 import Separator from './Seperator';
-import theme from '../native-base-theme';
+import theme from '../theme';
 
 import type { ChildState, WeeklySectionState, TaskRowState } from '../types/states.flow';
 

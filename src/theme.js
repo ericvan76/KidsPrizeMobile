@@ -1,7 +1,7 @@
 /* @flow */
 
-import getTheme from './components';
-import variables from './variables/platform';
+import getTheme from '../native-base-theme/components';
+import variables from '../native-base-theme/variables/platform';
 
 // override variables
 if (variables.platform === 'ios') {

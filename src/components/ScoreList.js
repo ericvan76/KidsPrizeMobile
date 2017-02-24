@@ -139,7 +139,7 @@ class ScoreList extends Component {
   }
   render() {
     const refreshControl =
-      <RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.onRefresh()} />;
+      <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />;
 
     return (
       <ListView
@@ -153,9 +153,6 @@ class ScoreList extends Component {
         onEndReachedThreshold={0}
       />
     );
-  }
-  scrollToTop() {
-    this.refs.listView.scrollTo({ y: 0 });
   }
 }
 

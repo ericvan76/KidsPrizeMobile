@@ -95,7 +95,7 @@ class RedeemEditor extends Component {
               </Button>
             </Left>
             <Body>
-              <Title>Add Redeem</Title>
+              <Title>Redeem</Title>
               <Text note>Available: {this.props.child.totalScore}</Text>
             </Body>
             <Right>

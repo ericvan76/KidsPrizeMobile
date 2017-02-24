@@ -71,7 +71,6 @@ export function addRedeems(childId: string, redeems: Redeem[], updateTotal: bool
 }
 
 // Async Actions
-
 export function listChildrenAsync() {
   return async (dispatch: Dispatch) => {
     try {
@@ -155,13 +154,11 @@ export function fetchMoreAsync(childId: string) {
     try {
       const state: AppState = getState();
       const loadedWeeks = Object.keys(state.children[childId].weeklyScores);
-      if (loadedWeeks.length === 0) {
-        dispatch(refreshAsync(childId));
-        return;
+      if (loadedWeeks.length > 0) {
+        const lastWeek = loadedWeeks[loadedWeeks.length - 1];
+        const result = await api.getScores(childId, lastWeek, WEEKS_TO_LOAD);
+        dispatch(updateChild(result));
       }
-      const lastWeek = loadedWeeks[loadedWeeks.length - 1];
-      const result = await api.getScores(childId, lastWeek, WEEKS_TO_LOAD);
-      dispatch(updateChild(result));
     } catch (err) {
       dispatch(failure(err));
     }
@@ -179,20 +176,13 @@ export function createRedeemAsync(childId: string, description: string, value: n
   };
 }
 
-// hack: avoid called multiple times
-let locked = false;
-
 export function getRedeemsAsync(childId: string) {
   return async (dispatch: Dispatch, getState: Function) => {
     try {
       const state: AppState = getState();
       const offset = state.children[childId].redeems.length;
-      if (!locked) {
-        locked = true;
-        const redeems = await api.getRedeems(childId, 25, offset);
-        dispatch(addRedeems(childId, redeems, false));
-        locked = false;
-      }
+      const redeems = await api.getRedeems(childId, 25, offset);
+      dispatch(addRedeems(childId, redeems, false));
     } catch (err) {
       dispatch(failure(err));
     }

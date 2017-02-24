@@ -170,14 +170,13 @@ class MainView extends Component {
             </Button>
           </Right>
         </Header>
-        <Content scrollEnabled={false} horizontal={true}>
-          <ScoreList
-            ref='listView'
-            child={this.props.child}
-            refreshAsync={this.props.refreshAsync}
-            fetchMoreAsync={this.props.fetchMoreAsync}
-            setScoreAsync={this.props.setScoreAsync} />
-        </Content>
+        <ScoreList
+          style={styles.list}
+          ref='listView'
+          child={this.props.child}
+          refreshAsync={this.props.refreshAsync}
+          fetchMoreAsync={this.props.fetchMoreAsync}
+          setScoreAsync={this.props.setScoreAsync} />
         {this.renderFooter()}
       </Container>
     );
@@ -209,23 +208,21 @@ class MainView extends Component {
             </Button>
           </Right>
         </Header>
-        <Content scrollEnabled={false}>
-          <List
-            dataArray={this.props.child.redeems}
-            onEndReached={() => this.props.getRedeemsAsync(this.props.child.child.id)}
-            onEndReachedThreshold={0}
-            renderRow={(redeem: Redeem) =>
-              <ListItem>
-                <Body>
-                  <Text ellipsizeMode='middle' numberOfLines={1}>{redeem.description}</Text>
-                  <Text note>{moment(redeem.timestamp).format('DD-MMM-YYYY HH:mm')}</Text>
-                </Body>
-                <Right>
-                  <Text>{redeem.value}</Text>
-                </Right>
-              </ListItem>
-            } />
-        </Content>
+        <List style={styles.list}
+          dataArray={this.props.child.redeems}
+          onEndReached={() => this.props.getRedeemsAsync(this.props.child.child.id)}
+          onEndReachedThreshold={0}
+          renderRow={(redeem: Redeem) =>
+            <ListItem>
+              <Body>
+                <Text ellipsizeMode='middle' numberOfLines={1}>{redeem.description}</Text>
+                <Text note>{moment(redeem.timestamp).format('DD-MMM-YYYY HH:mm')}</Text>
+              </Body>
+              <Right>
+                <Text>{redeem.value}</Text>
+              </Right>
+            </ListItem>
+          } />
         {this.renderFooter()}
       </Container>
     );
@@ -270,7 +267,7 @@ class MainView extends Component {
             };
           }}
           negotiatePan>
-          {this.props.child ? (
+          {this.props.child && Object.keys(this.props.child.weeklyScores).length > 0 ? (
             this.state.activeTab === 'main' ? this.renderMain() : this.renderRedeem()
           ) : this.renderEmpty()}
         </Drawer>
@@ -297,6 +294,9 @@ const mapDispatchToProps = (dispatch: Dispatch): ActionProps => {
 };
 
 const styles = {
+  list: {
+    flex: 1
+  },
   drawer: {
     drawer: {
       backgroundColor: theme.variables.defaultBg,

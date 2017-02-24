@@ -147,7 +147,6 @@ class TaskEditor extends Component {
       new TextEditorRoute({
         title: 'New Task',
         placeholder: 'Type new task here',
-        autoCapitalize: 'words',
         maxLength: 50,
         onSubmit: (text: string) => {
           this.onAddTask(text.trim());
@@ -185,15 +184,13 @@ class TaskEditor extends Component {
               }
             </Right>
           </Header>
-          <Content scrollEnabled={false} horizontal={true} >
-            <SortableListView
-              style={styles.list}
-              sortRowStyle={styles.row}
-              data={this.state.current.data}
-              order={this.state.current.order}
-              onRowMoved={e => this.onMove(e)}
-              renderRow={row => this.renderRow(row)} />
-          </Content>
+          <SortableListView
+            style={styles.list}
+            sortRowStyle={styles.row}
+            data={this.state.current.data}
+            order={this.state.current.order}
+            onRowMoved={e => this.onMove(e)}
+            renderRow={row => this.renderRow(row)} />
         </Container>
       </StyleProvider>
     );

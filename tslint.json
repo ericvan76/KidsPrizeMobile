@@ -1,0 +1,91 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-microsoft-contrib/recommended_ruleset",
+    "tslint-require-connnect-typing"
+  ],
+  "rulesDirectory": [
+    "node_modules/tslint-microsoft-contrib",
+    "node_modules/tslint-require-connnect-typing"
+  ],
+  "rules": {
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ],
+    "max-classes-per-file": [
+      false
+    ],
+    "interface-name": [
+      false
+    ],
+    "missing-jsdoc": false,
+    "no-unused-variable": false,
+    "no-default-export": false,
+    "no-relative-imports": false,
+    "no-empty-interfaces": false,
+    "import-name": false,
+    "export-name": false,
+    "react-tsx-curly-spacing": [
+      true,
+      "never",
+      {
+        "allowMultiline": true
+      }
+    ],
+    "react-this-binding-issue": [
+      true,
+      {
+        "allow-anonymous-listeners": true
+      }
+    ],
+    "array-type": [
+      true,
+      "generic"
+    ],
+    "prefer-array-literal": [
+      true,
+      {
+        "allow-type-parameters": true
+      }
+    ],
+    "prefer-for-of": false,
+    "no-increment-decrement": false,
+    "no-backbone-get-set-outside-model": false,
+    "prefer-type-cast": false,
+    "no-angle-bracket-type-assertion": true,
+    "no-empty-interface": false, // This is not properly check if the new (empty) interface is a concrete of a generic
+    "function-name": [
+      true,
+      {
+        "static-method-regex": "^[a-z][\\w\\d]+$"
+      }
+    ],
+    "space-before-function-paren": [
+      true,
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
+    // This should be enabled for beta and release builds
+    "no-suspicious-comment": false,
+    // This is causing tslint to throw exceptions with typescript 2.2
+    "no-use-before-declare": false,
+    // This rule is currently broken https://github.com/Microsoft/tslint-microsoft-contrib/issues/339
+    "react-unused-props-and-state": false
+  },
+  "jsRules": {
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ],
+    "max-classes-per-file": [
+      false
+    ],
+    "no-unused-variable": false
+  }
+}

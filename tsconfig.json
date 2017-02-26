@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "module": "es2015",
+    "target": "es2015",
+    "jsx": "react-native",
+    "outDir": "build",
+    "sourceMap": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "noEmitHelpers": true,
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": [
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "libdefs/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

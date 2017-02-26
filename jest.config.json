@@ -1,0 +1,24 @@
+{
+  "verbose": true,
+  "preset": "react-native",
+  "transform": {
+    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+    ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+  },
+  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(js)$",
+  "moduleFileExtensions": [
+    "js",
+    "jsx",
+    "ts",
+    "tsx",
+    "json",
+    "node"
+  ],
+  "moduleDirectories": [
+    "node_modules"
+  ],
+  "automock": false,
+  "globals": {
+    "__TS_CONFIG__": "tsconfig.jest.json"
+  }
+}

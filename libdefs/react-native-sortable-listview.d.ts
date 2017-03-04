@@ -12,6 +12,11 @@ declare module 'react-native-sortable-listview' {
     renderRow: (row: any) => void;
   }
 
+  export interface RowMovedEvent {
+    from: number;
+    to: number;
+  }
+
   class SortableListView extends React.Component<SortableListViewProperties, void>{ }
 
   export default SortableListView;

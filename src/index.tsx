@@ -19,7 +19,7 @@ class App extends React.PureComponent<void, void> {
   }
 
   public render() {
-    const initRoute = routes.launchRoute();
+    const initRoute = routes.launcherRoute();
     return (
       <Provider store={store}>
         <RN.View style={styles.container}>

@@ -1,25 +1,35 @@
 import moment from 'moment';
-import * as Constants from '../constants';
+import { batchActions } from 'redux-batched-actions';
 
 import * as api from '../api/api';
+import * as Constants from '../constants';
 import { Action, AddRedeemsPayload, AsyncAction, UpdateScorePayload } from '../types/actions';
 import { Child, Gender, Redeem, ScoreResult } from '../types/api';
 import { failure } from './failure';
 
 const WEEKS_TO_LOAD: number = 4;
 
-export const ADD_CHILDREN = 'ADD_CHILDREN';
-export type AddChildrenAction = Action<typeof ADD_CHILDREN, Array<Child>>;
-export function addChildren(children: Array<Child>): AddChildrenAction {
+export const LOAD_CHILDREN = 'LOAD_CHILDREN';
+export type LoadChildrenAction = Action<typeof LOAD_CHILDREN, Array<Child>>;
+export function loadChildren(children: Array<Child>): LoadChildrenAction {
   return {
-    type: ADD_CHILDREN,
+    type: LOAD_CHILDREN,
     payload: children
   };
 }
 
+export const SET_INITIALISED = 'SET_INITIALISED';
+export type SetInitialisedAction = Action<typeof SET_INITIALISED, boolean>;
+export function setInitialised(initialised: boolean): SetInitialisedAction {
+  return {
+    type: SET_INITIALISED,
+    payload: initialised
+  };
+}
+
 export const SWITCH_CHILD = 'SWITCH_CHILD';
-export type SwitchChildAction = Action<typeof SWITCH_CHILD, string>;
-export function switchChild(childId: string): SwitchChildAction {
+export type SwitchChildAction = Action<typeof SWITCH_CHILD, string | undefined>;
+export function switchChild(childId: string | undefined): SwitchChildAction {
   return {
     type: SWITCH_CHILD,
     payload: childId
@@ -44,11 +54,11 @@ export function updateChild(scoreResult: ScoreResult): UpdateChildAction {
   };
 }
 
-export const UPDATE_SCORE = 'UPDATE_SCORE';
-export type UpdateScoreAction = Action<typeof UPDATE_SCORE, UpdateScorePayload>;
-export function updateScore(childId: string, date: string, task: string, value: number): UpdateScoreAction {
+export const SET_SCORE = 'SET_SCORE';
+export type SetScoreAction = Action<typeof SET_SCORE, UpdateScorePayload>;
+export function setScore(childId: string, date: string, task: string, value: number): SetScoreAction {
   return {
-    type: UPDATE_SCORE,
+    type: SET_SCORE,
     payload: {
       childId,
       date,
@@ -72,7 +82,7 @@ export function addRedeems(childId: string, redeems: Array<Redeem>, updateTotal:
 }
 
 // Async Actions
-export function listChildrenAsync(): AsyncAction {
+export function loadChildrenAsync(): AsyncAction {
   return async (dispatch) => {
     try {
       // todo: implement preference state
@@ -80,7 +90,11 @@ export function listChildrenAsync(): AsyncAction {
         timeZoneOffset: new Date().getTimezoneOffset()
       });
       const children: Array<Child> = await api.listChildren();
-      dispatch(addChildren(children));
+      dispatch(batchActions([
+        loadChildren(children),
+        switchChild(children.length > 0 ? children[0].id : undefined),
+        setInitialised(true)
+      ]));
     } catch (err) {
       dispatch(failure(err));
     }
@@ -90,8 +104,11 @@ export function listChildrenAsync(): AsyncAction {
 export function createChildAsync(childId: string, name: string, gender: Gender, tasks: Array<string>): AsyncAction {
   return async (dispatch) => {
     try {
-      const result: ScoreResult = await api.createChild(childId, name, gender, tasks);
-      dispatch(updateChild(result));
+      const result = await api.createChild(childId, name, gender, tasks);
+      dispatch(batchActions([
+        updateChild(result),
+        switchChild(result.child.id)
+      ]));
     } catch (err) {
       dispatch(failure(err));
     }
@@ -101,7 +118,7 @@ export function createChildAsync(childId: string, name: string, gender: Gender, 
 export function updateChildAsync(childId: string, name: string, gender: Gender, tasks: Array<string>): AsyncAction {
   return async (dispatch) => {
     try {
-      const result: ScoreResult = await api.updateChild(childId, name, gender, tasks);
+      const result = await api.updateChild(childId, name, gender, tasks);
       dispatch(updateChild(result));
     } catch (err) {
       dispatch(failure(err));
@@ -110,10 +127,14 @@ export function updateChildAsync(childId: string, name: string, gender: Gender, 
 }
 
 export function deleteChildAsync(childId: string): AsyncAction {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       await api.deleteChild(childId);
-      dispatch(deleteChild(childId));
+      const nextChildId = Object.keys(getState().children).find(k => k !== childId);
+      dispatch(batchActions([
+        deleteChild(childId),
+        switchChild(nextChildId)
+      ]));
     } catch (err) {
       dispatch(failure(err));
     }
@@ -124,7 +145,7 @@ export function setScoreAsync(childId: string, date: string, task: string, value
   return async (dispatch) => {
     try {
       await api.setScore(childId, date, task, value);
-      dispatch(updateScore(childId, date, task, value));
+      dispatch(setScore(childId, date, task, value));
     } catch (err) {
       dispatch(failure(err));
     }

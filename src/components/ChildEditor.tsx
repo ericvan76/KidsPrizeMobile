@@ -29,6 +29,24 @@ interface FormState {
 }
 
 class ChildEditor extends React.PureComponent<Props, State> {
+  public constructor(props: Props) {
+    super(props);
+    let tasks = ['Task 1', 'Task 2', 'Task 3'];
+    if (this.props.child) {
+      const week1 = Object.keys(this.props.child.weeklyScores)[0];
+      tasks = Object.keys(this.props.child.weeklyScores[week1]);
+    }
+    const initial: FormState = {
+      id: this.props.child ? this.props.child.child.id : uuid.v4(),
+      name: this.props.child ? this.props.child.child.name : '',
+      gender: this.props.child ? this.props.child.child.gender : Constants.GENDER_MALE,
+      tasks
+    };
+    this.state = {
+      initial,
+      current: initial
+    };
+  }
 
   private isDirty(): boolean {
     return this.state.initial !== this.state.current;
@@ -79,24 +97,6 @@ class ChildEditor extends React.PureComponent<Props, State> {
         }
       ]
     );
-  }
-
-  public componentWillMount() {
-    let tasks = ['Task 1', 'Task 2', 'Task 3'];
-    if (this.props.child) {
-      const week1 = Object.keys(this.props.child.weeklyScores)[0];
-      tasks = Object.keys(this.props.child.weeklyScores[week1]);
-    }
-    const initial: FormState = {
-      id: this.props.child ? this.props.child.child.id : uuid.v4(),
-      name: this.props.child ? this.props.child.child.name : '',
-      gender: this.props.child ? this.props.child.child.gender : Constants.GENDER_MALE,
-      tasks
-    };
-    this.state = {
-      initial,
-      current: initial
-    };
   }
 
   // tslint:disable-next-line:max-func-body-length
@@ -209,11 +209,11 @@ class ChildEditor extends React.PureComponent<Props, State> {
   }
 }
 
+export default ChildEditor;
+
 const styles = {
   deleteButton: {
     margin: 10,
     marginTop: 80
   }
 };
-
-export default ChildEditor;

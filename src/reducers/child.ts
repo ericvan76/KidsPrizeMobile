@@ -2,56 +2,53 @@ import moment from 'moment';
 
 import { CLEAR_TOKEN, ClearTokenAction } from '../actions/auth';
 import {
-  ADD_CHILDREN,
   ADD_REDEEMS,
-  AddChildrenAction,
   AddRedeemsAction,
   DELETE_CHILD,
   DeleteChildAction,
+  LOAD_CHILDREN,
+  LoadChildrenAction,
+  SET_SCORE,
+  SetScoreAction,
   SWITCH_CHILD,
   SwitchChildAction,
   UPDATE_CHILD,
-  UPDATE_SCORE,
-  UpdateChildAction,
-  UpdateScoreAction
+  UpdateChildAction
 } from '../actions/child';
 
 import * as Constants from '../constants';
-import { AddRedeemsPayload, UpdateScorePayload } from '../types/actions';
-import { Child, Redeem, Score, ScoreResult } from '../types/api';
+import { Child, Redeem, Score } from '../types/api';
 import { ChildrenState, WeeklyScoresState } from '../types/states';
 import { INITIAL_STATE } from './initialState';
 
 // tslint:disable-next-line:max-func-body-length
 export default function (
   state: ChildrenState = INITIAL_STATE.children,
-  action: AddChildrenAction |
+  action: LoadChildrenAction |
     UpdateChildAction |
     DeleteChildAction |
     SwitchChildAction |
-    UpdateScoreAction |
+    SetScoreAction |
     AddRedeemsAction |
-    ClearTokenAction) {
+    ClearTokenAction): ChildrenState {
   switch (action.type) {
-    case ADD_CHILDREN: {
-      const children = action.payload as Array<Child>;
-      let flag = Object.keys(state).length === 0;
+    case LOAD_CHILDREN: {
+      const children = action.payload;
       return children.reduce(
         (prev: ChildrenState, child: Child) => {
           prev[child.id] = {
-            isCurrent: flag,
+            isCurrent: false,
             child,
             weeklyScores: {},
             redeems: []
           };
-          flag = false;
           return prev;
         },
-        {}) as ChildrenState;
+        {});
     }
     case UPDATE_CHILD:
       {
-        const payload = action.payload as ScoreResult;
+        const payload = action.payload;
         const weeklyScores: WeeklyScoresState = payload.weeklyScores.reduce(
           (prev: WeeklyScoresState, weeklyScore) => {
             const week = moment(weeklyScore.week).format(Constants.DATE_FORMAT);
@@ -73,21 +70,14 @@ export default function (
 
         if (!state[payload.child.id]) {
           return {
-            ...Object.keys(state).reduce(
-              (acc: ChildrenState, key) => {
-                acc[key] = {
-                  ...state[key],
-                  isCurrent: false
-                };
-                return acc;
-              },
-              {}),
+            ...state,
             [payload.child.id]: {
-              isCurrent: true,
+              isCurrent: false,
               child: payload.child,
-              weeklyScores
+              weeklyScores,
+              redeems: []
             }
-          } as ChildrenState;
+          };
         } else {
           const mergedWeeklyScores = { ...state[payload.child.id].weeklyScores, ...weeklyScores };
           const sortedWeeklyScores = Object.keys(mergedWeeklyScores).sort().reverse()
@@ -104,12 +94,12 @@ export default function (
               child: payload.child,
               weeklyScores: sortedWeeklyScores
             }
-          } as ChildrenState;
+          };
         }
       }
     case SWITCH_CHILD: {
-      const childId = action.payload as string;
-      if (state[childId] && !state[childId].isCurrent) {
+      const childId = action.payload;
+      if (childId && state[childId] && !state[childId].isCurrent) {
         return Object.keys(state).reduce(
           (acc: ChildrenState, key) => {
             acc[key] = {
@@ -124,21 +114,14 @@ export default function (
     }
     case DELETE_CHILD:
       {
-        const childId = action.payload as string;
-        let flag = state[childId] && state[childId].isCurrent ? true : false;
-        return Object.keys(state)
-          .filter(key => key !== childId)
-          .reduce(
-          (result: ChildrenState, key: string) => {
-            result[key] = { ...state[key], isCurrent: flag };
-            flag = false;
-            return result;
-          },
-          {}) as ChildrenState;
+        const childId = action.payload;
+        const newState = Object.assign({}, state);
+        delete newState[childId];
+        return newState;
       }
-    case UPDATE_SCORE:
+    case SET_SCORE:
       {
-        const payload = action.payload as UpdateScorePayload;
+        const payload = action.payload;
         const childState = state[payload.childId];
         const week = moment(payload.date).day(0).format(Constants.DATE_FORMAT);
         const currentValue = childState.weeklyScores[week][payload.task][payload.date] || 0;
@@ -162,11 +145,11 @@ export default function (
               }
             }
           }
-        } as ChildrenState;
+        };
       }
     case ADD_REDEEMS:
       {
-        const payload = action.payload as AddRedeemsPayload;
+        const payload = action.payload;
         const sortedRedeems = [...state[payload.childId].redeems, ...payload.redeems]
           .sort((a: Redeem, b: Redeem) => {
             return moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf();
@@ -185,7 +168,7 @@ export default function (
             },
             redeems: sortedRedeems
           }
-        } as ChildrenState;
+        };
       }
     case CLEAR_TOKEN:
       {

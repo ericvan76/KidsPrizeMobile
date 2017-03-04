@@ -1,45 +1,47 @@
 import * as NB from 'native-base';
 import React from 'react';
 import RN from 'react-native';
+import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { AppState } from '../types/states';
 
 import { logoutAsync } from '../actions/auth';
 import { switchChild } from '../actions/child';
 import * as Constants from '../constants';
 import * as routes from '../routes';
-import store from '../store';
 import theme from '../theme';
 import { Child } from '../types/api';
 import { Profile } from '../types/auth';
 
-export interface Props {
+interface OwnProps {
   navigator: RN.Navigator;
-  // tslint:disable-next-line:no-any
-  drawer: any; //NB.Drawer;
-  profile: Profile;
-  childList?: Array<Child>;
+  closeDrawer: () => void;
 }
 
-class DrawerBar extends React.PureComponent<Props, void> {
+interface StateProps {
+  profile: Profile;
+  childList: Array<Child>;
+}
+
+interface DispatchProps {
+  switchChild: typeof switchChild;
+  logoutAsync: typeof logoutAsync;
+}
+
+class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProps, void> {
 
   private getDisplayName(profile: Profile) {
     return profile.given_name || profile.nickname || profile.name || 'Unknown';
   }
 
   private switchChild(id: string) {
-    store.dispatch(switchChild(id));
-    this.openDrawer();
+    this.props.switchChild(id);
+    this.props.closeDrawer();
   }
 
   private addChild() {
+    this.props.closeDrawer();
     this.props.navigator.push(routes.editChildRoute({ navigator: this.props.navigator }));
-    this.closeDrawer();
-  }
-
-  private openDrawer() {
-    this.props.drawer._root.open();
-  }
-  private closeDrawer() {
-    this.props.drawer._root.close();
   }
 
   private logout() {
@@ -51,8 +53,8 @@ class DrawerBar extends React.PureComponent<Props, void> {
           text: 'No'
         }, {
           text: 'Yes', onPress: () => {
-            store.dispatch(logoutAsync());
-            this.closeDrawer();
+            this.props.logoutAsync();
+            this.props.closeDrawer();
           }
         }
       ]
@@ -122,6 +124,24 @@ class DrawerBar extends React.PureComponent<Props, void> {
   }
 }
 
+const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState) => {
+  return {
+    profile: state.auth.profile as Profile,
+    childList: Object.keys(state.children).map(k => state.children[k].child)
+  };
+};
+
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = (dispatch): DispatchProps => {
+  return bindActionCreators(
+    {
+      switchChild,
+      logoutAsync
+    },
+    dispatch);
+};
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(DrawerBar);
+
 const styles = {
   header: {
     height: 100,
@@ -131,5 +151,3 @@ const styles = {
     borderBottomColor: 'transparent'
   }
 };
-
-export default DrawerBar;

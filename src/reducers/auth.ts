@@ -1,8 +1,8 @@
 import {
   CLEAR_TOKEN,
   ClearTokenAction,
-  TOKEN_LOADED,
-  TokenLoadedAction,
+  TOKEN_LOAD_COMPLETED,
+  TokenLoadCompletedAction,
   UPDATE_TOKEN,
   UpdateTokenAction
 } from '../actions/auth';
@@ -14,15 +14,15 @@ import { INITIAL_STATE } from './initialState';
 
 export default function reducer(
   state: AuthState = INITIAL_STATE.auth,
-  action: TokenLoadedAction | UpdateTokenAction | ClearTokenAction): AuthState {
+  action: TokenLoadCompletedAction | UpdateTokenAction | ClearTokenAction): AuthState {
 
   switch (action.type) {
-    case TOKEN_LOADED:
+    case TOKEN_LOAD_COMPLETED:
       {
         const payload = action.payload as Token | undefined;
         return {
           ...state,
-          tokenLoaded: true,
+          tokenLoadCompleted: true,
           token: payload,
           profile: payload ? auth0.decodeJwt(payload.id_token) : undefined
         };

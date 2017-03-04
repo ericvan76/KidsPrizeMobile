@@ -2,37 +2,56 @@ import moment from 'moment';
 import * as NB from 'native-base';
 import React from 'react';
 import RN from 'react-native';
+import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import { fetchMoreAsync, refreshAsync, setScoreAsync } from '../actions/child';
 import * as Constants from '../constants';
 import theme from '../theme';
-import { ChildState, TaskRowState, WeeklyState } from '../types/states';
+import { Child } from '../types/api';
+import { AppState, TaskRowState, WeeklyScoresState, WeeklyState } from '../types/states';
 
-function createDataSource() {
-  return new RN.ListView.DataSource({
-    sectionHeaderHasChanged: () => {
-      return false;
-    },
-    rowHasChanged: (r1: TaskRowState, r2: TaskRowState) => {
-      return r1 !== r2;
-    }
-  });
+interface OwnProps {
+  childId: string;
+}
+interface StateProps {
+  child: Child;
+  weeklyScores: WeeklyScoresState;
 }
 
-interface Props {
-  style: RN.ViewStyle;
-  child: ChildState;
-  refreshAsync: (childId: string) => void;
-  fetchMoreAsync: (childId: string) => void;
-  setScoreAsync: (childId: string, date: string, task: string, value: number) => void;
+interface DispatchProps {
+  refreshAsync: typeof refreshAsync;
+  fetchMoreAsync: typeof fetchMoreAsync;
+  setScoreAsync: typeof setScoreAsync;
 }
+
+type Props = OwnProps & StateProps & DispatchProps;
 
 interface State {
   refreshing: boolean;
-  // tslint:disable-next-line:no-any
-  dataSource: any;
+  dataSource: RN.ListViewDataSource;
 }
 
 class ScoreList extends React.PureComponent<Props, State> {
+
+  public constructor(props: Props) {
+    super(props);
+    this.state = {
+      refreshing: false,
+      dataSource: this.createDataSource()
+    };
+  }
+
+  private createDataSource() {
+    return new RN.ListView.DataSource({
+      sectionHeaderHasChanged: () => {
+        return false;
+      },
+      rowHasChanged: (r1: TaskRowState, r2: TaskRowState) => {
+        return r1 !== r2;
+      }
+    });
+  }
 
   private renderSectionHeader(_: WeeklyState, sectionID: RN.ReactText) {
     const week = sectionID.toString();
@@ -58,8 +77,7 @@ class ScoreList extends React.PureComponent<Props, State> {
     return (
       <RN.View>
         <RN.View style={styles.separator} />
-        <RN.View
-          style={styles.section}>{dates}</RN.View>
+        <RN.View style={styles.section}>{dates}</RN.View>
         <RN.View style={styles.separator} />
       </RN.View>
     );
@@ -75,60 +93,53 @@ class ScoreList extends React.PureComponent<Props, State> {
       return (
         <RN.TouchableOpacity
           key={i}
-          onPress={() => this.props.setScoreAsync(this.props.child.child.id, date, task, newValue)}>
+          onPress={() => this.props.setScoreAsync(this.props.child.id, date, task, newValue)}>
           <NB.Icon name="star" active={value > 0}
             style={styles.star} />
         </RN.TouchableOpacity>
       );
     });
     return (
-      <RN.View
-        style={styles.row}>
+      <RN.View style={styles.row}>
         <NB.Text large
           style={styles.task}
           ellipsizeMode="tail"
-          numberOfLines={1}>{task}</NB.Text>
-        <RN.View
-          style={styles.starRow}>{stars}</RN.View>
+          numberOfLines={1}
+        >{task}</NB.Text>
+        <RN.View style={styles.starRow}>{stars}</RN.View>
       </RN.View>
     );
   }
   private renderSeparator(sectionID: RN.ReactText, rowID: RN.ReactText) {
     return <RN.View style={styles.separator} key={`${sectionID}-${rowID}`} />;
   }
+
   private onRefresh() {
     this.setState({ ...this.state, refreshing: true });
-    this.props.refreshAsync(this.props.child.child.id);
+    this.props.refreshAsync(this.props.child.id);
     this.setState({ ...this.state, refreshing: false });
   }
   private onEndReached() {
-    this.props.fetchMoreAsync(this.props.child.child.id);
-  }
-
-  public scrollToTop() {
-    // tslint:disable-next-line:no-any
-    const listView = (this.refs.listView as any) as RN.ListView;
-    listView.scrollTo({ y: 0 });
-  }
-
-  public componentWillMount() {
-    this.state = {
-      refreshing: false,
-      dataSource: createDataSource().cloneWithRowsAndSections(this.props.child.weeklyScores)
-    };
+    this.props.fetchMoreAsync(this.props.child.id);
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    let ds = this.state.dataSource;
-    if (nextProps.child.child.id !== this.props.child.child.id) {
-      // create a new datasource for different child
-      ds = createDataSource();
-      this.scrollToTop();
-    }
     this.setState({
       ...this.state,
-      dataSource: ds.cloneWithRowsAndSections(nextProps.child.weeklyScores)
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.weeklyScores)
     });
+  }
+
+  public componentDidMount() {
+    if (Object.keys(this.props.weeklyScores).length === 0) {
+      this.onRefresh();
+    }
+  }
+
+  public componentDidUpdate() {
+    if (Object.keys(this.props.weeklyScores).length === 0) {
+      this.onRefresh();
+    }
   }
 
   public render() {
@@ -137,7 +148,6 @@ class ScoreList extends React.PureComponent<Props, State> {
 
     return (
       <RN.ListView
-        ref="listView"
         dataSource={this.state.dataSource}
         renderSectionHeader={(sectionData, sectionID) => this.renderSectionHeader(sectionData, sectionID)}
         renderRow={(rowData, sectionID, rowID) => this.renderRow(rowData, sectionID, rowID)}
@@ -149,6 +159,26 @@ class ScoreList extends React.PureComponent<Props, State> {
     );
   }
 }
+
+const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState, ownProps: OwnProps) => {
+  const childState = state.children[ownProps.childId];
+  return {
+    child: childState.child,
+    weeklyScores: childState.weeklyScores
+  };
+};
+
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = (dispatch) => {
+  return bindActionCreators(
+    {
+      refreshAsync,
+      fetchMoreAsync,
+      setScoreAsync
+    },
+    dispatch);
+};
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(ScoreList);
 
 const styles = {
   section: {
@@ -195,5 +225,3 @@ const styles = {
     backgroundColor: theme.variables.listDividerBg
   } as RN.ViewStyle
 };
-
-export default ScoreList;

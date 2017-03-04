@@ -19,16 +19,16 @@ describe('reducers', () => {
         token_type: 'Bearer',
         expires_in: 3600
       };
-      const state = reducer(INITIAL_STATE.auth, actions.tokenLoaded(token));
+      const state = reducer(INITIAL_STATE.auth, actions.tokenLoadCompleted(token));
       expect(state).toBeTruthy();
-      expect(state.tokenLoaded).toEqual(true);
+      expect(state.tokenLoadCompleted).toEqual(true);
       expect(state.token).toEqual(token);
       expect(state.profile).toBeDefined();
     });
 
     it('test set token', () => {
       const initState: AuthState = {
-        tokenLoaded: true,
+        tokenLoadCompleted: true,
         token: {
           access_token: uuid.v4(),
           id_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
@@ -62,14 +62,14 @@ describe('reducers', () => {
       };
       const state = reducer(initState, actions.updateToken(token));
       expect(state).toBeTruthy();
-      expect(state.tokenLoaded).toEqual(true);
+      expect(state.tokenLoadCompleted).toEqual(true);
       expect(state.token).toEqual(token);
       expect(state.profile).toBeDefined();
     });
 
     it('test clear token', () => {
       const initState: AuthState = {
-        tokenLoaded: true,
+        tokenLoadCompleted: true,
         token: {
           access_token: uuid.v4(),
           id_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
@@ -95,7 +95,7 @@ describe('reducers', () => {
 
       const state = reducer(initState, actions.clearToken());
       expect(state).toBeTruthy();
-      expect(state.tokenLoaded).toEqual(true);
+      expect(state.tokenLoadCompleted).toEqual(true);
       expect(state.token).toBeUndefined();
       expect(state.profile).toBeUndefined();
     });

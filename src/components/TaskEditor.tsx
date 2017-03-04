@@ -1,7 +1,7 @@
 import * as NB from 'native-base';
 import React from 'react';
 import RN from 'react-native';
-import SortableListView from 'react-native-sortable-listview';
+import SortableListView, { RowMovedEvent } from 'react-native-sortable-listview';
 
 import * as routes from '../routes';
 import theme from '../theme';
@@ -54,6 +54,22 @@ interface State {
 
 class TaskEditor extends React.PureComponent<Props, State> {
 
+  public constructor(props: Props) {
+    super(props);
+    const initial: FormState = {
+      data: Object.assign({}, ...this.props.value.map((task: string) => {
+        return {
+          [task]: task
+        };
+      })),
+      order: this.props.value
+    };
+    this.state = {
+      initial,
+      current: initial
+    };
+  }
+
   private isDirty(): boolean {
     return this.state.initial !== this.state.current;
   }
@@ -67,8 +83,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
     }
   }
 
-  // tslint:disable-next-line:no-any
-  private onMove(e: any) {
+  private onMove(e: RowMovedEvent) {
     const order = this.state.current.order.slice();
     order.splice(e.to, 0, order.splice(e.from, 1)[0]);
     this.setState({
@@ -124,20 +139,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       <Row title={row} onRemove={() => this.onRemove(row)} />
     );
   }
-  public componentWillMount() {
-    const initial: FormState = {
-      data: Object.assign({}, ...this.props.value.map((task: string) => {
-        return {
-          [task]: task
-        };
-      })),
-      order: this.props.value
-    };
-    this.state = {
-      initial,
-      current: initial
-    };
-  }
+
   public render() {
     return (
       <NB.StyleProvider style={theme}>

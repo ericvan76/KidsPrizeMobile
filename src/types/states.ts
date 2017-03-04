@@ -3,12 +3,13 @@ import { Profile, Token } from './auth';
 
 export interface AppState {
   auth: AuthState;
+  initialised: boolean;
   children: ChildrenState;
   errors: Array<Error>;
 }
 
 export interface AuthState {
-  tokenLoaded: boolean;
+  tokenLoadCompleted: boolean;
   token?: Token;
   profile?: Profile;
 }

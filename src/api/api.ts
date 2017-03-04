@@ -5,7 +5,7 @@ import { getBearerToken } from './token';
 import { Child, Gender, Preference, Redeem, ScoreResult } from '../types/api';
 
 // tslint:disable-next-line:no-any
-export async function callApi(uri: string, init: any = {}): Promise<any> {
+export async function callApi(uri: string, init: RequestInit = {}): Promise<any> {
   const bearer = await getBearerToken();
   const url = `${config.api.baseUrl}${uri}`;
 
@@ -21,7 +21,7 @@ export async function callApi(uri: string, init: any = {}): Promise<any> {
 }
 
 // tslint:disable-next-line:no-any
-export async function fetchOrThrow(input: string, init: any): Promise<any> {
+export async function fetchOrThrow(input: string, init: RequestInit): Promise<any> {
   try {
     const response = await fetch(input, init);
     const text = await response.text();

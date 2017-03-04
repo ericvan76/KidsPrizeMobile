@@ -8,24 +8,27 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import config from '../__config__';
 import { loadTokenAsync, saveTokenAsync } from '../actions/auth';
+import { loadChildrenAsync } from '../actions/child';
 import { failure, resetFailure } from '../actions/failure';
 import * as auth0 from '../api/auth0';
-import * as routes from '../routes';
 import theme from '../theme';
 import { Token } from '../types/auth';
 import { AppState, AuthState } from '../types/states';
 import { alert } from '../utils/alert';
+import MainView from './MainView';
 
 interface StateProps {
   auth: AuthState;
+  initialised: boolean;
   errors: Array<Error>;
 }
 
 interface DispatchProps {
-  loadTokenAsync: () => void;
-  saveTokenAsync: (token: Token) => void;
-  failure: (err: Error) => void;
-  resetFailure: () => void;
+  loadTokenAsync: typeof loadTokenAsync;
+  saveTokenAsync: typeof saveTokenAsync;
+  loadChildrenAsync: typeof loadChildrenAsync;
+  failure: typeof failure;
+  resetFailure: typeof resetFailure;
 }
 
 export interface OwnProps extends RN.ViewProperties {
@@ -34,9 +37,17 @@ export interface OwnProps extends RN.ViewProperties {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-class LaunchScreen extends React.PureComponent<Props, void> {
+class Launcher extends React.PureComponent<Props, void> {
 
   private lock: Auth0Lock;
+
+  public constructor(props: Props) {
+    super(props);
+    this.lock = new Auth0Lock({
+      clientId: config.auth.client_id,
+      domain: config.auth.auth0_domain
+    });
+  }
 
   private showLogin() {
     this.lock.show(
@@ -46,8 +57,7 @@ class LaunchScreen extends React.PureComponent<Props, void> {
           device: DeviceInfo.getDeviceName()
         }
       },
-      // tslint:disable-next-line:no-any
-      (err: Error | undefined, _: any, token: any) => {
+      (err, _, token) => {
         if (token && token.idToken) {
           const decoded = auth0.decodeJwt(token.idToken);
           if (decoded.email && decoded.email_verified) {
@@ -68,80 +78,41 @@ class LaunchScreen extends React.PureComponent<Props, void> {
       });
   }
 
-  private showMain() {
-    this.props.navigator.replace(routes.mainRoute({ navigator: this.props.navigator }));
-  }
-
   public componentWillMount() {
-    this.lock = new Auth0Lock({
-      clientId: config.auth.client_id,
-      domain: config.auth.auth0_domain
-    });
-  }
-
-  public componentDidMount() {
-    if (!this.props.auth.tokenLoaded && RN.Platform.OS !== 'ios') {
-      setTimeout(
-        () => {
-          this.props.loadTokenAsync();
-        },
-        1000);
-    } else {
-      this.props.loadTokenAsync();
-    }
-  }
-
-  public shouldComponentUpdate(nextProps: Props) {
-    if (this.props.errors.length > 0 && nextProps.errors.length !== 0) {
-      return false;
-    }
-    return true;
+    this.props.loadTokenAsync();
   }
 
   public componentDidUpdate() {
     if (this.props.errors.length > 0) {
       alert(this.props.errors);
-    } else if (this.props.auth.tokenLoaded) {
-      if (this.props.auth.token && this.props.auth.profile) {
-        this.showMain();
-      } else {
+      return;
+    }
+    if (this.props.auth.tokenLoadCompleted) {
+      if (!this.props.auth.token) {
         this.showLogin();
+        return;
+      }
+      if (!this.props.initialised) {
+        this.props.loadChildrenAsync();
+        return;
       }
     }
   }
 
-  private renderIOS() {
-    return (
-      <NB.Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <NB.Spinner inverse size="small" />
-      </NB.Content>
-    );
-  }
-
-  private renderAndroid() {
-    // tslint:disable-next-line:no-require-imports
-    const iconSource = require('../../assets/img/icon.png');
-    return (
-      <NB.Content contentContainerStyle={{ flex: 1, alignItems: 'center' }}>
-        <NB.View style={{ flex: 0.5, justifyContent: 'flex-end' }}>
-          // tslint:disable-next-line:no-require-imports
-          <NB.Thumbnail circular size={100} source={iconSource} />
-        </NB.View>
-        <NB.View style={{ flex: 0.4, justifyContent: 'center' }}>
-          <NB.Spinner inverse size="small" />
-        </NB.View>
-        <NB.View style={{ flex: 0.1, justifyContent: 'center' }}>
-          <NB.Text>Powered by React Native</NB.Text>
-        </NB.View>
-      </NB.Content>
-    );
-  }
-
   public render() {
+    if (this.props.initialised) {
+      return (
+        <MainView navigator={this.props.navigator} />
+      );
+    }
+
+    // Spinner
     return (
       <NB.StyleProvider style={theme}>
         <NB.Container>
-          {RN.Platform.OS === 'ios' ? this.renderIOS() : this.renderAndroid()}
+          <NB.Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <NB.Spinner inverse size="small" />
+          </NB.Content>
         </NB.Container>
       </NB.StyleProvider>
     );
@@ -151,6 +122,7 @@ class LaunchScreen extends React.PureComponent<Props, void> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState) => {
   return {
     auth: state.auth,
+    initialised: state.initialised,
     errors: state.errors
   };
 };
@@ -160,10 +132,11 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
     {
       loadTokenAsync,
       saveTokenAsync,
+      loadChildrenAsync,
       failure,
       resetFailure
     },
     dispatch);
 };
 
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(LaunchScreen);
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(Launcher);

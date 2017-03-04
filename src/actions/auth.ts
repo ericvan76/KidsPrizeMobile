@@ -5,11 +5,11 @@ import { Action, AsyncAction } from '../types/actions';
 import { Token } from '../types/auth';
 import { failure } from './failure';
 
-export const TOKEN_LOADED = 'TOKEN_LOADED';
-export type TokenLoadedAction = Action<typeof TOKEN_LOADED, Token | undefined>;
-export function tokenLoaded(token?: Token): TokenLoadedAction {
+export const TOKEN_LOAD_COMPLETED = 'TOKEN_LOAD_COMPLETED';
+export type TokenLoadCompletedAction = Action<typeof TOKEN_LOAD_COMPLETED, Token | undefined>;
+export function tokenLoadCompleted(token?: Token): TokenLoadCompletedAction {
   return {
-    type: TOKEN_LOADED,
+    type: TOKEN_LOAD_COMPLETED,
     payload: token
   };
 }
@@ -41,11 +41,11 @@ export function loadTokenAsync(): AsyncAction {
       if (token && token.id_token) {
         const decoded = auth0.decodeJwt(token.id_token);
         if (decoded.email && decoded.email_verified) {
-          dispatch(tokenLoaded(token));
+          dispatch(tokenLoadCompleted(token));
           return;
         }
       }
-      dispatch(tokenLoaded());
+      dispatch(tokenLoadCompleted());
     } catch (err) {
       dispatch(failure(err));
     }

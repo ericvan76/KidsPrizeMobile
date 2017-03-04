@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux';
 
 import { AppState } from '../types/states';
-import authReducer from './auth';
-import childReducer from './child';
-import failureReducer from './failure';
+import auth from './auth';
+import children from './child';
+import errors from './failure';
+import initialised from './initialised';
 
 const rootReducer = combineReducers<AppState>({
-  auth: authReducer,
-  children: childReducer,
-  errors: failureReducer
+  auth,
+  initialised,
+  children,
+  errors
 });
 
 export default rootReducer;

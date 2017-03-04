@@ -21,6 +21,17 @@ interface State {
 
 class TextEditor extends React.PureComponent<Props, State> {
 
+  public constructor(props: Props) {
+    super(props);
+    const initial: FormState = {
+      value: this.props.defaultValue || ''
+    };
+    this.state = {
+      initial,
+      current: initial
+    };
+  }
+
   private isDirty(): boolean {
     return this.state.initial !== this.state.current;
   }
@@ -35,15 +46,7 @@ class TextEditor extends React.PureComponent<Props, State> {
       this.props.onSubmit(this.state.current.value.trim());
     }
   }
-  public componentWillMount() {
-    const initial: FormState = {
-      value: this.props.defaultValue || ''
-    };
-    this.state = {
-      initial,
-      current: initial
-    };
-  }
+
   public render() {
     return (
       <NB.StyleProvider style={theme}>

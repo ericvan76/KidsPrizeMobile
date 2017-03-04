@@ -23,6 +23,18 @@ interface FormState {
 
 class RedeemEditor extends React.PureComponent<Props, State> {
 
+  public constructor(props: Props) {
+    super(props);
+    const initial: FormState = {
+      description: '',
+      value: ''
+    };
+    this.state = {
+      initial,
+      current: initial
+    };
+  }
+
   private isDirty(): boolean {
     return this.state.initial !== this.state.current;
   }
@@ -56,16 +68,7 @@ class RedeemEditor extends React.PureComponent<Props, State> {
       this.props.onSubmit(this.state.current.description.trim(), parseInt(this.state.current.value, 10));
     }
   }
-  public componentWillMount() {
-    const initial: FormState = {
-      description: '',
-      value: ''
-    };
-    this.state = {
-      initial,
-      current: initial
-    };
-  }
+
   public render() {
     return (
       <NB.StyleProvider style={theme}>

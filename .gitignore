@@ -54,5 +54,4 @@ fastlane/Preview.html
 fastlane/screenshots
 
 build/
-
-src/__config__/
+__config__/

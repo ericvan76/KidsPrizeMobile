@@ -1,5 +1,5 @@
 
-import { AppState } from '../types/states';
+import { AppState, ChildState } from '../types/states';
 
 export const INITIAL_STATE: AppState = {
   auth: {
@@ -8,7 +8,6 @@ export const INITIAL_STATE: AppState = {
     profile: undefined
   },
   initialised: false,
-  children: {
-  },
+  children: new Map<string, ChildState>(),
   errors: []
 };

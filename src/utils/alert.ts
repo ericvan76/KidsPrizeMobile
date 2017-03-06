@@ -1,5 +1,5 @@
 import RN from 'react-native';
-import { resetFailure } from '../actions/failure';
+import { resetError } from '../actions/errors';
 
 import store from '../store';
 
@@ -9,7 +9,7 @@ export function alert(errors: Array<Error>) {
       'Oops!',
       errors[0].message || 'Unknown Error.',
       [
-        { text: 'OK', onPress: () => { store.dispatch(resetFailure()); } }
+        { text: 'OK', onPress: () => { store.dispatch(resetError()); } }
       ]);
   }
 }

@@ -34,12 +34,6 @@
         "allowMultiline": true
       }
     ],
-    "react-this-binding-issue": [
-      true,
-      {
-        "allow-anonymous-listeners": true
-      }
-    ],
     "array-type": [
       true,
       "generic"

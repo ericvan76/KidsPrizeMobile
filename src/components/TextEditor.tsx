@@ -32,16 +32,19 @@ class TextEditor extends React.PureComponent<Props, State> {
     };
   }
 
-  private isDirty(): boolean {
+  private isDirty = (): boolean => {
     return this.state.initial !== this.state.current;
   }
-  private isValid(): boolean {
+  private isValid = (): boolean => {
     return this.state.current.value.trim().length > 0;
   }
-  private onChangeText(text: string) {
+  private onTextChanged = (text: string) => {
     this.setState({ ...this.state, current: { ...this.state.current, value: text } });
   }
-  private onSubmit() {
+  private onClose = () => {
+    this.props.navigator.popToTop();
+  }
+  private onSubmit = () => {
     if (this.isDirty() && this.isValid()) {
       this.props.onSubmit(this.state.current.value.trim());
     }
@@ -53,7 +56,7 @@ class TextEditor extends React.PureComponent<Props, State> {
         <NB.Container>
           <NB.Header>
             <NB.Left>
-              <NB.Button transparent onPress={() => this.props.navigator.pop()}>
+              <NB.Button transparent onPress={this.onClose}>
                 <NB.Icon name={theme.icons.close} />
               </NB.Button>
             </NB.Left>
@@ -63,7 +66,7 @@ class TextEditor extends React.PureComponent<Props, State> {
             <NB.Right>
               {
                 this.isDirty() && this.isValid() &&
-                <NB.Button transparent onPress={this.onSubmit.bind(this)}>
+                <NB.Button transparent onPress={this.onSubmit}>
                   <NB.Text>Done</NB.Text>
                 </NB.Button>
               }
@@ -71,13 +74,15 @@ class TextEditor extends React.PureComponent<Props, State> {
           </NB.Header>
           <NB.Content>
             <NB.Form>
-              <NB.Item error={this.isDirty() && !this.isValid()} success={this.isDirty() && this.isValid()}>
+              <NB.Item
+                error={this.isDirty() && !this.isValid()}
+                success={this.isDirty() && this.isValid()}>
                 <NB.Input
                   returnKeyType="done"
                   maxLength={50}
                   autoFocus={true}
-                  onChangeText={this.onChangeText.bind(this)}
-                  onSubmitEditing={this.onSubmit.bind(this)}
+                  onChangeText={this.onTextChanged}
+                  onSubmitEditing={this.onSubmit}
                   {...this.props}
                 />
                 {this.isDirty() && <NB.Icon name={this.isValid() ? theme.icons.success : theme.icons.error} active />}

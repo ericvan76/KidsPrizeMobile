@@ -22,7 +22,7 @@
     "src/**/*.js",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "libdefs/*.d.ts"
+    "decls/*.d.ts"
   ],
   "exclude": [
     "node_modules"

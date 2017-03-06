@@ -8,8 +8,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import config from '../__config__';
 import { loadTokenAsync, saveTokenAsync } from '../actions/auth';
-import { loadChildrenAsync } from '../actions/child';
-import { failure, resetFailure } from '../actions/failure';
+import { loadChildrenAsync } from '../actions/children';
+import { raiseError } from '../actions/errors';
 import * as auth0 from '../api/auth0';
 import theme from '../theme';
 import { Token } from '../types/auth';
@@ -27,8 +27,7 @@ interface DispatchProps {
   loadTokenAsync: typeof loadTokenAsync;
   saveTokenAsync: typeof saveTokenAsync;
   loadChildrenAsync: typeof loadChildrenAsync;
-  failure: typeof failure;
-  resetFailure: typeof resetFailure;
+  raiseError: typeof raiseError;
 }
 
 export interface OwnProps extends RN.ViewProperties {
@@ -70,10 +69,10 @@ class Launcher extends React.PureComponent<Props, void> {
             };
             this.props.saveTokenAsync(toSave);
           } else {
-            this.props.failure(new Error('Email is not verified.'));
+            this.props.raiseError(new Error('Email is not verified.'));
           }
         } else {
-          this.props.failure(err || new Error('Unable to login.'));
+          this.props.raiseError(err || new Error('Unable to login.'));
         }
       });
   }
@@ -133,8 +132,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
       loadTokenAsync,
       saveTokenAsync,
       loadChildrenAsync,
-      failure,
-      resetFailure
+      raiseError
     },
     dispatch);
 };

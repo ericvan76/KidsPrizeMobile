@@ -5,18 +5,18 @@ import RN from 'react-native';
 import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchMoreAsync, refreshAsync, setScoreAsync } from '../actions/child';
-import * as Constants from '../constants';
+import { fetchMoreAsync, refreshAsync, setScoreAsync } from '../actions/scores';
+import { DATE_FORMAT } from '../constants';
 import theme from '../theme';
-import { Child } from '../types/api';
-import { AppState, TaskRowState, WeeklyScoresState, WeeklyState } from '../types/states';
+import { Child, Score } from '../types/api';
+import { AppState, ChildState, ScoresState, TaskRow, WeeklyState } from '../types/states';
 
 interface OwnProps {
   childId: string;
 }
 interface StateProps {
   child: Child;
-  weeklyScores: WeeklyScoresState;
+  scores: ScoresState;
 }
 
 interface DispatchProps {
@@ -42,24 +42,23 @@ class ScoreList extends React.PureComponent<Props, State> {
     };
   }
 
-  private createDataSource() {
+  private createDataSource = () => {
     return new RN.ListView.DataSource({
       sectionHeaderHasChanged: () => {
         return false;
       },
-      rowHasChanged: (r1: TaskRowState, r2: TaskRowState) => {
+      rowHasChanged: (r1, r2) => {
         return r1 !== r2;
       }
     });
   }
 
-  private renderSectionHeader(_: WeeklyState, sectionID: RN.ReactText) {
-    const week = sectionID.toString();
-    // tslint:disable-next-line:no-shadowed-variable
-    const dates = Array.from({ length: 7 }, (_, k) => k).map((i: number) => {
-      const today = moment().format(Constants.DATE_FORMAT);
+  private renderSectionHeader = (_: WeeklyState, sectionID: RN.ReactText) => {
+    const week = sectionID as number;
+    const dates = [0, 1, 2, 3, 4, 5, 6].map((i: number) => {
+      const today = moment().format(DATE_FORMAT);
       const mo = moment(week).day(i);
-      const key = mo.format(Constants.DATE_FORMAT);
+      const key = mo.format(DATE_FORMAT);
       let month = '';
       if (mo.date() === 1) {
         month = `/${mo.month() + 1}`;
@@ -83,12 +82,13 @@ class ScoreList extends React.PureComponent<Props, State> {
     );
   }
 
-  private renderRow(rowData: TaskRowState, sectionID: RN.ReactText, rowID: RN.ReactText) {
-    const week = sectionID.toString();
+  private renderRow = (rowData: TaskRow, sectionID: RN.ReactText, rowID: RN.ReactText) => {
+    const week = sectionID;
     const task = rowID.toString();
     const stars = Array.from({ length: 7 }, (_, k) => k).map((i: number) => {
-      const date = moment(week).day(i).format(Constants.DATE_FORMAT);
-      const value = rowData[date] || 0;
+      const date = moment(week).day(i).format(DATE_FORMAT);
+      const score = rowData.find(s => s.date === date);
+      const value = score ? score.value : 0;
       const newValue = (value > 0) ? 0 : 1;
       return (
         <RN.TouchableOpacity
@@ -110,61 +110,74 @@ class ScoreList extends React.PureComponent<Props, State> {
       </RN.View>
     );
   }
-  private renderSeparator(sectionID: RN.ReactText, rowID: RN.ReactText) {
+  private renderSeparator = (sectionID: RN.ReactText, rowID: RN.ReactText) => {
     return <RN.View style={styles.separator} key={`${sectionID}-${rowID}`} />;
   }
 
-  private onRefresh() {
-    this.setState({ ...this.state, refreshing: true });
-    this.props.refreshAsync(this.props.child.id);
-    this.setState({ ...this.state, refreshing: false });
+  private onRefresh = () => {
+    if (!this.state.refreshing) {
+      this.setState({ ...this.state, refreshing: true });
+      this.props.refreshAsync(this.props.child.id);
+      this.setState({ ...this.state, refreshing: false });
+    }
   }
-  private onEndReached() {
-    this.props.fetchMoreAsync(this.props.child.id);
+  private onEndReached = () => {
+    if (!this.state.refreshing) {
+      this.setState({ ...this.state, refreshing: true });
+      this.props.fetchMoreAsync(this.props.child.id);
+      this.setState({ ...this.state, refreshing: false });
+    }
+  }
+
+  private convertMapToObject = (scores: ScoresState) => {
+    // todo: either find a better way to do this, or use Object in store.
+    const objScores: { [week: string]: { [task: string]: Array<Score> } } = {};
+    scores.forEach((v, k) => {
+      const objRow: { [task: string]: Array<Score> } = {};
+      v.forEach((v2, k2) => { objRow[k2] = v2; return objRow; });
+      objScores[k] = objRow;
+    });
+    return objScores;
+  }
+
+  public componentDidMount() {
+    this.setState({
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRowsAndSections({})
+    });
   }
 
   public componentWillReceiveProps(nextProps: Props) {
     this.setState({
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.weeklyScores)
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(this.convertMapToObject(nextProps.scores))
     });
-  }
-
-  public componentDidMount() {
-    if (Object.keys(this.props.weeklyScores).length === 0) {
-      this.onRefresh();
-    }
-  }
-
-  public componentDidUpdate() {
-    if (Object.keys(this.props.weeklyScores).length === 0) {
-      this.onRefresh();
-    }
   }
 
   public render() {
     const refreshControl =
-      <RN.RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh.bind(this)} />;
+      <RN.RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />;
 
     return (
       <RN.ListView
         dataSource={this.state.dataSource}
-        renderSectionHeader={(sectionData, sectionID) => this.renderSectionHeader(sectionData, sectionID)}
-        renderRow={(rowData, sectionID, rowID) => this.renderRow(rowData, sectionID, rowID)}
-        renderSeparator={(sectionID, rowID) => this.renderSeparator(sectionID, rowID)}
+        renderSectionHeader={this.renderSectionHeader}
+        renderRow={this.renderRow}
+        renderSeparator={this.renderSeparator}
         refreshControl={refreshControl}
-        onEndReached={this.onEndReached.bind(this)}
+        onEndReached={this.onEndReached}
         onEndReachedThreshold={0}
+        enableEmptySections={true}
       />
     );
   }
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState, ownProps: OwnProps) => {
-  const childState = state.children[ownProps.childId];
+  const childState = state.children.get(ownProps.childId) as ChildState;
   return {
     child: childState.child,
-    weeklyScores: childState.weeklyScores
+    scores: childState.scores
   };
 };
 

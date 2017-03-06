@@ -10,7 +10,7 @@
     "**/buck-out": true,
     "**/.buckd": true,
     "**/.idea": true,
-    "node_modules": false
+    "node_modules": true
   },
   "vsicons.presets.angular": false,
   "tslint.configFile": "tslint.editor.json",

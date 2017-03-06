@@ -35,35 +35,32 @@ class RedeemEditor extends React.PureComponent<Props, State> {
     };
   }
 
-  private isDirty(): boolean {
+  private isDirty = (): boolean => {
     return this.state.initial !== this.state.current;
   }
-
-  private isValid(): boolean {
+  private isValid = (): boolean => {
     return this.isDescriptionValid() && this.isValueValid();
   }
-
-  private isDescriptionValid(): boolean {
+  private isDescriptionValid = (): boolean => {
     return this.state.current.description.trim().length > 0;
   }
-
-  private isValueValid(): boolean {
+  private isValueValid = (): boolean => {
     const n = parseInt(this.state.current.value, 10);
     if (isNaN(n)) {
       return false;
     }
     return n > 0 && n <= this.props.child.totalScore;
   }
-
-  private onDescriptionChange(description: string) {
+  private onDescriptionChanged = (description: string) => {
     this.setState({ ...this.state, current: { ...this.state.current, description } });
   }
-
-  private onValueChange(value: string) {
+  private onValueChanged = (value: string) => {
     this.setState({ ...this.state, current: { ...this.state.current, value } });
   }
-
-  private onSubmit() {
+  private onClose = () => {
+    this.props.navigator.pop();
+  }
+  private onSubmit = () => {
     if (this.isDirty() && this.isValid()) {
       this.props.onSubmit(this.state.current.description.trim(), parseInt(this.state.current.value, 10));
     }
@@ -75,7 +72,7 @@ class RedeemEditor extends React.PureComponent<Props, State> {
         <NB.Container>
           <NB.Header>
             <NB.Left>
-              <NB.Button transparent onPress={() => this.props.navigator.pop()}>
+              <NB.Button transparent onPress={this.onClose}>
                 <NB.Icon name={theme.icons.close} />
               </NB.Button>
             </NB.Left>
@@ -86,7 +83,7 @@ class RedeemEditor extends React.PureComponent<Props, State> {
             <NB.Right>
               {
                 this.isDirty() && this.isValid() &&
-                <NB.Button transparent onPress={this.onSubmit.bind(this)}>
+                <NB.Button transparent onPress={this.onSubmit}>
                   <NB.Text>Done</NB.Text>
                 </NB.Button>
               }
@@ -94,14 +91,16 @@ class RedeemEditor extends React.PureComponent<Props, State> {
           </NB.Header>
           <NB.Content>
             <NB.Form>
-              <NB.Item error={this.isDirty() && !this.isDescriptionValid()} success={this.isDirty() && this.isDescriptionValid()}>
+              <NB.Item
+                error={this.isDirty() && !this.isDescriptionValid()}
+                success={this.isDirty() && this.isDescriptionValid()}>
                 <NB.Input
                   placeholder="Lego, Icecream, 30min television..."
                   value={this.state.current.description}
                   returnKeyType="done"
                   maxLength={50}
                   autoFocus={true}
-                  onChangeText={this.onDescriptionChange.bind(this)} />
+                  onChangeText={this.onDescriptionChanged} />
                 {this.isDirty() && <NB.Icon name={this.isDescriptionValid() ? theme.icons.success : theme.icons.error} active />}
               </NB.Item>
               <NB.Item error={this.isDirty() && !this.isValueValid()} success={this.isDirty() && this.isValueValid()}>
@@ -110,7 +109,7 @@ class RedeemEditor extends React.PureComponent<Props, State> {
                   returnKeyType="done"
                   keyboardType="numeric"
                   maxLength={50}
-                  onChangeText={this.onValueChange.bind(this)} />
+                  onChangeText={this.onValueChanged} />
                 {this.isDirty() && <NB.Icon name={this.isValueValid() ? theme.icons.success : theme.icons.error} active />}
               </NB.Item>
             </NB.Form>

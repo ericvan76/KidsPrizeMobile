@@ -8,18 +8,22 @@ import theme from '../theme';
 
 interface RowProps {
   title: string;
-  onRemove: () => void;
+  onRowRemoved: (row: string) => void;
   onLongPress?: () => void;
   onPressOut?: () => void;
 }
 
 class Row extends React.PureComponent<RowProps, void> {
 
+  private onRemove = () => {
+    this.props.onRowRemoved(this.props.title);
+  }
+
   public render() {
     return (
       <NB.ListItem icon last>
         <NB.Left>
-          <NB.Button transparent danger onPress={this.props.onRemove} >
+          <NB.Button transparent danger onPress={this.onRemove} >
             <NB.Icon name={theme.icons.remove} active />
           </NB.Button>
         </NB.Left>
@@ -70,20 +74,23 @@ class TaskEditor extends React.PureComponent<Props, State> {
     };
   }
 
-  private isDirty(): boolean {
+  private isDirty = (): boolean => {
     return this.state.initial !== this.state.current;
   }
-  private isValid(): boolean {
+  private isValid = (): boolean => {
     return this.state.current.order.length > 0;
   }
-  private onSubmit() {
+  private onClose = () => {
+    this.props.navigator.pop();
+  }
+  private onSubmit = () => {
     if (this.isDirty() && this.isValid()) {
       const value = this.state.current.order.map(i => this.state.current.data[i]);
       this.props.onSubmit(value);
     }
   }
 
-  private onMove(e: RowMovedEvent) {
+  private onMove = (e: RowMovedEvent) => {
     const order = this.state.current.order.slice();
     order.splice(e.to, 0, order.splice(e.from, 1)[0]);
     this.setState({
@@ -91,7 +98,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       current: { ...this.state.current, order }
     });
   }
-  private onRemove(row: string) {
+  private onTaskRemoved = (row: string) => {
     this.setState({
       ...this.state,
       current: {
@@ -107,8 +114,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
       }
     });
   }
-  private onAddTask(text: string) {
-    if (text.length > 0 && !this.state.current.order.find(x => x.toLowerCase() === text.toLowerCase())) {
+  private onTaskChanged = (text: string) => {
+    if (text.length > 0 &&
+      !this.state.current.order.find(x => x.toLowerCase() === text.toLowerCase())) {
       this.setState({
         ...this.state,
         current: {
@@ -121,7 +129,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       });
     }
   }
-  private onAdd() {
+  private onAddTask = () => {
     this.props.navigator.push(
       routes.editTextRoute({
         navigator: this.props.navigator,
@@ -129,14 +137,14 @@ class TaskEditor extends React.PureComponent<Props, State> {
         placeholder: 'Type new task here',
         maxLength: 50,
         onSubmit: (text: string) => {
-          this.onAddTask(text.trim());
+          this.onTaskChanged(text.trim());
           this.props.navigator.pop();
         }
       }));
   }
-  private renderRow(row: string) {
+  private renderRow = (row: string) => {
     return (
-      <Row title={row} onRemove={() => this.onRemove(row)} />
+      <Row title={row} onRowRemoved={this.onTaskRemoved} />
     );
   }
 
@@ -146,7 +154,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
         <NB.Container>
           <NB.Header>
             <NB.Left>
-              <NB.Button transparent onPress={() => this.props.navigator.pop()}>
+              <NB.Button transparent onPress={this.onClose}>
                 <NB.Icon name={theme.icons.close} />
               </NB.Button>
             </NB.Left>
@@ -154,12 +162,12 @@ class TaskEditor extends React.PureComponent<Props, State> {
               <NB.Title>Tasks</NB.Title>
             </NB.Body>
             <NB.Right>
-              <NB.Button transparent onPress={this.onAdd.bind(this)}>
+              <NB.Button transparent onPress={this.onAddTask}>
                 <NB.Text>Add</NB.Text>
               </NB.Button>
               {
                 this.isDirty() && this.isValid() &&
-                <NB.Button transparent onPress={this.onSubmit.bind(this)}>
+                <NB.Button transparent onPress={this.onSubmit}>
                   <NB.Text>Done</NB.Text>
                 </NB.Button>
               }
@@ -170,8 +178,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
             sortRowStyle={styles.row}
             data={this.state.current.data}
             order={this.state.current.order}
-            onRowMoved={e => this.onMove(e)}
-            renderRow={(row: string) => this.renderRow(row)} />
+            onRowMoved={this.onMove}
+            renderRow={this.renderRow} />
         </NB.Container>
       </NB.StyleProvider>
     );

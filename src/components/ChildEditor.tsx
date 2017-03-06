@@ -3,8 +3,8 @@ import React from 'react';
 import RN from 'react-native';
 import * as uuid from 'uuid';
 
-import { createChildAsync, deleteChildAsync, updateChildAsync } from '../actions/child';
-import * as Constants from '../constants';
+import { createChildAsync, deleteChildAsync, updateChildAsync } from '../actions/children';
+import { GENDER_FEMALE, GENDER_MALE } from '../constants';
 import * as routes from '../routes';
 import store from '../store';
 import theme from '../theme';
@@ -33,13 +33,12 @@ class ChildEditor extends React.PureComponent<Props, State> {
     super(props);
     let tasks = ['Task 1', 'Task 2', 'Task 3'];
     if (this.props.child) {
-      const week1 = Object.keys(this.props.child.weeklyScores)[0];
-      tasks = Object.keys(this.props.child.weeklyScores[week1]);
+      tasks = [...[...this.props.child.scores.values()][0].keys()];
     }
     const initial: FormState = {
       id: this.props.child ? this.props.child.child.id : uuid.v4(),
       name: this.props.child ? this.props.child.child.name : '',
-      gender: this.props.child ? this.props.child.child.gender : Constants.GENDER_MALE,
+      gender: this.props.child ? this.props.child.child.gender : GENDER_MALE,
       tasks
     };
     this.state = {
@@ -48,27 +47,25 @@ class ChildEditor extends React.PureComponent<Props, State> {
     };
   }
 
-  private isDirty(): boolean {
+  private isDirty = (): boolean => {
     return this.state.initial !== this.state.current;
   }
-  private isValid(): boolean {
+  private isValid = (): boolean => {
     return this.isNameValid() && this.isGenderValid() && this.isTasksValid();
   }
-  private isNameValid(): boolean {
+  private isNameValid = (): boolean => {
     return this.state.current.name.trim().length > 0;
   }
-  private isGenderValid(): boolean {
+  private isGenderValid = (): boolean => {
     return this.state.current.gender !== undefined;
   }
-  private isTasksValid(): boolean {
+  private isTasksValid = (): boolean => {
     return this.state.current.tasks.length > 0;
   }
-
-  private onClose() {
+  private onClose = () => {
     this.props.navigator.popToTop();
   }
-
-  private onSubmit() {
+  private onSubmit = () => {
     if (this.isDirty() && this.isValid()) {
       if (!this.props.child) {
         store.dispatch(createChildAsync(
@@ -80,7 +77,38 @@ class ChildEditor extends React.PureComponent<Props, State> {
       this.props.navigator.popToTop();
     }
   }
-  private onDelete() {
+  private onEditName = () => {
+    this.props.navigator.push(
+      routes.editTextRoute({
+        navigator: this.props.navigator,
+        title: 'Child Name',
+        placeholder: 'Type child name here',
+        autoCapitalize: 'words',
+        maxLength: 50,
+        defaultValue: this.state.current.name,
+        onSubmit: (text: string) => {
+          this.setState({ ...this.state, current: { ...this.state.current, name: text.trim() } });
+          this.props.navigator.pop();
+        }
+      }));
+  }
+  private onGenderChange = (gender: Gender) => {
+    this.setState({ ...this.state, current: { ...this.state.current, gender } });
+  }
+  private onEditTask = () => {
+    this.props.navigator.push(
+      routes.editTaskRoute({
+        navigator: this.props.navigator,
+        value: this.state.current.tasks,
+        onSubmit: (tasks: Array<string>) => {
+          this.setState({ ...this.state, current: { ...this.state.current, tasks } });
+          this.props.navigator.pop();
+        }
+      })
+    );
+  }
+
+  private onDelete = () => {
     RN.Alert.alert(
       'Confirm',
       'Are you sure you want to delete this child?',
@@ -99,14 +127,13 @@ class ChildEditor extends React.PureComponent<Props, State> {
     );
   }
 
-  // tslint:disable-next-line:max-func-body-length
   public render() {
     return (
       <NB.StyleProvider style={theme}>
         <NB.Container>
           <NB.Header>
             <NB.Left>
-              <NB.Button transparent onPress={this.onClose.bind(this)}>
+              <NB.Button transparent onPress={this.onClose}>
                 <NB.Icon name={theme.icons.close} />
               </NB.Button>
             </NB.Left>
@@ -116,7 +143,7 @@ class ChildEditor extends React.PureComponent<Props, State> {
             <NB.Right>
               {
                 this.isDirty() && this.isValid() &&
-                <NB.Button transparent onPress={this.onSubmit.bind(this)}>
+                <NB.Button transparent onPress={this.onSubmit}>
                   <NB.Text>Save</NB.Text>
                 </NB.Button>
               }
@@ -126,21 +153,7 @@ class ChildEditor extends React.PureComponent<Props, State> {
             <NB.Separator bordered>
               <NB.Text note>INFO</NB.Text>
             </NB.Separator>
-            <NB.ListItem icon onPress={() => {
-              this.props.navigator.push(
-                routes.editTextRoute({
-                  navigator: this.props.navigator,
-                  title: 'Child Name',
-                  placeholder: 'Type child name here',
-                  autoCapitalize: 'words',
-                  maxLength: 50,
-                  defaultValue: this.state.current.name,
-                  onSubmit: (text: string) => {
-                    this.setState({ ...this.state, current: { ...this.state.current, name: text.trim() } });
-                    this.props.navigator.pop();
-                  }
-                }));
-            }}>
+            <NB.ListItem icon onPress={this.onEditName}>
               <NB.Left>
                 <NB.Icon name={theme.icons.formName} />
               </NB.Left>
@@ -153,37 +166,22 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.ListItem>
             <NB.ListItem icon last>
               <NB.Left>
-                <NB.Icon name={this.state.current.gender === Constants.GENDER_MALE ? theme.icons.male : theme.icons.female} />
+                <NB.Icon name={this.state.current.gender === GENDER_MALE ? theme.icons.male : theme.icons.female} />
               </NB.Left>
               <NB.Body>
                 <NB.Text>Gender</NB.Text>
               </NB.Body>
               <NB.Right>
-                <NB.Picker note
-                  ref="_picker"
-                  mode="dialog"
-                  selectedValue={this.state.current.gender}
-                  onValueChange={(gender: Gender) => {
-                    this.setState({ ...this.state, current: { ...this.state.current, gender } });
-                  }}>
-                  <NB.Picker.Item label="Boy" value={Constants.GENDER_MALE} />
-                  <NB.Picker.Item label="Girl" value={Constants.GENDER_FEMALE} />
+                <NB.Picker note mode="dialog" selectedValue={this.state.current.gender} onValueChange={this.onGenderChange}>
+                  <NB.Picker.Item label="Boy" value={GENDER_MALE} />
+                  <NB.Picker.Item label="Girl" value={GENDER_FEMALE} />
                 </NB.Picker>
               </NB.Right>
             </NB.ListItem>
             <NB.Separator bordered>
               <NB.Text note>TASKS</NB.Text>
             </NB.Separator>
-            <NB.ListItem icon last onPress={() => this.props.navigator.push(
-              routes.editTaskRoute({
-                navigator: this.props.navigator,
-                value: this.state.current.tasks,
-                onSubmit: (tasks: Array<string>) => {
-                  this.setState({ ...this.state, current: { ...this.state.current, tasks } });
-                  this.props.navigator.pop();
-                }
-              }))
-            }>
+            <NB.ListItem icon last onPress={this.onEditTask}>
               <NB.Left>
                 <NB.Icon name={theme.icons.formTasks} />
               </NB.Left>
@@ -198,7 +196,7 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.ListItem>
             {
               this.props.child &&
-              <NB.Button block danger style={styles.deleteButton} onPress={this.onDelete.bind(this)}>
+              <NB.Button block danger style={styles.deleteButton} onPress={this.onDelete}>
                 <NB.Text>Delete Child</NB.Text>
               </NB.Button>
             }

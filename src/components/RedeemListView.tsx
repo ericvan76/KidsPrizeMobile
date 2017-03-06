@@ -5,11 +5,11 @@ import RN from 'react-native';
 import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { createRedeemAsync, getRedeemsAsync } from '../actions/child';
+import { createRedeemAsync, fetchRedeemsAsync } from '../actions/redeems';
 import * as routes from '../routes';
 import theme from '../theme';
 import { Child, Redeem } from '../types/api';
-import { AppState } from '../types/states';
+import { AppState, ChildState } from '../types/states';
 
 export interface OwnProps {
   navigator: RN.Navigator;
@@ -22,12 +22,13 @@ interface StateProps {
 
 interface DispatchProps {
   createRedeemAsync: typeof createRedeemAsync;
-  getRedeemsAsync: typeof getRedeemsAsync;
+  fetchRedeemsAsync: typeof fetchRedeemsAsync;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
 
 interface State {
+  refreshing: boolean;
   dataSource: RN.ListViewDataSource;
 }
 
@@ -36,11 +37,12 @@ class RedeemListView extends React.PureComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
     this.state = {
+      refreshing: false,
       dataSource: this.createDataSource()
     };
   }
 
-  private createDataSource() {
+  private createDataSource = () => {
     return new RN.ListView.DataSource({
       rowHasChanged: (r1: Redeem, r2: Redeem) => {
         return r1 !== r2;
@@ -48,7 +50,7 @@ class RedeemListView extends React.PureComponent<Props, State> {
     });
   }
 
-  private renderRow(redeem: Redeem) {
+  private renderRow = (redeem: Redeem) => {
     return (
       <NB.ListItem>
         <NB.Body>
@@ -60,6 +62,34 @@ class RedeemListView extends React.PureComponent<Props, State> {
         </NB.Right>
       </NB.ListItem>
     );
+  }
+  private onAddRedeem = () => {
+    const child = this.props.child;
+    this.props.navigator.push(routes.addRedeemRoute({
+      navigator: this.props.navigator,
+      child,
+      onSubmit: (description: string, value: number) => {
+        this.props.createRedeemAsync(child.id, description, value);
+        this.props.navigator.pop();
+      }
+    }));
+  }
+  private onEndReached = () => {
+    if (!this.state.refreshing) {
+      this.setState({ ...this.state, refreshing: true });
+      this.props.fetchRedeemsAsync(this.props.child.id);
+      this.setState({ ...this.state, refreshing: false });
+    }
+  }
+  private onClose = () => {
+    this.props.navigator.pop();
+  }
+
+  public componentDidMount() {
+    this.setState({
+      ...this.state,
+      dataSource: this.state.dataSource.cloneWithRows([])
+    });
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -75,7 +105,7 @@ class RedeemListView extends React.PureComponent<Props, State> {
         <NB.Container>
           <NB.Header>
             <NB.Left>
-              <NB.Button transparent onPress={() => this.props.navigator.pop()}>
+              <NB.Button transparent onPress={this.onClose}>
                 <NB.Icon name={theme.icons.back} />
               </NB.Button>
             </NB.Left>
@@ -84,30 +114,21 @@ class RedeemListView extends React.PureComponent<Props, State> {
               <NB.Text note>Available: {this.props.child.totalScore}</NB.Text>
             </NB.Body>
             <NB.Right>
-              <NB.Button transparent onPress={() => {
-                const child = this.props.child;
-                this.props.navigator.push(routes.addRedeemRoute({
-                  navigator: this.props.navigator,
-                  child,
-                  onSubmit: (description: string, value: number) => {
-                    this.props.createRedeemAsync(child.id, description, value);
-                    this.props.navigator.pop();
-                  }
-                }));
-              }}>
+              <NB.Button transparent onPress={this.onAddRedeem}>
                 <NB.Text>Add</NB.Text>
               </NB.Button>
             </NB.Right>
           </NB.Header>
           <RN.ListView
             dataSource={this.state.dataSource}
-            renderRow={(rowData) => this.renderRow(rowData)}
-            onEndReached={() => this.props.getRedeemsAsync(this.props.child.id)}
+            renderRow={this.renderRow}
+            onEndReached={this.onEndReached}
             onEndReachedThreshold={0}
+            enableEmptySections={true}
           />
           <NB.Footer>
             <NB.FooterTab>
-              <NB.Button onPress={() => this.props.navigator.pop()}>
+              <NB.Button onPress={this.onClose}>
                 <NB.Icon name={theme.icons.tabMain} />
                 <NB.Text>Main</NB.Text>
               </NB.Button>
@@ -124,10 +145,7 @@ class RedeemListView extends React.PureComponent<Props, State> {
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState) => {
-  const childState = Object.keys(state.children).map(k => state.children[k]).find(c => c.isCurrent);
-  if (!childState) {
-    throw new Error('Attempt to render Redeems without child.');
-  }
+  const childState = [...state.children.values()].find(c => c.isCurrent) as ChildState;
   return {
     child: childState.child,
     redeems: childState.redeems
@@ -138,7 +156,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
   return bindActionCreators(
     {
       createRedeemAsync,
-      getRedeemsAsync
+      fetchRedeemsAsync
     },
     dispatch);
 };

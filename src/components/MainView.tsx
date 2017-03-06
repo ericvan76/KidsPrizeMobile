@@ -4,7 +4,6 @@ import RN from 'react-native';
 import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { fetchMoreAsync, refreshAsync, setScoreAsync } from '../actions/child';
 import * as routes from '../routes';
 import theme from '../theme';
 import { AppState, ChildState } from '../types/states';
@@ -16,7 +15,7 @@ export interface OwnProps {
 }
 
 interface StateProps {
-  child?: ChildState;
+  childState?: ChildState;
 }
 
 interface DispatchProps {
@@ -25,7 +24,7 @@ interface DispatchProps {
 type Props = OwnProps & StateProps & DispatchProps;
 
 interface State {
-  openDrawer: boolean;
+  isDrawerOpen: boolean;
 }
 
 class MainView extends React.PureComponent<Props, State> {
@@ -33,38 +32,43 @@ class MainView extends React.PureComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
     this.state = {
-      openDrawer: false
+      isDrawerOpen: false
     };
   }
 
-  private setDrawer(open: boolean) {
-    if (this.state.openDrawer !== open) {
+  private openDrawer = () => {
+    if (!this.state.isDrawerOpen) {
       this.setState({
         ...this.state,
-        openDrawer: open
+        isDrawerOpen: true
+      });
+    }
+  }
+  private closeDrawer = () => {
+    if (this.state.isDrawerOpen) {
+      this.setState({
+        ...this.state,
+        isDrawerOpen: false
       });
     }
   }
 
-  public componentDidMount() {
-    if (!this.props.child) {
-      this.setDrawer(true);
-    }
+  private onEditChild = () => {
+    this.props.navigator.push(
+      routes.editChildRoute({ navigator: this.props.navigator, child: this.props.childState }));
+  }
+  private onViewRedeems = () => {
+    this.props.navigator.push(
+      routes.redeemListRoute({ navigator: this.props.navigator }));
   }
 
-  private renderDrawer() {
-    return (
-      <DrawerBar navigator={this.props.navigator} closeDrawer={() => this.setDrawer(false)} />
-    );
-  }
-
-  private renderMain() {
-    if (!this.props.child) {
+  private renderMain = () => {
+    if (!this.props.childState) {
       return (
         <NB.Container>
           <NB.Header>
             <NB.Left>
-              <NB.Button transparent onPress={() => this.setDrawer(true)}>
+              <NB.Button transparent onPress={this.openDrawer}>
                 <NB.Icon name={theme.icons.menu} />
               </NB.Button>
             </NB.Left>
@@ -76,34 +80,28 @@ class MainView extends React.PureComponent<Props, State> {
       <NB.Container>
         <NB.Header>
           <NB.Left>
-            <NB.Button transparent onPress={() => this.setDrawer(true)}>
+            <NB.Button transparent onPress={this.openDrawer}>
               <NB.Icon name={theme.icons.menu} />
             </NB.Button>
           </NB.Left>
           <NB.Body>
-            <NB.Title ellipsizeMode="tail" numberOfLines={1}>{this.props.child.child.name}</NB.Title>
-            <NB.Text note>Total: {this.props.child.child.totalScore}</NB.Text>
+            <NB.Title ellipsizeMode="tail" numberOfLines={1}>{this.props.childState.child.name}</NB.Title>
+            <NB.Text note>Total: {this.props.childState.child.totalScore}</NB.Text>
           </NB.Body>
           <NB.Right>
-            <NB.Button transparent onPress={() => {
-              this.props.navigator.push(
-                routes.editChildRoute({ navigator: this.props.navigator, child: this.props.child }));
-            }}>
+            <NB.Button transparent onPress={this.onEditChild}>
               <NB.Icon name={theme.icons.settings} />
             </NB.Button>
           </NB.Right>
         </NB.Header>
-        <ScoreList childId={this.props.child.child.id} />
+        <ScoreList childId={this.props.childState.child.id} />
         <NB.Footer>
           <NB.FooterTab>
             <NB.Button active>
               <NB.Icon name={theme.icons.tabMain} active />
               <NB.Text>Main</NB.Text>
             </NB.Button>
-            <NB.Button onPress={() => {
-              this.props.navigator.push(
-                routes.redeemListRoute({ navigator: this.props.navigator }));
-            }}>
+            <NB.Button onPress={this.onViewRedeems}>
               <NB.Icon name={theme.icons.tabRedeem} />
               <NB.Text>Redeem</NB.Text>
             </NB.Button>
@@ -113,24 +111,32 @@ class MainView extends React.PureComponent<Props, State> {
     );
   }
 
+  private onTween = (ratio: number) => {
+    return {
+      drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
+      main: { opacity: (2 - ratio) / 2 }
+    };
+  }
+
+  public componentDidMount() {
+    if (!this.props.childState) {
+      this.openDrawer();
+    }
+  }
+
   public render() {
     return (
       <NB.StyleProvider style={theme}>
         <NB.Drawer
-          open={this.state.openDrawer}
-          onOpen={() => this.setDrawer(true)}
-          onClose={() => this.setDrawer(false)}
+          open={this.state.isDrawerOpen}
+          onOpen={this.openDrawer}
+          onClose={this.closeDrawer}
           type="overlay"
-          content={this.renderDrawer()}
+          content={<DrawerBar navigator={this.props.navigator} closeDrawer={this.closeDrawer} />}
           tapToClose
           openDrawerOffset={0.2}
           styles={styles.drawer}
-          tweenHandler={(ratio: number) => {
-            return {
-              drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
-              main: { opacity: (2 - ratio) / 2 }
-            };
-          }}
+          tweenHandler={this.onTween}
           negotiatePan>
           {this.renderMain()}
         </NB.Drawer>
@@ -141,17 +147,13 @@ class MainView extends React.PureComponent<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState) => {
   return {
-    child: Object.keys(state.children).map(k => state.children[k]).find(c => c.isCurrent)
+    childState: [...state.children.values()].find(c => c.isCurrent)
   };
 };
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = (dispatch: Dispatch<AppState>) => {
   return bindActionCreators(
-    {
-      refreshAsync,
-      fetchMoreAsync,
-      setScoreAsync
-    },
+    {},
     dispatch);
 };
 

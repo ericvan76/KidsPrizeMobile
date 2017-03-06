@@ -6,8 +6,8 @@ import { bindActionCreators } from 'redux';
 import { AppState } from '../types/states';
 
 import { logoutAsync } from '../actions/auth';
-import { switchChild } from '../actions/child';
-import * as Constants from '../constants';
+import { switchChild } from '../actions/children';
+import { GENDER_MALE } from '../constants';
 import * as routes from '../routes';
 import theme from '../theme';
 import { Child } from '../types/api';
@@ -30,21 +30,21 @@ interface DispatchProps {
 
 class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProps, void> {
 
-  private getDisplayName(profile: Profile) {
+  private getDisplayName = (profile: Profile) => {
     return profile.given_name || profile.nickname || profile.name || 'Unknown';
   }
 
-  private switchChild(id: string) {
+  private switchChild = (id: string) => {
     this.props.switchChild(id);
     this.props.closeDrawer();
   }
 
-  private addChild() {
+  private onAddChild = () => {
     this.props.closeDrawer();
     this.props.navigator.push(routes.editChildRoute({ navigator: this.props.navigator }));
   }
 
-  private logout() {
+  private onLogout = () => {
     RN.Alert.alert(
       'Confirm',
       'Are you sure you want to sign out?',
@@ -61,11 +61,12 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
     );
   }
 
-  private renderChildRow(child: Child) {
+  private renderChildRow = (child: Child) => {
+    const onSwitchChild = () => this.switchChild(child.id);
     return (
-      <NB.ListItem key={child.id} icon onPress={this.switchChild.bind(this, child.id)}>
+      <NB.ListItem key={child.id} icon onPress={onSwitchChild}>
         <NB.Left>
-          <NB.Icon name={child.gender === Constants.GENDER_MALE ? theme.icons.male : theme.icons.female} />
+          <NB.Icon name={child.gender === GENDER_MALE ? theme.icons.male : theme.icons.female} />
         </NB.Left>
         <NB.Body>
           <NB.Text ellipsizeMode="tail" numberOfLines={1}>{child.name}</NB.Text>
@@ -96,8 +97,7 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
               <NB.Text note>CHILDREN</NB.Text>
             </NB.Separator>
             {this.props.childList && this.props.childList.map((child: Child) => this.renderChildRow(child))}
-            <NB.ListItem icon last
-              onPress={this.addChild.bind(this)}>
+            <NB.ListItem icon last onPress={this.onAddChild}>
               <NB.Left>
                 <NB.Icon name={theme.icons.addChild} />
               </NB.Left>
@@ -108,7 +108,7 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
             <NB.Separator bordered>
               <NB.Text note>OTHERS</NB.Text>
             </NB.Separator>
-            <NB.ListItem icon last onPress={this.logout.bind(this)}>
+            <NB.ListItem icon last onPress={this.onLogout}>
               <NB.Left>
                 <NB.Icon name={theme.icons.signOut} />
               </NB.Left>
@@ -127,7 +127,7 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
 const mapStateToProps: MapStateToProps<StateProps, OwnProps> = (state: AppState) => {
   return {
     profile: state.auth.profile as Profile,
-    childList: Object.keys(state.children).map(k => state.children[k].child)
+    childList: [...state.children.values()].map(c => c.child)
   };
 };
 

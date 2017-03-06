@@ -1,16 +1,16 @@
-import { FAILURE, failureAction, RESET_FAILURE, resetFailureAction } from '../actions/failure';
+import { RAISE_ERROR, raiseErrorAction, RESET_ERROR, resetErrorAction } from '../actions/errors';
 import { INITIAL_STATE } from './initialState';
 
 export default function reducer(
   state: Array<Error> = INITIAL_STATE.errors,
-  action: failureAction | resetFailureAction) {
+  action: raiseErrorAction | resetErrorAction) {
   switch (action.type) {
-    case FAILURE:
+    case RAISE_ERROR:
       {
         const error = action.payload as Error;
         return [...state, error];
       }
-    case RESET_FAILURE:
+    case RESET_ERROR:
       {
         return [];
       }

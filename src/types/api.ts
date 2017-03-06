@@ -1,11 +1,11 @@
-import * as Constants from '../constants';
+import { GENDER_FEMALE, GENDER_MALE } from '../constants';
 
 // Preference
 export interface Preference {
   timeZoneOffset: number;
 }
 
-export type Gender = typeof Constants.GENDER_MALE | typeof Constants.GENDER_FEMALE;
+export type Gender = typeof GENDER_MALE | typeof GENDER_FEMALE;
 
 export interface Child {
   id: string;

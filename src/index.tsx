@@ -7,14 +7,14 @@ import store from './store';
 
 class App extends React.PureComponent<void, void> {
 
-  private renderScene(route: RN.Route, navigator: RN.Navigator) {
+  private renderScene = (route: RN.Route, navigator: RN.Navigator) => {
     if (route.component) {
       return React.createElement(route.component, { ...route.passProps, navigator });
     }
-    return undefined;
+    throw new Error();
   }
 
-  private configureScene() {
+  private configureScene = (_: RN.Route) => {
     return RN.Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -25,8 +25,8 @@ class App extends React.PureComponent<void, void> {
         <RN.View style={styles.container}>
           <RN.Navigator
             initialRoute={initRoute}
-            renderScene={this.renderScene.bind(this)}
-            configureScene={this.configureScene.bind(this)} />
+            renderScene={this.renderScene}
+            configureScene={this.configureScene} />
         </RN.View>
       </Provider>
     );

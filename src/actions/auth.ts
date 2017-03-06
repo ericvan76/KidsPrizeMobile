@@ -1,9 +1,8 @@
-
 import * as auth0 from '../api/auth0';
 import * as storage from '../api/storage';
 import { Action, AsyncAction } from '../types/actions';
 import { Token } from '../types/auth';
-import { failure } from './failure';
+import { raiseError } from './errors';
 
 export const TOKEN_LOAD_COMPLETED = 'TOKEN_LOAD_COMPLETED';
 export type TokenLoadCompletedAction = Action<typeof TOKEN_LOAD_COMPLETED, Token | undefined>;
@@ -47,7 +46,7 @@ export function loadTokenAsync(): AsyncAction {
       }
       dispatch(tokenLoadCompleted());
     } catch (err) {
-      dispatch(failure(err));
+      dispatch(raiseError(err));
     }
   };
 }
@@ -58,7 +57,7 @@ export function saveTokenAsync(token: Token): AsyncAction {
       await storage.saveToken(token);
       dispatch(updateToken(token));
     } catch (err) {
-      dispatch(failure(err));
+      dispatch(raiseError(err));
     }
   };
 }
@@ -69,7 +68,7 @@ export function clearTokenAsync(): AsyncAction {
       await storage.clearToken();
       dispatch(clearToken());
     } catch (err) {
-      dispatch(failure(err));
+      dispatch(raiseError(err));
     }
   };
 }
@@ -81,7 +80,7 @@ export function logoutAsync(): AsyncAction {
       await auth0.logout();
       dispatch(clearToken());
     } catch (err) {
-      dispatch(failure(err));
+      dispatch(raiseError(err));
     }
   };
 }

@@ -92,7 +92,7 @@ export default function (
         if (childState) {
           const merged = new Map(childState.scores);
           updatedScores.forEach((v, k) => merged.set(k, v));
-          const sorted = new Map(Array.from(merged.entries()).sort((a, b) => moment(a[0]).valueOf() - moment(b[0]).valueOf()));
+          const sorted = new Map(Array.from(merged.entries()).sort((a, b) => moment(b[0]).valueOf() - moment(a[0]).valueOf()));
           return new Map(state).set(payload.childId, {
             ...childState,
             scores: sorted

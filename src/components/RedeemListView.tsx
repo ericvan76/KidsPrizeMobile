@@ -124,7 +124,6 @@ class RedeemListView extends React.PureComponent<Props, State> {
             renderRow={this.renderRow}
             onEndReached={this.onEndReached}
             onEndReachedThreshold={0}
-            enableEmptySections={true}
           />
           <NB.Footer>
             <NB.FooterTab>

@@ -74,7 +74,7 @@ export function refreshAsync(childId: string): AsyncAction {
   };
 }
 
-export function fetchMoreAsync(childId: string): AsyncAction {
+export function fetchScoresAsync(childId: string): AsyncAction {
   return async (dispatch, getState) => {
     try {
       const state = getState();

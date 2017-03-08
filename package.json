@@ -47,11 +47,11 @@
     "npm-run-all": "^4.0.2",
     "redux-devtools": "^3.3.2",
     "rimraf": "^2.6.1",
-    "ts-jest": "^19.0.0",
     "tslint": "^4.5.1",
     "tslint-microsoft-contrib": "^4.0.0",
     "tslint-require-connnect-typing": "^1.0.1",
     "typescript": "^2.2.1",
+    "typescript-babel-jest": "^1.0.2",
     "whatwg-fetch": "^2.0.2"
   }
 }

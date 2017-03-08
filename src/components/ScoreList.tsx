@@ -5,7 +5,7 @@ import RN from 'react-native';
 import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchMoreAsync, refreshAsync, setScoreAsync } from '../actions/scores';
+import { fetchScoresAsync, refreshAsync, setScoreAsync } from '../actions/scores';
 import { DATE_FORMAT } from '../constants';
 import theme from '../theme';
 import { Child, Score } from '../types/api';
@@ -21,7 +21,7 @@ interface StateProps {
 
 interface DispatchProps {
   refreshAsync: typeof refreshAsync;
-  fetchMoreAsync: typeof fetchMoreAsync;
+  fetchScoresAsync: typeof fetchScoresAsync;
   setScoreAsync: typeof setScoreAsync;
 }
 
@@ -30,6 +30,12 @@ type Props = OwnProps & StateProps & DispatchProps;
 interface State {
   refreshing: boolean;
   dataSource: RN.ListViewDataSource;
+}
+interface SectionData {
+  [week: string]: RowData;
+}
+interface RowData {
+  [task: string]: Array<Score>;
 }
 
 class ScoreList extends React.PureComponent<Props, State> {
@@ -43,18 +49,32 @@ class ScoreList extends React.PureComponent<Props, State> {
   }
 
   private createDataSource = () => {
-    return new RN.ListView.DataSource({
-      sectionHeaderHasChanged: () => {
-        return false;
-      },
-      rowHasChanged: (r1, r2) => {
-        return r1 !== r2;
+    const getRowData = (dataBlob: ScoresState, sectionID: string, rowID: string) => {
+      const secionData = dataBlob.get(sectionID);
+      if (secionData) {
+        return secionData.get(rowID);
       }
+      return undefined;
+    };
+    const getSectionHeaderData = (dataBlob: ScoresState, sectionID: string) => {
+      return dataBlob.get(sectionID);
+    };
+    const rowHasChanged = (prevRowData: RowData, nextRowData: RowData) => {
+      return prevRowData !== nextRowData;
+    };
+    const sectionHeaderHasChanged = (prevSectionData: SectionData, nextSectionData: SectionData) => {
+      return prevSectionData !== nextSectionData;
+    };
+    return new RN.ListView.DataSource({
+      getRowData,
+      getSectionHeaderData,
+      rowHasChanged,
+      sectionHeaderHasChanged
     });
   }
 
-  private renderSectionHeader = (_: WeeklyState, sectionID: RN.ReactText) => {
-    const week = sectionID as number;
+  private renderSectionHeader = (_: WeeklyState, sectionID: string) => {
+    const week = sectionID as string;
     const dates = [0, 1, 2, 3, 4, 5, 6].map((i: number) => {
       const today = moment().format(DATE_FORMAT);
       const mo = moment(week).day(i);
@@ -82,7 +102,7 @@ class ScoreList extends React.PureComponent<Props, State> {
     );
   }
 
-  private renderRow = (rowData: TaskRow, sectionID: RN.ReactText, rowID: RN.ReactText) => {
+  private renderRow = (rowData: TaskRow, sectionID: string, rowID: string) => {
     const week = sectionID;
     const task = rowID.toString();
     const stars = Array.from({ length: 7 }, (_, k) => k).map((i: number) => {
@@ -110,10 +130,9 @@ class ScoreList extends React.PureComponent<Props, State> {
       </RN.View>
     );
   }
-  private renderSeparator = (sectionID: RN.ReactText, rowID: RN.ReactText) => {
+  private renderSeparator = (sectionID: string, rowID: string) => {
     return <RN.View style={styles.separator} key={`${sectionID}-${rowID}`} />;
   }
-
   private onRefresh = () => {
     if (!this.state.refreshing) {
       this.setState({ ...this.state, refreshing: true });
@@ -122,44 +141,45 @@ class ScoreList extends React.PureComponent<Props, State> {
     }
   }
   private onEndReached = () => {
-    if (!this.state.refreshing) {
-      this.setState({ ...this.state, refreshing: true });
-      this.props.fetchMoreAsync(this.props.child.id);
-      this.setState({ ...this.state, refreshing: false });
-    }
+    this.props.fetchScoresAsync(this.props.child.id);
   }
-
-  private convertMapToObject = (scores: ScoresState) => {
-    // todo: either find a better way to do this, or use Object in store.
-    const objScores: { [week: string]: { [task: string]: Array<Score> } } = {};
-    scores.forEach((v, k) => {
-      const objRow: { [task: string]: Array<Score> } = {};
-      v.forEach((v2, k2) => { objRow[k2] = v2; return objRow; });
-      objScores[k] = objRow;
-    });
-    return objScores;
+  private scrollToTop = () => {
+    // tslint:disable-next-line:no-any
+    (this.refs.listview as any).scrollTo({ y: 0, animated: true });
   }
 
   public componentDidMount() {
     this.setState({
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections({})
+      dataSource: this.state.dataSource.cloneWithRowsAndSections({}, [], [])
     });
   }
-
+  public componentDidUpdate(prevProps: Props) {
+    if (this.props.childId !== prevProps.childId) {
+      if (this.props.scores.size === 0) {
+        this.props.refreshAsync(this.props.child.id);
+      } else {
+        this.scrollToTop();
+      }
+    }
+  }
   public componentWillReceiveProps(nextProps: Props) {
+    const sectionIdentities: Array<string> = [];
+    const rowIdentities: Array<Array<string>> = [];
+    nextProps.scores.forEach((v, k) => {
+      sectionIdentities.push(k);
+      rowIdentities.push([...v.keys()]);
+    });
     this.setState({
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(this.convertMapToObject(nextProps.scores))
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.scores, sectionIdentities, rowIdentities)
     });
   }
-
   public render() {
-    const refreshControl =
-      <RN.RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />;
-
+    const refreshControl = <RN.RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />;
     return (
       <RN.ListView
+        ref="listview"
         dataSource={this.state.dataSource}
         renderSectionHeader={this.renderSectionHeader}
         renderRow={this.renderRow}
@@ -167,7 +187,6 @@ class ScoreList extends React.PureComponent<Props, State> {
         refreshControl={refreshControl}
         onEndReached={this.onEndReached}
         onEndReachedThreshold={0}
-        enableEmptySections={true}
       />
     );
   }
@@ -185,7 +204,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
   return bindActionCreators(
     {
       refreshAsync,
-      fetchMoreAsync,
+      fetchScoresAsync,
       setScoreAsync
     },
     dispatch);

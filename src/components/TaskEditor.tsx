@@ -192,7 +192,7 @@ const styles = {
     width: theme.variables.deviceWidth
   } as RN.ViewProperties,
   row: {
-    opacity: theme.variables.defaultShadowOpacity
+    opacity: 0.5
   } as RN.ViewProperties
 };
 

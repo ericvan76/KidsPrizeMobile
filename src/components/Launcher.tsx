@@ -109,7 +109,11 @@ class Launcher extends React.PureComponent<Props, void> {
     return (
       <NB.StyleProvider style={theme}>
         <NB.Container>
-          <NB.Content contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <NB.Content contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
             <NB.Spinner inverse size="small" />
           </NB.Content>
         </NB.Container>

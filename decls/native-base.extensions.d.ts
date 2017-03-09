@@ -8,14 +8,17 @@ declare module 'native-base' {
       style: Object;
     }
     interface Content {
-      contentContainerStyle?: React.ViewStyle;
+      contentContainerStyle?: React.ViewStyle
     }
     interface Left extends React.ViewProperties { }
-    interface Body extends React.ViewProperties { }
+    interface Body extends React.ViewProperties {
+      headerStyle?: boolean;
+    }
     interface Right extends React.ViewProperties { }
     interface Button extends React.TouchableOpacityProperties {
       title?: undefined;
       transparent?: boolean;
+      deleteStyle?: boolean;
     }
     interface Seperator {
       bordered?: boolean;
@@ -48,6 +51,7 @@ declare module 'native-base' {
     interface ListItem {
       last?: boolean;
       thumbnail?: boolean;
+      headerStyle?: boolean;
     }
     interface Text extends React.TextProperties { }
     interface Title extends Text { }
@@ -55,6 +59,9 @@ declare module 'native-base' {
 
   export class Form extends React.Component<NativeBase.Form, any>{ }
   export class StyleProvider extends React.Component<NativeBase.StyleProvider, any> { }
-  export class Separator extends React.Component<NativeBase.Seperator, any> { }
+
+  export function connectStyle<StyleProps, OwnProps>(
+    name: string, componentStyle: {}
+  ): { (component: React.ComponentClass<StyleProps>): React.ComponentClass<OwnProps> };
 
 }

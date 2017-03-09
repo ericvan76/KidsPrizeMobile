@@ -7,12 +7,22 @@ import { bindActionCreators } from 'redux';
 
 import { fetchScoresAsync, refreshAsync, setScoreAsync } from '../actions/scores';
 import { DATE_FORMAT } from '../constants';
-import theme from '../theme';
-import { Child, Score } from '../types/api';
+import { Child } from '../types/api';
 import { AppState, ChildState, ScoresState, TaskRow, WeeklyState } from '../types/states';
 
 interface OwnProps {
   childId: string;
+}
+interface StyleProps {
+  style: {
+    section: RN.ViewStyle;
+    sectionText: RN.TextStyle;
+    row: RN.ViewStyle;
+    starRow: RN.ViewStyle;
+    task: RN.TextStyle;
+    star: RN.TextStyle;
+    separator: RN.ViewStyle;
+  };
 }
 interface StateProps {
   child: Child;
@@ -25,17 +35,11 @@ interface DispatchProps {
   setScoreAsync: typeof setScoreAsync;
 }
 
-type Props = OwnProps & StateProps & DispatchProps;
+type Props = OwnProps & StyleProps & StateProps & DispatchProps;
 
 interface State {
   refreshing: boolean;
   dataSource: RN.ListViewDataSource;
-}
-interface SectionData {
-  [week: string]: RowData;
-}
-interface RowData {
-  [task: string]: Array<Score>;
 }
 
 class ScoreList extends React.PureComponent<Props, State> {
@@ -49,20 +53,17 @@ class ScoreList extends React.PureComponent<Props, State> {
   }
 
   private createDataSource = () => {
-    const getRowData = (dataBlob: ScoresState, sectionID: string, rowID: string) => {
-      const secionData = dataBlob.get(sectionID);
-      if (secionData) {
-        return secionData.get(rowID);
-      }
-      return undefined;
+    const getRowData = (dataBlob: ScoresState, sectionID: string, rowID: string): TaskRow => {
+      const secionData = dataBlob.get(sectionID) as WeeklyState;
+      return secionData.get(rowID) as TaskRow;
     };
-    const getSectionHeaderData = (dataBlob: ScoresState, sectionID: string) => {
-      return dataBlob.get(sectionID);
+    const getSectionHeaderData = (dataBlob: ScoresState, sectionID: string): WeeklyState => {
+      return dataBlob.get(sectionID) as WeeklyState;
     };
-    const rowHasChanged = (prevRowData: RowData, nextRowData: RowData) => {
+    const rowHasChanged = (prevRowData: TaskRow, nextRowData: TaskRow): boolean => {
       return prevRowData !== nextRowData;
     };
-    const sectionHeaderHasChanged = (prevSectionData: SectionData, nextSectionData: SectionData) => {
+    const sectionHeaderHasChanged = (prevSectionData: WeeklyState, nextSectionData: WeeklyState): boolean => {
       return prevSectionData !== nextSectionData;
     };
     return new RN.ListView.DataSource({
@@ -87,7 +88,7 @@ class ScoreList extends React.PureComponent<Props, State> {
       return (
         <NB.Text key={key}
           style={{
-            ...styles.sectionText,
+            ...this.props.style.sectionText,
             fontWeight: today === key ? 'bold' : 'normal'
           }}
         >{`${mo.format('ddd')}\n${mo.date()}${month}`}</NB.Text>
@@ -95,9 +96,9 @@ class ScoreList extends React.PureComponent<Props, State> {
     });
     return (
       <RN.View>
-        <RN.View style={styles.separator} />
-        <RN.View style={styles.section}>{dates}</RN.View>
-        <RN.View style={styles.separator} />
+        <RN.View style={this.props.style.separator} />
+        <RN.View style={this.props.style.section}>{dates}</RN.View>
+        <RN.View style={this.props.style.separator} />
       </RN.View>
     );
   }
@@ -114,24 +115,19 @@ class ScoreList extends React.PureComponent<Props, State> {
         <RN.TouchableOpacity
           key={i}
           onPress={() => this.props.setScoreAsync(this.props.child.id, date, task, newValue)}>
-          <NB.Icon name="star" active={value > 0}
-            style={styles.star} />
+          <NB.Icon style={this.props.style.star} name="star" active={value > 0} />
         </RN.TouchableOpacity>
       );
     });
     return (
-      <RN.View style={styles.row}>
-        <NB.Text large
-          style={styles.task}
-          ellipsizeMode="tail"
-          numberOfLines={1}
-        >{task}</NB.Text>
-        <RN.View style={styles.starRow}>{stars}</RN.View>
+      <RN.View style={this.props.style.row}>
+        <NB.Text style={this.props.style.task} large ellipsizeMode="tail" numberOfLines={1}>{task}</NB.Text>
+        <RN.View style={this.props.style.starRow}>{stars}</RN.View>
       </RN.View>
     );
   }
   private renderSeparator = (sectionID: string, rowID: string) => {
-    return <RN.View style={styles.separator} key={`${sectionID}-${rowID}`} />;
+    return <RN.View style={this.props.style.separator} key={`${sectionID}-${rowID}`} />;
   }
   private onRefresh = () => {
     if (!this.state.refreshing) {
@@ -151,12 +147,13 @@ class ScoreList extends React.PureComponent<Props, State> {
   public componentDidMount() {
     this.setState({
       ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections({}, [], [])
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(new Map(), [], [])
     });
   }
   public componentDidUpdate(prevProps: Props) {
     if (this.props.childId !== prevProps.childId) {
       if (this.props.scores.size === 0) {
+        // todo: this should be able to triggered by onEndReached
         this.props.refreshAsync(this.props.child.id);
       } else {
         this.scrollToTop();
@@ -164,16 +161,19 @@ class ScoreList extends React.PureComponent<Props, State> {
     }
   }
   public componentWillReceiveProps(nextProps: Props) {
-    const sectionIdentities: Array<string> = [];
-    const rowIdentities: Array<Array<string>> = [];
-    nextProps.scores.forEach((v, k) => {
-      sectionIdentities.push(k);
-      rowIdentities.push([...v.keys()]);
-    });
-    this.setState({
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.scores, sectionIdentities, rowIdentities)
-    });
+    if (nextProps.scores !== this.props.scores) {
+      const sectionIdentities: Array<string> = [];
+      const rowIdentities: Array<Array<string>> = [];
+      nextProps.scores.forEach((v, k) => {
+        sectionIdentities.push(k);
+        rowIdentities.push([...v.keys()]);
+      });
+      this.setState({
+        ...this.state,
+        refreshing: false,
+        dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.scores, sectionIdentities, rowIdentities)
+      });
+    }
   }
   public render() {
     const refreshControl = <RN.RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />;
@@ -186,7 +186,9 @@ class ScoreList extends React.PureComponent<Props, State> {
         renderSeparator={this.renderSeparator}
         refreshControl={refreshControl}
         onEndReached={this.onEndReached}
-        onEndReachedThreshold={0}
+        onEndReachedThreshold={10}
+        pageSize={1}
+        enableEmptySections={true}
       />
     );
   }
@@ -210,25 +212,23 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
     dispatch);
 };
 
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(ScoreList);
-
 const styles = {
   section: {
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'flex-end',
-    backgroundColor: theme.variables.listDividerBg,
+    backgroundColor: '#fff',
     paddingTop: 3,
     paddingBottom: 3,
     paddingLeft: 5,
     paddingRight: 5
   } as RN.ViewStyle,
   sectionText: {
-    width: theme.variables.starSize,
+    width: 36,
     textAlign: 'center',
-    fontSize: theme.variables.noteFontSize,
-    color: theme.variables.subtitleColor,
-    lineHeight: theme.variables.subtitleLineHeight
+    fontSize: 14,
+    color: '#8e8e93',
+    lineHeight: 20
   } as RN.TextStyle,
   row: {
     flexDirection: 'column',
@@ -246,14 +246,18 @@ const styles = {
     justifyContent: 'flex-end'
   } as RN.ViewStyle,
   star: {
-    color: theme.variables.starColor,
-    width: theme.variables.starSize,
-    fontSize: theme.variables.starSize,
+    color: '#333',
+    width: 36,
+    fontSize: 36,
     textAlign: 'center'
   } as RN.TextStyle,
   separator: {
-    height: theme.variables.borderWidth,
+    height: 1,
     alignSelf: 'stretch',
-    backgroundColor: theme.variables.listDividerBg
+    backgroundColor: '#f4f4f4'
   } as RN.ViewStyle
 };
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(
+  NB.connectStyle<StyleProps, Props>('KidsPrize.ScoreList', styles)(ScoreList)
+);

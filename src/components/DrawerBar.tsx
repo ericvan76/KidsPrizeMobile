@@ -35,8 +35,8 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
   }
 
   private switchChild = (id: string) => {
-    this.props.switchChild(id);
     this.props.closeDrawer();
+    this.props.switchChild(id);
   }
 
   private onAddChild = () => {
@@ -83,19 +83,19 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
       <NB.StyleProvider style={theme}>
         <NB.Container>
           <NB.Content>
-            <NB.ListItem thumbnail last style={styles.header}>
+            <NB.ListItem thumbnail last headerStyle>
               <NB.Left>
                 <NB.Thumbnail circular size={50} source={{ uri: this.props.profile.picture }} />
               </NB.Left>
-              <NB.Body style={styles.headerBody}>
+              <NB.Body headerStyle>
                 <NB.Text ellipsizeMode="tail" numberOfLines={1}>{this.getDisplayName(this.props.profile)}</NB.Text>
                 <NB.Text note ellipsizeMode="middle" numberOfLines={1}>{this.props.profile.email}</NB.Text>
               </NB.Body>
               <NB.Right />
             </NB.ListItem>
-            <NB.Separator bordered>
+            <NB.ListItem itemDivider>
               <NB.Text note>CHILDREN</NB.Text>
-            </NB.Separator>
+            </NB.ListItem>
             {this.props.childList && this.props.childList.map((child: Child) => this.renderChildRow(child))}
             <NB.ListItem icon last onPress={this.onAddChild}>
               <NB.Left>
@@ -105,9 +105,9 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
                 <NB.Text>Add Child</NB.Text>
               </NB.Body>
             </NB.ListItem>
-            <NB.Separator bordered>
+            <NB.ListItem itemDivider>
               <NB.Text note>OTHERS</NB.Text>
-            </NB.Separator>
+            </NB.ListItem>
             <NB.ListItem icon last onPress={this.onLogout}>
               <NB.Left>
                 <NB.Icon name={theme.icons.signOut} />
@@ -141,13 +141,3 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
 };
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(DrawerBar);
-
-const styles = {
-  header: {
-    height: 100,
-    paddingTop: 10
-  },
-  headerBody: {
-    borderBottomColor: 'transparent'
-  }
-};

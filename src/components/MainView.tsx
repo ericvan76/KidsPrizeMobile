@@ -1,4 +1,5 @@
 import * as NB from 'native-base';
+
 import React from 'react';
 import RN from 'react-native';
 import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
@@ -135,12 +136,18 @@ class MainView extends React.PureComponent<Props, State> {
           content={<DrawerBar navigator={this.props.navigator} closeDrawer={this.closeDrawer} />}
           tapToClose
           openDrawerOffset={0.2}
-          styles={styles.drawer}
+          styles={{
+            drawer: {
+              shadowColor: '#000',
+              shadowOpacity: 0.8,
+              shadowRadius: 0
+            }
+          }}
           tweenHandler={this.onTween}
           negotiatePan>
           {this.renderMain()}
         </NB.Drawer>
-      </NB.StyleProvider>
+      </NB.StyleProvider >
     );
   }
 }
@@ -158,14 +165,3 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, OwnProps> = 
 };
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(MainView);
-
-const styles = {
-  drawer: {
-    drawer: {
-      backgroundColor: theme.variables.defaultBg,
-      shadowColor: '#000',
-      shadowOpacity: 0.8,
-      shadowRadius: 0
-    }
-  }
-};

@@ -150,9 +150,9 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.Right>
           </NB.Header>
           <NB.Content>
-            <NB.Separator bordered>
+            <NB.ListItem itemDivider>
               <NB.Text note>INFO</NB.Text>
-            </NB.Separator>
+            </NB.ListItem>
             <NB.ListItem icon onPress={this.onEditName}>
               <NB.Left>
                 <NB.Icon name={theme.icons.formName} />
@@ -178,9 +178,9 @@ class ChildEditor extends React.PureComponent<Props, State> {
                 </NB.Picker>
               </NB.Right>
             </NB.ListItem>
-            <NB.Separator bordered>
+            <NB.ListItem itemDivider>
               <NB.Text note>TASKS</NB.Text>
-            </NB.Separator>
+            </NB.ListItem>
             <NB.ListItem icon last onPress={this.onEditTask}>
               <NB.Left>
                 <NB.Icon name={theme.icons.formTasks} />
@@ -196,7 +196,7 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.ListItem>
             {
               this.props.child &&
-              <NB.Button block danger style={styles.deleteButton} onPress={this.onDelete}>
+              <NB.Button deleteStyle block danger onPress={this.onDelete}>
                 <NB.Text>Delete Child</NB.Text>
               </NB.Button>
             }
@@ -208,10 +208,3 @@ class ChildEditor extends React.PureComponent<Props, State> {
 }
 
 export default ChildEditor;
-
-const styles = {
-  deleteButton: {
-    margin: 10,
-    marginTop: 80
-  }
-};

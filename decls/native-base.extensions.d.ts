@@ -44,6 +44,9 @@ declare module 'native-base' {
     interface Input extends React.TextInputProperties {
       ref?: any;
     }
+    interface Picker extends React.PickerProperties {
+      textStyle?: React.TextStyle
+    }
     interface List extends React.ScrollViewProperties {
       ref?: any;
       dataSource?: undefined;

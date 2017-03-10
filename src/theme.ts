@@ -11,7 +11,7 @@ const platform = variables.platform;
 const customisedTheme = {
 
   'NativeBase.Container': {
-    backgroundColor: variables.cardDefaultBg
+    backgroundColor: '#fff'
   },
 
   'NativeBase.Content': {
@@ -43,7 +43,6 @@ const customisedTheme = {
   },
 
   'NativeBase.ListItem': {
-    overflow: 'hidden',
     '.icon': {
       height: 50,
       'NativeBase.Left': {
@@ -65,7 +64,8 @@ const customisedTheme = {
     '.headerStyle': {
       height: 100,
       paddingTop: 10
-    }
+    },
+    overflow: 'hidden'
   },
 
   'NativeBase.Text': {
@@ -77,6 +77,12 @@ const customisedTheme = {
       margin: 10,
       marginTop: 60
     }
+  },
+
+  'NativeBase.Spinner': {
+    '.middle': {
+      flex: 1
+    } as RN.ViewStyle
   },
 
   'KidsPrize.ScoreList': {

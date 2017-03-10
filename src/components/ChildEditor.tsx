@@ -172,7 +172,10 @@ class ChildEditor extends React.PureComponent<Props, State> {
                 <NB.Text>Gender</NB.Text>
               </NB.Body>
               <NB.Right>
-                <NB.Picker note mode="dialog" selectedValue={this.state.current.gender} onValueChange={this.onGenderChange}>
+                <NB.Picker note
+                  // hack: shouldn't need to do this
+                  textStyle={{ color: theme.variables.listNoteColor, fontSize: theme.variables.DefaultFontSize }}
+                  mode="dialog" selectedValue={this.state.current.gender} onValueChange={this.onGenderChange}>
                   <NB.Picker.Item label="Boy" value={GENDER_MALE} />
                   <NB.Picker.Item label="Girl" value={GENDER_FEMALE} />
                 </NB.Picker>

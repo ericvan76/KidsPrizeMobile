@@ -10,6 +10,7 @@ import theme from '../theme';
 import { AppState, ChildState } from '../types/states';
 import DrawerBar from './DrawerBar';
 import ScoreList from './ScoreList';
+import Spinner from './Spinner';
 
 export interface OwnProps {
   navigator: RN.Navigator;
@@ -95,6 +96,7 @@ class MainView extends React.PureComponent<Props, State> {
             </NB.Button>
           </NB.Right>
         </NB.Header>
+        {this.props.childState.scores.size === 0 && <Spinner />}
         <ScoreList childId={this.props.childState.child.id} />
         <NB.Footer>
           <NB.FooterTab>

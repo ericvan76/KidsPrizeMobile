@@ -16,6 +16,7 @@ import { Token } from '../types/auth';
 import { AppState, AuthState } from '../types/states';
 import { alert } from '../utils/alert';
 import MainView from './MainView';
+import Spinner from './Spinner';
 
 interface StateProps {
   auth: AuthState;
@@ -99,24 +100,9 @@ class Launcher extends React.PureComponent<Props, void> {
   }
 
   public render() {
-    if (this.props.initialised) {
-      return (
-        <MainView navigator={this.props.navigator} />
-      );
-    }
-
-    // Spinner
     return (
       <NB.StyleProvider style={theme}>
-        <NB.Container>
-          <NB.Content contentContainerStyle={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <NB.Spinner inverse size="small" />
-          </NB.Content>
-        </NB.Container>
+        {this.props.initialised ? <MainView navigator={this.props.navigator} /> : <Spinner middle />}
       </NB.StyleProvider>
     );
   }

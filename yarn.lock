@@ -16,17 +16,17 @@
     hoist-non-react-statics "^1.0.5"
     lodash "^4.10.1"
 
-"@types/jest@^18.1.1":
-  version "18.1.1"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-18.1.1.tgz#6f63488c64726900885ab9cd5697bb7fa1b416cc"
+"@types/jest@^19.2.1":
+  version "19.2.1"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-19.2.1.tgz#57db82d71c1b8ca1523bfdfbb00a4d848dfcc5fe"
 
 "@types/jwt-decode@^1.4.28":
   version "1.4.28"
   resolved "https://registry.yarnpkg.com/@types/jwt-decode/-/jwt-decode-1.4.28.tgz#daf8f3af29d7ac8d9208057d3eec414f8a9825fc"
 
-"@types/lodash@^4.14.54":
-  version "4.14.54"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.54.tgz#287dbbcd97d5da69c25ca99fb5afa81c4839b7fa"
+"@types/lodash@^4.14.55":
+  version "4.14.55"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.55.tgz#75d7d4eba020ee4103d4cbd0f2a3ef5db8f7534f"
 
 "@types/react-addons-update@^0.14.16":
   version "0.14.16"
@@ -40,15 +40,15 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-native@^0.37.13":
-  version "0.37.13"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.37.13.tgz#65548f892ed6e55ef87add1ffeec72275b4152b7"
+"@types/react-native@^0.42.4":
+  version "0.42.4"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.42.4.tgz#ed3b7d8ff90bc7a897c8f933c24dc35e14134c47"
   dependencies:
     "@types/react" "*"
 
-"@types/react-redux@^4.4.36":
-  version "4.4.36"
-  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-4.4.36.tgz#5d1e768f3291c66c8e54d8a48e42f7cb554a7d87"
+"@types/react-redux@^4.4.37":
+  version "4.4.37"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-4.4.37.tgz#14489a999cdfb0a05fb5c2335fa6c3c3e7c89ed5"
   dependencies:
     "@types/react" "*"
     redux "^3.6.0"
@@ -4568,7 +4568,7 @@ whatwg-encoding@^1.0.1:
   dependencies:
     iconv-lite "0.4.13"
 
-whatwg-fetch@>=0.10.0, whatwg-fetch@^2.0.2:
+whatwg-fetch@>=0.10.0, whatwg-fetch@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz#9c84ec2dcf68187ff00bc64e1274b442176e1c84"
 

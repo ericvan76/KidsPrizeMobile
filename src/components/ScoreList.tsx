@@ -139,9 +139,9 @@ class ScoreList extends React.PureComponent<Props, State> {
   private onEndReached = () => {
     this.props.fetchScoresAsync(this.props.child.id);
   }
-  private scrollToTop = () => {
+  private scrollToTop = (animated: boolean) => {
     // tslint:disable-next-line:no-any
-    (this.refs.listview as any).scrollTo({ y: 0, animated: true });
+    (this.refs.listview as any).scrollTo({ y: 0, animated });
   }
 
   public componentDidMount() {
@@ -149,16 +149,6 @@ class ScoreList extends React.PureComponent<Props, State> {
       ...this.state,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(new Map(), [], [])
     });
-  }
-  public componentDidUpdate(prevProps: Props) {
-    if (this.props.childId !== prevProps.childId) {
-      if (this.props.scores.size === 0) {
-        // todo: this should be able to triggered by onEndReached
-        this.props.refreshAsync(this.props.child.id);
-      } else {
-        this.scrollToTop();
-      }
-    }
   }
   public componentWillReceiveProps(nextProps: Props) {
     if (nextProps.scores !== this.props.scores) {
@@ -175,6 +165,20 @@ class ScoreList extends React.PureComponent<Props, State> {
       });
     }
   }
+  public componentWillUpdate(nextProps: Props) {
+    if (this.props.childId !== nextProps.childId) {
+      this.scrollToTop(false);
+    }
+  }
+  public componentDidUpdate(prevProps: Props) {
+    if (this.props.childId !== prevProps.childId) {
+      if (this.props.scores.size === 0) {
+        // todo: this should be able to triggered by onEndReached
+        this.props.refreshAsync(this.props.child.id);
+      }
+    }
+  }
+
   public render() {
     const refreshControl = <RN.RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />;
     return (

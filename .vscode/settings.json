@@ -4,12 +4,16 @@
   "editor.formatOnType": true,
   "editor.tabSize": 2,
   "files.eol": "\n",
+  "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
     "**/buck-out": true,
     "**/.buckd": true,
-    "**/.idea": true
+    "**/.idea": true,
+    "node_modules": false
   },
-  "javascript.validate.enable": false,
-  "typescript.disableAutomaticTypeAcquisition": true
+  "vsicons.presets.angular": false,
+  "tslint.configFile": "tslint.editor.json",
+  "typescriptHero.resolver.pathStringDelimiter": "'",
+  "typescriptHero.resolver.multiLineWrapThreshold": 120
 }

@@ -78,7 +78,6 @@ class RedeemEditor extends React.PureComponent<Props, State> {
             </NB.Left>
             <NB.Body>
               <NB.Title>Redeem</NB.Title>
-              <NB.Text note>Available: {this.props.child.totalScore}</NB.Text>
             </NB.Body>
             <NB.Right>
               {

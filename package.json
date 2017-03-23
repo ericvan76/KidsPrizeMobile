@@ -5,12 +5,13 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "node ./node_modules/jest/bin/jest.js --no-cache --config jest.config.json",
-    "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "ios": "node node_modules/react-native/local-cli/cli.js run-ios --simulator=\"iPhone 6 Plus\"",
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
     "typecheck": "tsc --noEmit",
     "tslint": "tslint --project tsconfig.json -t stylish --type-check -e **/src/native-base-theme/**/*",
     "prebuild": "rimraf build",
     "build": "tsc",
+    "watch": "npm run build -- --watch",
     "qualitycheck": "npm-run-all typecheck tslint test"
   },
   "dependencies": {

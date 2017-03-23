@@ -111,7 +111,6 @@ class RedeemListView extends React.PureComponent<Props, State> {
             </NB.Left>
             <NB.Body>
               <NB.Title ellipsizeMode="tail" numberOfLines={1}>{this.props.child.name}</NB.Title>
-              <NB.Text note>Available: {this.props.child.totalScore}</NB.Text>
             </NB.Body>
             <NB.Right>
               <NB.Button transparent onPress={this.onAddRedeem}>

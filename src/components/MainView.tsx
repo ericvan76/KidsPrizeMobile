@@ -88,7 +88,6 @@ class MainView extends React.PureComponent<Props, State> {
           </NB.Left>
           <NB.Body>
             <NB.Title ellipsizeMode="tail" numberOfLines={1}>{this.props.childState.child.name}</NB.Title>
-            <NB.Text note>Total: {this.props.childState.child.totalScore}</NB.Text>
           </NB.Body>
           <NB.Right>
             <NB.Button transparent onPress={this.onEditChild}>

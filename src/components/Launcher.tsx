@@ -85,16 +85,11 @@ class Launcher extends React.PureComponent<Props, void> {
   public componentDidUpdate() {
     if (this.props.errors.length > 0) {
       alert(this.props.errors);
-      return;
-    }
-    if (this.props.auth.tokenLoadCompleted) {
+    } else if (this.props.auth.tokenLoadCompleted) {
       if (!this.props.auth.token) {
         this.showLogin();
-        return;
-      }
-      if (!this.props.initialised) {
+      } else if (!this.props.initialised) {
         this.props.loadChildrenAsync();
-        return;
       }
     }
   }

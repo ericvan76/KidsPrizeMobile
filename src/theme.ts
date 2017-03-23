@@ -2,9 +2,12 @@ import _ from 'lodash';
 import RN from 'react-native';
 
 import getTheme from '../src/native-base-theme/components';
-import platformVariables from '../src/native-base-theme/variables/platform';
+import platformVariables from '../src/native-base-theme/variables/material';
 
-const variables = platformVariables;
+// tslint:disable-next-line:no-any
+const variables: any = platformVariables;
+variables.iconFamily = 'MaterialIcons';
+
 const defaultTheme = getTheme(variables);
 const platform = variables.platform;
 
@@ -18,8 +21,6 @@ const customisedTheme = {
   },
 
   'NativeBase.Header': {
-    backgroundColor: '#f4f4f4',
-    height: (platform === 'ios') ? 72 : 56
   },
 
   'NativeBase.Body': {
@@ -29,8 +30,6 @@ const customisedTheme = {
   },
 
   'NativeBase.Footer': {
-    backgroundColor: '#f4f4f4',
-    height: 55
   },
 
   'NativeBase.FooterTab': {
@@ -46,14 +45,18 @@ const customisedTheme = {
     '.icon': {
       height: 50,
       'NativeBase.Left': {
-        height: 50,
-        paddingRight: 0
+        height: 50
       },
       'NativeBase.Body': {
         height: 50
       },
       'NativeBase.Right': {
-        height: 50
+        height: 50,
+        'NativeBase.PickerNB': {
+          width: 100,
+          justifyContent: 'flex-end',
+          marginRight: (platform === 'ios') ? undefined : -20
+        }
       }
     },
     '.itemDivider': {
@@ -69,9 +72,11 @@ const customisedTheme = {
   },
 
   'NativeBase.Text': {
-
+    color: '#444'
   },
-
+  'NativeBase.Icon': {
+    color: '#444'
+  },
   'NativeBase.Button': {
     '.deleteStyle': {
       margin: 10,
@@ -100,8 +105,7 @@ const customisedTheme = {
       width: 36,
       textAlign: 'center',
       lineHeight: 18,
-      fontSize: variables.noteFontSize,
-      color: variables.subtitleColor
+      fontSize: variables.noteFontSize
     } as RN.TextStyle,
     row: {
       overflow: 'hidden',
@@ -120,7 +124,6 @@ const customisedTheme = {
       justifyContent: 'flex-end'
     } as RN.ViewStyle,
     star: {
-      color: '#333',
       width: 36,
       fontSize: 36,
       textAlign: 'center'
@@ -139,24 +142,28 @@ const customisedTheme = {
     close: 'close',
 
     tabMain: 'apps',
-    tabRedeem: 'cart',
+    tabRedeem: 'shopping-cart',
 
-    male: 'man',
-    female: 'woman',
+    male: 'face',
+    female: 'face',
     addChild: 'person-add',
-    signOut: 'exit',
+    signOut: 'exit-to-app',
 
     star: 'star',
+    star_o: 'star-border',
 
-    formName: 'person',
+    formName: 'perm-identity',
     formTasks: 'list',
 
     remove: 'remove-circle',
-    reorder: 'reorder',
+    reorder: 'drag-handle',
     addTask: 'add-circle',
 
-    success: 'checkmark-circle',
-    error: 'close-circle'
+    success: 'check',
+    error: 'close',
+
+    trash: 'delete-forever'
+
   } as { [key: string]: string }
 };
 

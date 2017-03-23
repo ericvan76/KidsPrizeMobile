@@ -13,7 +13,5 @@
     "node_modules": false
   },
   "vsicons.presets.angular": false,
-  "tslint.configFile": "tslint.editor.json",
-  "typescriptHero.resolver.pathStringDelimiter": "'",
-  "typescriptHero.resolver.multiLineWrapThreshold": 120
+  "tslint.configFile": "tslint.editor.json"
 }

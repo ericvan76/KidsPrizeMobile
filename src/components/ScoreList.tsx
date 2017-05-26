@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 
 import { fetchScoresAsync, refreshAsync, setScoreAsync } from '../actions/scores';
 import { DATE_FORMAT } from '../constants';
+import theme from '../theme';
 import { Child } from '../types/api';
 import { AppState, ChildState, ScoresState, TaskRow, WeeklyState } from '../types/states';
 
@@ -115,7 +116,7 @@ class ScoreList extends React.PureComponent<Props, State> {
         <RN.TouchableOpacity
           key={i}
           onPress={() => this.props.setScoreAsync(this.props.child.id, date, task, newValue)}>
-          <NB.Icon style={this.props.style.star} name="star" active={value > 0} />
+          <NB.Icon style={this.props.style.star} name={value > 0 ? theme.icons.star : theme.icons.star_o} />
         </RN.TouchableOpacity>
       );
     });
@@ -231,7 +232,6 @@ const styles = {
     width: 36,
     textAlign: 'center',
     fontSize: 14,
-    color: '#8e8e93',
     lineHeight: 20
   } as RN.TextStyle,
   row: {
@@ -250,7 +250,6 @@ const styles = {
     justifyContent: 'flex-end'
   } as RN.ViewStyle,
   star: {
-    color: '#333',
     width: 36,
     fontSize: 36,
     textAlign: 'center'

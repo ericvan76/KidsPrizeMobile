@@ -199,7 +199,8 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.ListItem>
             {
               this.props.child &&
-              <NB.Button deleteStyle block danger onPress={this.onDelete}>
+              <NB.Button deleteStyle block iconLeft danger onPress={this.onDelete}>
+                <NB.Icon name={theme.icons.trash} />
                 <NB.Text>Delete Child</NB.Text>
               </NB.Button>
             }

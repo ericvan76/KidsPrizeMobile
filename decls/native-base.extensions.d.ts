@@ -19,6 +19,7 @@ declare module 'native-base' {
       title?: undefined;
       transparent?: boolean;
       deleteStyle?: boolean;
+      light?: boolean;
     }
     interface Seperator {
       bordered?: boolean;

@@ -42,7 +42,7 @@ class TextEditor extends React.PureComponent<Props, State> {
     this.setState({ ...this.state, current: { ...this.state.current, value: text } });
   }
   private onClose = () => {
-    this.props.navigator.popToTop();
+    this.props.navigator.pop();
   }
   private onSubmit = () => {
     if (this.isDirty() && this.isValid()) {

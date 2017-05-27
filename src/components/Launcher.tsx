@@ -45,7 +45,8 @@ class Launcher extends React.PureComponent<Props, void> {
     super(props);
     this.lock = new Auth0Lock({
       clientId: config.auth.client_id,
-      domain: config.auth.auth0_domain
+      domain: config.auth.auth0_domain,
+      useBrowser: true
     });
   }
 

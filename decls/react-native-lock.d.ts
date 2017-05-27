@@ -3,6 +3,7 @@ declare module 'react-native-lock' {
   interface Config {
     clientId: string;
     domain: string;
+    useBrowser?: boolean;
   }
 
   interface AuthParams {

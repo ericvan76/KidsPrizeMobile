@@ -3547,9 +3547,9 @@ react-native-keyboard-aware-scroll-view@0.2.7:
   dependencies:
     react-timer-mixin "^0.13.3"
 
-react-native-lock@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-lock/-/react-native-lock-0.5.0.tgz#2ef857220339e238ca262af12410e738dc6da54a"
+react-native-lock@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-lock/-/react-native-lock-0.6.0.tgz#2fc40caf74e60b7516b2faeee975271a71696c49"
   dependencies:
     react-native-auth0 "^0.0.1"
 

@@ -98,7 +98,12 @@ class Launcher extends React.PureComponent<Props, void> {
   public render() {
     return (
       <NB.StyleProvider style={theme}>
-        {this.props.initialised ? <MainView navigator={this.props.navigator} /> : <Spinner middle />}
+        {this.props.initialised ?
+          <MainView navigator={this.props.navigator} />
+          :
+          <NB.Container>
+            <Spinner middle />
+          </NB.Container>}
       </NB.StyleProvider>
     );
   }

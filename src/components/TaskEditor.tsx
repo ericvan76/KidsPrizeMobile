@@ -32,7 +32,7 @@ class Row extends React.PureComponent<RowProps, void> {
         </NB.Body>
         <NB.Right style={{ padding: 0 }}>
           <NB.Button transparent delayLongPress={0} onLongPress={this.props.onLongPress} onPressOut={this.props.onPressOut}>
-            <NB.Icon name={theme.icons.reorder} />
+            <NB.Icon name={theme.icons.drag} />
           </NB.Button>
         </NB.Right>
       </NB.ListItem>

@@ -7,7 +7,6 @@ import { AppState } from '../types/states';
 
 import { logoutAsync } from '../actions/auth';
 import { switchChild } from '../actions/children';
-import { GENDER_MALE } from '../constants';
 import * as routes from '../routes';
 import theme from '../theme';
 import { Child } from '../types/api';
@@ -66,7 +65,7 @@ class DrawerBar extends React.PureComponent<OwnProps & StateProps & DispatchProp
     return (
       <NB.ListItem key={child.id} icon onPress={onSwitchChild}>
         <NB.Left>
-          <NB.Icon name={child.gender === GENDER_MALE ? theme.icons.male : theme.icons.female} />
+          <NB.Icon name={theme.icons.face} />
         </NB.Left>
         <NB.Body>
           <NB.Text ellipsizeMode="tail" numberOfLines={1}>{child.name}</NB.Text>

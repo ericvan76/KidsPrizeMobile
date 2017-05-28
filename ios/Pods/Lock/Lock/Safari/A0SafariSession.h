@@ -1,4 +1,4 @@
-// NSError+A0AuthAPIError.m
+// A0SafariSession.h
 //
 // Copyright (c) 2015 Auth0 (http://auth0.com)
 //
@@ -20,30 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSError+A0AuthAPIError.h"
+#import <Foundation/Foundation.h>
+#import "A0AuthenticationProvider.h"
 
-NSString * const A0JSONResponseSerializerErrorDataKey = @"com.auth0.authentication.error";
+@class A0Lock, A0Token;
 
-@implementation NSError (A0AuthAPIError)
+typedef void(^A0SafariSessionAuthentication)(NSError *error, A0Token *token);
 
-- (NSDictionary *)a0_payload {
-    return self.userInfo[A0JSONResponseSerializerErrorDataKey];
-}
+@interface A0SafariSession : NSObject
 
-- (NSString *)a0_error {
-    return [self a0_payload][@"error"] ?: [self a0_payload][@"code"];
-}
+@property (readonly, copy, nonatomic) NSString *connectionName;
+@property (readonly, strong, nonatomic) NSURL *callbackURL;
 
-- (NSString *)a0_errorDescription {
-    return [self a0_payload][@"error_description"];
-}
+- (instancetype)initWithLock:(A0Lock *)lock connectionName:(NSString *)connectionName usePKCE:(BOOL)usePKCE;
+- (instancetype)initWithLock:(A0Lock *)lock connectionName:(NSString *)connectionName useUniversalLink:(BOOL)useUniversalLink usePKCE:(BOOL)usePKCE;
 
-- (BOOL)a0_mfaRequired {
-    return [[self a0_error] isEqualToString:@"a0.mfa_required"];
-}
-
-- (BOOL)a0_mfaRegistrationRequired {
-    return [[self a0_error] isEqualToString:@"a0.mfa_registration_required"];
-}
-
+- (NSURL *)authorizeURLWithParameters:(NSDictionary *)parameters;
+- (A0SafariSessionAuthentication)authenticationBlockWithSuccess:(A0IdPAuthenticationBlock)success
+                                                        failure:(A0IdPAuthenticationErrorBlock)failure;
+- (void)tokenFromURL:(NSURL *)url callback:(void(^)(NSError *error, A0Token *token))callback;
 @end

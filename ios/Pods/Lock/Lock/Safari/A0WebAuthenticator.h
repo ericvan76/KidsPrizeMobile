@@ -1,6 +1,6 @@
-// NSError+A0AuthAPIError.m
+//  A0WebAuthenticator.h
 //
-// Copyright (c) 2015 Auth0 (http://auth0.com)
+// Copyright (c) 2014 Auth0 (http://auth0.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,30 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSError+A0AuthAPIError.h"
+#import <Foundation/Foundation.h>
+#import <Lock/A0BaseAuthenticator.h>
 
-NSString * const A0JSONResponseSerializerErrorDataKey = @"com.auth0.authentication.error";
+@class A0Strategy, A0Application;
 
-@implementation NSError (A0AuthAPIError)
+ __attribute__((deprecated("Please use WebView authentication due to Apple rejecting apps that authenticate with Safari")))
+/**
+ Safari based authentication for IdP using Auth0
+ @deprecated Use Embedded WebView based authentication due to Apple rejections
+ */
+@interface A0WebAuthenticator : A0BaseAuthenticator
 
-- (NSDictionary *)a0_payload {
-    return self.userInfo[A0JSONResponseSerializerErrorDataKey];
-}
+/**
+ *  Initialize object using Auth0 account information
+ *
+ *  @param authorizeURL   of the /authorize endpoint under your Auth0 subdomain
+ *  @param clientId       of your Auth0 account
+ *  @param connectionName of the IdP to authenticate with
+ *
+ *  @return an initialised object
+ */
+- (instancetype)initWithAuthorizeURL:(NSURL *)authorizeURL clientId:(NSString *)clientId connectionName:(NSString *)connectionName;
 
-- (NSString *)a0_error {
-    return [self a0_payload][@"error"] ?: [self a0_payload][@"code"];
-}
-
-- (NSString *)a0_errorDescription {
-    return [self a0_payload][@"error_description"];
-}
-
-- (BOOL)a0_mfaRequired {
-    return [[self a0_error] isEqualToString:@"a0.mfa_required"];
-}
-
-- (BOOL)a0_mfaRegistrationRequired {
-    return [[self a0_error] isEqualToString:@"a0.mfa_registration_required"];
-}
++ (instancetype)newWebAuthenticationForStrategy:(A0Strategy *)strategy
+                                  ofApplication:(A0Application *)application;
 
 @end

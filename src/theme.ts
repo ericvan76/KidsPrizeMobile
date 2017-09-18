@@ -114,7 +114,8 @@ const customisedTheme = {
       width: 36,
       textAlign: 'center',
       lineHeight: 18,
-      fontSize: variables.noteFontSize
+      fontSize: variables.noteFontSize,
+      backgroundColor: 'transparent'
     } as RN.TextStyle,
     row: {
       overflow: 'hidden',

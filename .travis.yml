@@ -17,8 +17,8 @@ install:
   - $yarn install
 
 script:
-- chmod a+x ./scripts/*.sh
-- ./scripts/travis_build.sh
+- chmod a+x ./build.sh
+- ./build.sh
 
 branches:
   only:

@@ -1,6 +1,6 @@
 import jwtDecode from 'jwt-decode';
 
-import config from '../__config__';
+import config from '../config';
 import { Profile, Token } from '../types/auth';
 import * as url from '../utils/url';
 import { fetchOrThrow } from './api';

@@ -87,12 +87,30 @@ class ScoreList extends React.PureComponent<Props, State> {
       }
 
       return (
-        <NB.Text key={key}
-          style={{
-            ...this.props.style.sectionText,
-            fontWeight: today === key ? 'bold' : 'normal'
-          }}
-        >{`${mo.format('ddd')}\n${mo.date()}${month}`}</NB.Text>
+        <NB.View key={`${key}-border`}>
+          <NB.Text key={`${key}-up`}
+            style={{
+              ...this.props.style.sectionText
+            }}
+          >{`${mo.format('ddd')}`}</NB.Text>
+          {today === key ?
+            <NB.Badge info style={{
+              padding: 0,
+              height: 20
+            }}>
+              <NB.Text key={`${key}-down`}
+                style={{
+                  ...this.props.style.sectionText
+                }}>{`${mo.date()}${month}`}</NB.Text>
+            </NB.Badge>
+            :
+            <NB.Text key={`${key}-down`}
+              style={{
+                ...this.props.style.sectionText
+              }}
+            >{`${mo.date()}${month}`}</NB.Text>
+          }
+        </NB.View>
       );
     });
     return (

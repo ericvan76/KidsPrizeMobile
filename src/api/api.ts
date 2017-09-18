@@ -1,4 +1,4 @@
-import config from '../__config__';
+import config from '../config';
 import * as url from '../utils/url';
 import { getBearerToken } from './token';
 

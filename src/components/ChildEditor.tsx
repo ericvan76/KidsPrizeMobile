@@ -155,7 +155,7 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.ListItem>
             <NB.ListItem icon onPress={this.onEditName}>
               <NB.Left>
-                <NB.Icon name={theme.icons.formName} />
+                <NB.Icon name={theme.icons.face} />
               </NB.Left>
               <NB.Body>
                 <NB.Text>Name</NB.Text>
@@ -166,7 +166,7 @@ class ChildEditor extends React.PureComponent<Props, State> {
             </NB.ListItem>
             <NB.ListItem icon last>
               <NB.Left>
-                <NB.Icon name={this.state.current.gender === GENDER_MALE ? theme.icons.male : theme.icons.female} />
+                <NB.Icon name={theme.icons.gender} />
               </NB.Left>
               <NB.Body>
                 <NB.Text>Gender</NB.Text>

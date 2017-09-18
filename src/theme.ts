@@ -6,7 +6,7 @@ import platformVariables from '../src/native-base-theme/variables/material';
 
 // tslint:disable-next-line:no-any
 const variables: any = platformVariables;
-variables.iconFamily = 'MaterialIcons';
+variables.iconFamily = 'MaterialCommunityIcons';
 
 const defaultTheme = getTheme(variables);
 const platform = variables.platform;
@@ -45,10 +45,19 @@ const customisedTheme = {
     '.icon': {
       height: 50,
       'NativeBase.Left': {
-        height: 50
+        height: 50,
+        'NativeBase.Icon': {
+          width: variables.iconFontSize - 3,
+          fontSize: variables.iconFontSize - 3
+        },
+        'NativeBase.IconNB': {
+          width: variables.iconFontSize - 3,
+          fontSize: variables.iconFontSize - 3
+        }
       },
       'NativeBase.Body': {
-        height: 50
+        height: 50,
+        marginLeft: 0
       },
       'NativeBase.Right': {
         height: 50,
@@ -105,7 +114,8 @@ const customisedTheme = {
       width: 36,
       textAlign: 'center',
       lineHeight: 18,
-      fontSize: variables.noteFontSize
+      fontSize: variables.noteFontSize,
+      backgroundColor: 'transparent'
     } as RN.TextStyle,
     row: {
       overflow: 'hidden',
@@ -138,29 +148,29 @@ const customisedTheme = {
   icons: {
     menu: 'menu',
     settings: 'settings',
-    back: 'arrow-back',
+    back: 'arrow-left',
     close: 'close',
 
     tabMain: 'apps',
-    tabRedeem: 'shopping-cart',
+    tabRedeem: 'cart',
 
-    male: 'face',
-    female: 'face',
-    addChild: 'person-add',
+    face: 'face',
+    gender: 'gender-male-female',
+
+    addChild: 'account-plus',
     signOut: 'exit-to-app',
 
     star: 'star',
-    star_o: 'star-border',
+    star_o: 'star-outline',
 
-    formName: 'perm-identity',
-    formTasks: 'list',
+    formTasks: 'view-list',
 
-    remove: 'remove-circle',
-    reorder: 'drag-handle',
+    remove: 'minus-circle',
+    drag: 'drag',
     addTask: 'add-circle',
 
-    success: 'check',
-    error: 'close',
+    success: 'check-circle',
+    error: 'close-circle',
 
     trash: 'delete-forever'
 

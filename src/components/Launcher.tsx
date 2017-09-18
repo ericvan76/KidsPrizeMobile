@@ -6,11 +6,11 @@ import Auth0Lock from 'react-native-lock';
 import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import config from '../__config__';
 import { loadTokenAsync, saveTokenAsync } from '../actions/auth';
 import { loadChildrenAsync } from '../actions/children';
 import { raiseError } from '../actions/errors';
 import * as auth0 from '../api/auth0';
+import config from '../config';
 import theme from '../theme';
 import { Token } from '../types/auth';
 import { AppState, AuthState } from '../types/states';
@@ -98,7 +98,12 @@ class Launcher extends React.PureComponent<Props, void> {
   public render() {
     return (
       <NB.StyleProvider style={theme}>
-        {this.props.initialised ? <MainView navigator={this.props.navigator} /> : <Spinner middle />}
+        {this.props.initialised ?
+          <MainView navigator={this.props.navigator} />
+          :
+          <NB.Container>
+            <Spinner middle />
+          </NB.Container>}
       </NB.StyleProvider>
     );
   }

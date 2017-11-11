@@ -55,3 +55,4 @@ fastlane/screenshots
 
 build/
 
+android/app/release

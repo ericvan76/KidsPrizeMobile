@@ -7,7 +7,7 @@ const config: Config = {
     client_secret: '<client_Secret>'
   },
   api: {
-    baseUrl: 'https://api.kids-prize.com/v2'
+    baseUrl: 'https://kidsprize-api.fanstek.com/v2'
   }
 };
 

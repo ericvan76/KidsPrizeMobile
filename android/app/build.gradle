@@ -99,8 +99,8 @@ android {
         applicationId "com.kidsprize"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 3
-        versionName "1.1"
+        versionCode 6
+        versionName "1.2.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

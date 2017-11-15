@@ -94,7 +94,7 @@ class ScoreList extends React.PureComponent<Props, State> {
             }}
           >{`${mo.format('ddd')}`}</NB.Text>
           {today === key ?
-            <NB.Badge info style={{
+            <NB.Badge style={{
               padding: 0,
               height: 20
             }}>

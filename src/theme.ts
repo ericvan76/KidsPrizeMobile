@@ -21,6 +21,9 @@ const customisedTheme = {
   },
 
   'NativeBase.Header': {
+    backgroundColor: '#3B5998',
+    height: (platform === 'ios') ? 96 : 64,
+    paddingTop: (platform === 'ios') ? 20 : 0
   },
 
   'NativeBase.Body': {
@@ -30,11 +33,19 @@ const customisedTheme = {
   },
 
   'NativeBase.Footer': {
+    backgroundColor: '#3B5998',
+    height: (platform === 'ios') ? 72 : 56
   },
 
   'NativeBase.FooterTab': {
     backgroundColor: (platform === 'ios') ? 'transparent' : variables.tabActiveBgColor,
     'NativeBase.Button': {
+      'NativeBase.Text': {
+        color: '#ADBAD4'
+      },
+      'NativeBase.Icon': {
+        color: '#ADBAD4'
+      },
       '.active': {
         backgroundColor: (platform === 'ios') ? 'transparent' : variables.tabActiveBgColor
       }
@@ -74,12 +85,14 @@ const customisedTheme = {
       borderWidth: 0.5
     },
     '.headerStyle': {
-      height: 100,
-      paddingTop: 10
+      height: 96,
+      marginTop: 20
     },
     overflow: 'hidden'
   },
-
+  'NativeBase.Badge': {
+    backgroundColor: '#4E6CAA'
+  },
   'NativeBase.Text': {
     color: '#444'
   },
@@ -90,6 +103,14 @@ const customisedTheme = {
     '.deleteStyle': {
       margin: 10,
       marginTop: 60
+    },
+    '.transparent': {
+      'NativeBase.Text': {
+        color: '#4E6CAA'
+      },
+      'NativeBase.Icon': {
+        color: '#4E6CAA'
+      }
     }
   },
 

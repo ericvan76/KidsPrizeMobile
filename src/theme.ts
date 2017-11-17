@@ -22,8 +22,7 @@ const customisedTheme = {
 
   'NativeBase.Header': {
     backgroundColor: '#3B5998',
-    height: (platform === 'ios') ? 96 : 64,
-    paddingTop: (platform === 'ios') ? 20 : 0
+    height: (platform === 'ios') ? 80 : 64
   },
 
   'NativeBase.Body': {
@@ -34,7 +33,7 @@ const customisedTheme = {
 
   'NativeBase.Footer': {
     backgroundColor: '#3B5998',
-    height: (platform === 'ios') ? 72 : 56
+    height: (platform === 'ios') ? 64 : 56
   },
 
   'NativeBase.FooterTab': {
@@ -85,8 +84,8 @@ const customisedTheme = {
       borderWidth: 0.5
     },
     '.headerStyle': {
-      height: 96,
-      marginTop: 20
+      height: 78,
+      marginTop: 18
     },
     overflow: 'hidden'
   },

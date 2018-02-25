@@ -1,42 +1,67 @@
+import { AppLoading } from 'expo';
 import React from 'react';
-import RN from 'react-native';
 import { Provider } from 'react-redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import { signIn } from 'src/actions/auth';
+import { AppNavigator } from 'src/components/AppNavigator';
+import * as reducers from 'src/reducers';
+import { INITIAL_STATE } from 'src/reducers/initialState';
+import { rootSaga } from 'src/sagas';
 
-import * as routes from './routes';
-import store from './store';
+const sagaMiddleware = createSagaMiddleware();
+const rootReducer = combineReducers(reducers);
 
-class App extends React.PureComponent<void, void> {
+const store = createStore(
+  rootReducer,
+  INITIAL_STATE,
+  applyMiddleware(sagaMiddleware)
+);
 
-  private renderScene = (route: RN.Route, navigator: RN.Navigator) => {
-    if (route.component) {
-      return React.createElement(route.component, { ...route.passProps, navigator });
+sagaMiddleware.run(rootSaga);
+
+interface Props { }
+interface State {
+  isReady: boolean;
+}
+
+export class App extends React.PureComponent<Props, State> {
+
+  public state: State = {
+    isReady: false
+  };
+
+  public render(): JSX.Element {
+
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={this.cacheResourcesAsync}
+          onFinish={this.finishLoading}
+          onError={console.warn}
+        />
+      );
     }
-    throw new Error();
-  }
 
-  private configureScene = (_: RN.Route) => {
-    return RN.Navigator.SceneConfigs.PushFromRight;
-  }
-
-  public render() {
-    const initRoute = routes.launcherRoute();
     return (
       <Provider store={store}>
-        <RN.View style={styles.container}>
-          <RN.Navigator
-            initialRoute={initRoute}
-            renderScene={this.renderScene}
-            configureScene={this.configureScene} />
-        </RN.View>
+        <AppNavigator />
       </Provider>
     );
   }
-}
 
-const styles = {
-  container: {
-    flex: 1
+  private finishLoading = () => {
+    this.setState((state: State) => {
+      return {
+        ...state,
+        isReady: true
+      };
+    });
+    store.dispatch(signIn(undefined));
   }
-};
 
-export default App;
+  private cacheResourcesAsync = async () => {
+    // tslint:disable:no-require-imports no-floating-promises
+    // tslint:enable:no-require-imports no-floating-promises
+  }
+}

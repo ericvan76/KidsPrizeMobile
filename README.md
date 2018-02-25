@@ -1,8 +1,6 @@
 # KidzPrizeMobile
 
-| iOS | Android |
-| --- | ------- |
-| [![Build Status](https://www.bitrise.io/app/13dc4d8c2dfc961b/status.svg?token=KNO_mIl2-cJ7r4pneqb92g)](https://www.bitrise.io/app/13dc4d8c2dfc961b) | [![Build Status](https://www.bitrise.io/app/57c3ccae8559a359/status.svg?token=0v-HC1dnSqDi6YAJ9bDx8g&branch=master)](https://www.bitrise.io/app/57c3ccae8559a359) |
+[![Build Status](https://www.bitrise.io/app/ed6a01c33950676f/status.svg?token=7Zfluv1CUgNYQoM7zCA9rA&branch=master)](https://www.bitrise.io/app/ed6a01c33950676f)
 
 ### Introduction
 A behavior chart for kids.

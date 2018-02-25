@@ -13,5 +13,6 @@
     "node_modules": false
   },
   "vsicons.presets.angular": false,
-  "tslint.configFile": "tslint.editor.json"
+  "tslint.configFile": "tslint.editor.json",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

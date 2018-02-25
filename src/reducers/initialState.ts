@@ -1,13 +1,13 @@
-
-import { AppState, ChildState } from '../types/states';
+import { AppState } from 'src/store';
 
 export const INITIAL_STATE: AppState = {
   auth: {
-    tokenLoadCompleted: false,
-    token: undefined,
     profile: undefined
   },
-  initialised: false,
-  children: new Map<string, ChildState>(),
-  errors: []
+  children: {},
+  currentChild: null,
+  requestState: {
+    requesting: {},
+    errors: {}
+  }
 };

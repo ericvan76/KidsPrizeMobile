@@ -1,4 +1,51 @@
 {
-  "name": "KidsPrize",
-  "displayName": "KidsPrize"
+  "expo": {
+    "name": "KidsPrize",
+    "description": "Kids behaviour chart",
+    "slug": "kidsprize",
+    "privacy": "unlisted",
+    "sdkVersion": "25.0.0",
+    "version": "1.3.2",
+    "orientation": "portrait",
+    "primaryColor": "#cccccc",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "packagerOpts": {
+      "sourceExts": [
+        "ts",
+        "tsx"
+      ],
+      "transformer": "node_modules/react-native-typescript-transformer/index.js"
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
+      "buildNumber": "1030201",
+      "supportsTablet": false,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {},
+      "loadJSInBackgroundExperimental": true
+    },
+    "android": {
+      "package": "com.kidsprize",
+      "versionCode": 1030201,
+      "permissions": []
+    },
+    "extra": {
+      "semver": "1.3.2-expo.1",
+      "apiEndpoint": "https://api-endpoint/",
+      "auth0Domain": "xxx.auth0.com",
+      "auth0ClientId": "xxxxx",
+      "auth0ClientSecret": "xxxxx",
+    }
+  }
 }

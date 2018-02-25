@@ -1,12 +1,38 @@
+import { Profile } from 'src/api/auth';
+import { Child, ChildId, Redeem, WeekId, WeeklyScore } from 'src/api/child';
 
-import { applyMiddleware, createStore } from 'redux';
-import { enableBatching } from 'redux-batched-actions';
-import thunk from 'redux-thunk';
+export interface AppState {
+  auth: AuthState;
+  children: Record<ChildId, ChildState>;
+  currentChild: ChildId | null;
+  requestState: RequestState;
+}
 
-import rootReducer from './reducers';
-import { INITIAL_STATE } from './reducers/initialState';
-import { AppState } from './types/states';
+export interface RequestState {
+  requesting: Record<string, boolean | undefined>;
+  errors: Record<string, Error>;
+}
+export interface AuthState {
+  profile: Profile | undefined;
+}
 
-const store = createStore<AppState>(enableBatching(rootReducer), INITIAL_STATE, applyMiddleware(thunk));
+export interface ChildState {
+  child: Child;
+  scores: Record<WeekId, WeeklyScore>;
+  redeems: Record<string, Redeem>;
+}
 
-export default store;
+export interface AuthConfig {
+  auth0_domain: string;
+  client_id: string;
+  client_secret: string;
+}
+
+export interface ApiConfig {
+  baseUrl: string;
+}
+
+export interface Config {
+  auth: AuthConfig;
+  api: ApiConfig;
+}

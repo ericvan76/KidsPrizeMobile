@@ -2,8 +2,5 @@ branches:
   master:
     mode: ContinuousDeployment
     tag: beta
-  origin/master:
-    mode: ContinuousDeployment
-    tag: beta
 ignore:
   sha: []

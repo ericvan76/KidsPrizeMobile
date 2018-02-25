@@ -8,6 +8,11 @@
     ],
     "restrict-plus-operands": [
       false
-    ]
+    ],
+    "no-floating-promises": false,
+    "promise-function-async": false,
+    "no-unnecessary-qualifier": false,
+    "no-void-expression": false,
+    "await-promise": false
   }
 }

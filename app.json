@@ -27,7 +27,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1030202",
+      "buildNumber": "1030203",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -37,11 +37,11 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1030202,
+      "versionCode": 1030203,
       "permissions": []
     },
     "extra": {
-      "semver": "1.3.2-beta.2",
+      "semver": "1.3.2-beta.3",
       "apiEndpoint": "https://api-endpoint/",
       "auth0Domain": "xxx.auth0.com",
       "auth0ClientId": "xxxxx",

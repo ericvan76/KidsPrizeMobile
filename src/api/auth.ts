@@ -26,7 +26,7 @@ export interface Profile {
   iat: number;
 }
 
-export async function authorizeAsync(): Promise<string> {
+export async function authorizeAsync(): Promise<string | undefined> {
   const result = await AuthSession.startAsync({
     authUrl:
       `https://${CONFIG.auth0Domain}/authorize?${url.toQueryString({
@@ -38,10 +38,13 @@ export async function authorizeAsync(): Promise<string> {
         audience: `https://${CONFIG.auth0Domain}/userinfo`
       })}`
   });
+  if (result.type === 'success') {
+    return result.params.code;
+  }
   if (result.type === 'error') {
     throw new Error('Authorise Failure.');
   }
-  return result.params.code;
+  return undefined;
 }
 
 export async function obtainTokenAsync(code: string): Promise<Token> {

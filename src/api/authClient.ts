@@ -29,7 +29,7 @@ class AuthClient {
     return this.instance;
   }
 
-  public signInAsync = async (): Promise<Profile> => {
+  public signInAsync = async (): Promise<Profile | undefined> => {
     let token = await this.loadTokenFromStorageAsync();
     let profile = this.parseToken(token);
     if (profile) {
@@ -38,6 +38,9 @@ class AuthClient {
     }
     // no stored token, authorise
     const authCode = await authorizeAsync();
+    if (authCode === undefined) {
+      return undefined;
+    }
     token = await obtainTokenAsync(authCode);
     profile = this.parseToken(token);
     if (profile) {
@@ -119,11 +122,10 @@ class AuthClient {
       const enrolled = await Fingerprint.isEnrolledAsync();
       if (hasHardware && enrolled) {
         const result: Fingerprint.FingerprintAuthenticationResult = await Fingerprint.authenticateAsync('Use Touch ID to Login');
-        if (!result.success) {
-          throw new Error(result.error);
+        if (result.success) {
+          // fingerprint verified, return token
+          return token;
         }
-        // fingerprint verified, return token
-        return token;
       }
     }
     return undefined;

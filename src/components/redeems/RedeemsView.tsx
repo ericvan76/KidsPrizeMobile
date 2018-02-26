@@ -59,7 +59,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     return {
       headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
       headerTitle: <HeaderTitle />,
-      headerRight: <HeaderIcon name="plus-box-outline" onPress={params.onPressRight} />,
+      headerRight: <HeaderIcon name="plus" onPress={params.onPressRight} />,
       tabBarLabel: 'Redeems',
       tabBarIcon: (opt: { tintColor?: string }) => (
         <FooterIcon name="gift" color={opt.tintColor} />
@@ -95,10 +95,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount(): void {
-    if (this.props.profile === undefined || this.props.child === undefined) {
-      return;
-    }
-    if (this.props.redeems.length === 0) {
+    if (this.props.child && this.props.redeems.length === 0) {
       this.props.refreshRedeems(this.props.child.id);
     }
   }
@@ -110,14 +107,11 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props): void {
-    if (this.props.profile === undefined || this.props.child === undefined) {
-      return;
-    }
     if (Object.keys(this.props.requestState.errors).length > 0) {
-      displayErrors(this.props.requestState.errors, clearErrors);
+      displayErrors(this.props.requestState.errors, this.props.clearErrors);
       return;
     }
-    if (this.props.redeems.length === 0 && this.childSwitched(prevProps)) {
+    if (this.props.child && this.props.redeems.length === 0 && this.childSwitched(prevProps)) {
       this.props.refreshRedeems(this.props.child.id);
     }
   }
@@ -132,7 +126,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
       <ListItem
         containerStyle={styles.listItemContainer}
         wrapperStyle={styles.listItemWrapperStyle}
-        leftIcon={{ name: 'gift', type: 'material-community', style: styles.listItemIcon }}
+        // leftIcon={{ name: 'gift', type: 'material-community', style: styles.listItemIcon }}
         title={item.description}
         titleStyle={styles.listItemTitle}
         subtitle={moment(item.timestamp).format('DD-MMM-YYYY HH:mm')}
@@ -209,5 +203,9 @@ export const RedeemsView = connect<StateProps, DispatchProps, OwnProps>(
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   flatList: {
+  },
+  listItemContainer: {
+    ...SHARED_STYLES.listItemContainer,
+    marginLeft: -5
   }
 });

@@ -57,7 +57,7 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     return {
       headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
       headerTitle: <HeaderTitle />,
-      headerRight: <HeaderIcon name="settings" onPress={params.onPressRight} />,
+      headerRight: <HeaderIcon name="account-settings-variant" onPress={params.onPressRight} />,
       tabBarLabel: 'Scores',
       tabBarIcon: (opt: { tintColor?: string }) => (
         <FooterIcon name="calendar-check" color={opt.tintColor} />
@@ -93,11 +93,8 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
   }
 
   public componentDidUpdate(_: Props): void {
-    if (this.props.profile === undefined || this.props.child === undefined) {
-      return;
-    }
     if (Object.keys(this.props.requestState.errors).length > 0) {
-      displayErrors(this.props.requestState.errors, clearErrors);
+      displayErrors(this.props.requestState.errors, this.props.clearErrors);
       return;
     }
     if (this.props.child && this.props.scores.length === 0) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, SafeAreaView, StyleSheet } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Avatar, Divider, List, ListItem } from 'react-native-elements';
 import { NavigationAction, NavigationRoute, NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
@@ -8,7 +8,8 @@ import { switchChild } from 'src/actions/child';
 import { Profile } from 'src/api/auth';
 import { Child } from 'src/api/child';
 import { ChildDetailParams } from 'src/components/child/ChildDetailView';
-import { COLORS, SHARED_STYLES } from 'src/constants';
+import { CONFIG } from 'src/config';
+import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 import { selectChildren } from 'src/selectors/child';
 import { AppState } from 'src/store';
 
@@ -138,6 +139,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               chevronColor={COLORS.secondary}
             />
           </List>
+          <Text style={styles.version}>{CONFIG.semver}</Text>
         </SafeAreaView>
       );
     }
@@ -162,5 +164,13 @@ export const DrawerView = connect<StateProps, DispatchProps, OwnProps>(
 )(DrawerViewInner);
 
 const styles = StyleSheet.create({
-  ...SHARED_STYLES
+  ...SHARED_STYLES,
+  version: {
+    color: COLORS.lightBorder,
+    fontSize: FONT_SIZES.xsmall,
+    textAlign: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 5
+  }
 });

@@ -67,18 +67,9 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     tasks: ['Task 1', 'Task 2', 'Task 3']
   };
 
-  public componentDidMount(): void {
-    if (this.props.profile === undefined || this.props.child === undefined) {
-      return;
-    }
-  }
-
   public componentDidUpdate(): void {
-    if (this.props.profile === undefined || this.props.child === undefined) {
-      return;
-    }
     if (Object.keys(this.props.requestState.errors).length > 0) {
-      displayErrors(this.props.requestState.errors, clearErrors);
+      displayErrors(this.props.requestState.errors, this.props.clearErrors);
     }
   }
 
@@ -228,15 +219,15 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
         {
           this.props.child !== undefined ?
             <Button
-              buttonStyle={styles.deleteButton}
+              buttonStyle={[styles.button, { backgroundColor: COLORS.error }]}
               title="Delete Child"
-              icon={{ name: 'delete', type: 'material-community', size: ICON_SIZE }}
+              icon={{ name: 'account-remove', type: 'material-community', size: ICON_SIZE }}
               onPress={this.onPressDelete} />
             :
             <Button
-              buttonStyle={styles.addButton}
+              buttonStyle={[styles.button, { backgroundColor: COLORS.secondary }]}
               title="Add Child"
-              icon={{ name: 'plus-box', type: 'material-community', size: ICON_SIZE }}
+              icon={{ name: 'account-check', type: 'material-community', size: ICON_SIZE }}
               onPress={this.onPressAdd} />
         }
       </SafeAreaView>
@@ -269,12 +260,9 @@ export const ChildDetailView = connect<StateProps, DispatchProps, OwnProps>(
 
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
-  deleteButton: {
+  button: {
     marginTop: 60,
-    backgroundColor: COLORS.error
-  },
-  addButton: {
-    marginTop: 60,
-    backgroundColor: COLORS.secondary
+    height: 40,
+    borderRadius: 5
   }
 });

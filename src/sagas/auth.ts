@@ -10,12 +10,14 @@ export function* signInSaga(action: typeof actions.signIn.shape): SagaIterator {
   const actionType = action.type;
   try {
     yield put(startRequesting(actionType));
-    const profile: Profile = yield call(authClient.signInAsync);
+    const profile: Profile | undefined = yield call(authClient.signInAsync);
     yield all([
       put(actions.updateProfile(profile)),
       put(endRequesting(actionType))
     ]);
-    yield put(fetchChildren(undefined));
+    if (profile !== undefined) {
+      yield put(fetchChildren(undefined));
+    }
   } catch (error) {
     yield all([
       put(actions.updateProfile(undefined)),

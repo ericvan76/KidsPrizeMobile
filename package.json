@@ -35,7 +35,7 @@
     "@types/lodash": "^4.14.104",
     "@types/react-addons-update": "^0.14.19",
     "@types/react-native": "^0.52.13",
-    "@types/react-navigation": "^1.0.32",
+    "@types/react-navigation": "^1.1.0",
     "@types/react-redux": "^5.0.15",
     "babel-preset-env": "^1.6.1",
     "npm-run-all": "^4.1.2",

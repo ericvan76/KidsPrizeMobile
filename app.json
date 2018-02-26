@@ -5,7 +5,7 @@
     "slug": "kidsprize",
     "privacy": "unlisted",
     "sdkVersion": "25.0.0",
-    "version": "1.3.2",
+    "version": "1.4.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
     "icon": "./assets/icon.png",
@@ -27,7 +27,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1030203",
+      "buildNumber": "1040004",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -37,15 +37,15 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1030203,
+      "versionCode": 1040004,
       "permissions": []
     },
     "extra": {
-      "semver": "1.3.2-beta.3",
+      "semver": "1.4.0-beta.4",
       "apiEndpoint": "https://api-endpoint/",
       "auth0Domain": "xxx.auth0.com",
       "auth0ClientId": "xxxxx",
-      "auth0ClientSecret": "xxxxx",
+      "auth0ClientSecret": "xxxxx"
     }
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, Text } from 'react-native';
 import { Avatar, Divider, List, ListItem } from 'react-native-elements';
 import { NavigationAction, NavigationRoute, NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
@@ -83,6 +83,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               chevronColor={COLORS.secondary}
             />
           </List>
+          <Text style={styles.version}>{CONFIG.semver}</Text>
         </SafeAreaView>
       );
     } else {

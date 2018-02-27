@@ -6,6 +6,7 @@
     "privacy": "unlisted",
     "sdkVersion": "25.0.0",
     "version": "1.4.0",
+    "githubUrl": "https://github.com/ericvan76/KidsPrizeMobile",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
     "icon": "./assets/icon.png",
@@ -25,6 +26,7 @@
       "barStyle": "dark-content",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
       "buildNumber": "1040004",
@@ -32,13 +34,15 @@
       "config": {
         "usesNonExemptEncryption": false
       },
+      "appStoreUrl": "https://itunes.apple.com/us/app/kidsprize/id1217712722?ls=1&mt=8",
       "infoPlist": {},
       "loadJSInBackgroundExperimental": true
     },
     "android": {
       "package": "com.kidsprize",
       "versionCode": 1040004,
-      "permissions": []
+      "permissions": [],
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.kidsprize"
     },
     "extra": {
       "semver": "1.4.0-beta.4",

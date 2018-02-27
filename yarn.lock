@@ -46,9 +46,9 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-navigation@^1.0.32":
-  version "1.0.32"
-  resolved "https://registry.yarnpkg.com/@types/react-navigation/-/react-navigation-1.0.32.tgz#5cd0ccd6aec2223ce140421624231c9741c2a276"
+"@types/react-navigation@^1.1.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/react-navigation/-/react-navigation-1.2.1.tgz#154e030e324fcd4f084198fc074ebd6fcaedfe8e"
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"

@@ -19,6 +19,7 @@ declare module 'expo' {
   namespace AuthSession {
     export function startAsync(param: { authUrl: string }): Promise<any>
     export function getRedirectUrl(): string
+    export function getDefaultReturnUrl(): string
   }
 
   namespace AdMobBanner {

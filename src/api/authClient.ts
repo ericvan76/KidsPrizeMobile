@@ -47,7 +47,7 @@ class AuthClient {
       this.token = token;
       if (token.refresh_token) {
         await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
-        await this.askEnableFingerprintAsync();
+        // await this.askEnableFingerprintAsync();
       }
       return profile;
     }
@@ -125,6 +125,8 @@ class AuthClient {
         if (result.success) {
           // fingerprint verified, return token
           return token;
+        } else {
+          throw new Error(result.error);
         }
       }
     }

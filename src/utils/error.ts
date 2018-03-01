@@ -10,7 +10,13 @@ export function displayErrors(errors: Record<string, Error>, clearAction: typeof
   if (Object.keys(errors).length > 0) {
     let message = 'Something went wrong.';
     if (__DEV__) {
-      message = JSON.stringify(errors);
+      const err = Object.keys(errors).reduce(
+        (p: Record<string, string>, c: string) => {
+          p[c] = errors[c].message;
+          return p;
+        },
+        {});
+      message = JSON.stringify(err);
     }
     errorInDisplay = true;
     Alert.alert(

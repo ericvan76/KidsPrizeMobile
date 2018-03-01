@@ -3,7 +3,7 @@
     "name": "KidsPrize",
     "description": "Kids behaviour chart",
     "slug": "kidsprize",
-    "privacy": "unlisted",
+    "privacy": "public",
     "sdkVersion": "25.0.0",
     "version": "1.4.0",
     "githubUrl": "https://github.com/ericvan76/KidsPrizeMobile",
@@ -29,27 +29,25 @@
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1040004",
+      "buildNumber": "1040006",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
       },
-      "appStoreUrl": "https://itunes.apple.com/us/app/kidsprize/id1217712722?ls=1&mt=8",
       "infoPlist": {},
       "loadJSInBackgroundExperimental": true
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1040004,
-      "permissions": [],
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.kidsprize"
+      "versionCode": 1040006,
+      "permissions": [
+        "USE_FINGERPRINT"
+      ]
     },
     "extra": {
-      "semver": "1.4.0-beta.4",
-      "apiEndpoint": "https://api-endpoint/",
-      "auth0Domain": "xxx.auth0.com",
-      "auth0ClientId": "xxxxx",
-      "auth0ClientSecret": "xxxxx"
+      "semver": "1.4.0-beta.6",
+      "apiEndpoint": "https://kidsprize-api.fanstek.com/v2",
+      "auth0Domain": "apperic.auth0.com",
     }
   }
 }

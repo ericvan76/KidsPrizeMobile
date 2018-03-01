@@ -47,7 +47,7 @@ class AuthClient {
       this.token = token;
       if (token.refresh_token) {
         await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
-        // await this.askEnableFingerprintAsync();
+        await this.askEnableFingerprintAsync();
       }
       return profile;
     }
@@ -92,21 +92,22 @@ class AuthClient {
   }
 
   private askEnableFingerprintAsync = async (): Promise<void> => {
-    const hasHardware = await Fingerprint.hasHardwareAsync();
-    const enrolled = await Fingerprint.isEnrolledAsync();
-    if (hasHardware && enrolled) {
-      Alert.alert(
-        Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
-        'You can change this by re-login later.',
-        [
-          { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
-          { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }
-        ],
-        { cancelable: false }
-      );
-    } else {
-      await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
-    }
+    await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
+    // const hasHardware = await Fingerprint.hasHardwareAsync();
+    // const enrolled = await Fingerprint.isEnrolledAsync();
+    // if (hasHardware && enrolled) {
+    //   Alert.alert(
+    //     Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
+    //     'You can change this by re-login later.',
+    //     [
+    //       { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
+    //       { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }
+    //     ],
+    //     { cancelable: false }
+    //   );
+    // } else {
+    //   await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
+    // }
   }
 
   private loadTokenFromStorageAsync = async (): Promise<Token | undefined> => {
@@ -125,8 +126,6 @@ class AuthClient {
         if (result.success) {
           // fingerprint verified, return token
           return token;
-        } else {
-          throw new Error(result.error);
         }
       }
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, TextInput } from 'react-native';
-import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 
@@ -10,7 +10,7 @@ export interface AddRedeemParams {
 }
 
 interface Props {
-  navigation: NavigationScreenProp<NavigationRoute<AddRedeemParams>, NavigationAction>;
+  navigation: NavigationScreenProp<{ params: AddRedeemParams }>;
 }
 
 interface State {
@@ -20,8 +20,8 @@ interface State {
 
 export class AddRedeemView extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps<AddRedeemParams>) => {
-    const { params } = props.navigation.state;
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    const params = props.navigation.state.params as AddRedeemParams;
     const goBack = () => props.navigation.goBack();
     return {
       headerLeft: <HeaderIcon name="close" onPress={goBack} />,

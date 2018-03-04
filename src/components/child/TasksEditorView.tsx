@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TextInput } from 'react-native';
-import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 
@@ -11,7 +11,7 @@ export interface TasksEditorParams {
 }
 
 interface Props {
-  navigation: NavigationScreenProp<NavigationRoute<TasksEditorParams>, NavigationAction>;
+  navigation: NavigationScreenProp<{ params: TasksEditorParams }>;
 }
 
 interface State {
@@ -20,8 +20,8 @@ interface State {
 
 export class TasksEditorView extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps<TasksEditorParams>) => {
-    const { params } = props.navigation.state;
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    const params = props.navigation.state.params as TasksEditorParams;
     const goBack = () => props.navigation.goBack();
     return {
       headerLeft: <HeaderIcon name="close" onPress={goBack} />,

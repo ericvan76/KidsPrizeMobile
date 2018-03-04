@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, SafeAreaView, StyleSheet } from 'react-native';
 import { Button, List, ListItem } from 'react-native-elements';
-import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { createChild, deleteChild, modifyChild } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
@@ -22,7 +22,7 @@ export interface ChildDetailParams {
 }
 
 interface OwnProps {
-  navigation: NavigationScreenProp<NavigationRoute<ChildDetailParams>, NavigationAction>;
+  navigation: NavigationScreenProp<{ params: ChildDetailParams }>;
 }
 
 interface StateProps {
@@ -49,8 +49,8 @@ interface State {
 
 class ChildDetailViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps<ChildDetailParams>) => {
-    const { params } = props.navigation.state;
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    const params = props.navigation.state.params as ChildDetailParams;
     const goBack = () => props.navigation.goBack();
     const isUpdate = params && params.childId;
     return {

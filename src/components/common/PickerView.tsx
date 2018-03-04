@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
-import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { COLORS, SHARED_STYLES } from 'src/constants';
 import { HeaderIcon } from './Icons';
 
@@ -23,7 +23,7 @@ export interface PickerParams<T> {
 type TValue = any;
 
 interface Props {
-  navigation: NavigationScreenProp<NavigationRoute<PickerParams<TValue>>, NavigationAction>;
+  navigation: NavigationScreenProp<{ params: PickerParams<TValue> }>;
 }
 
 interface State {
@@ -32,8 +32,8 @@ interface State {
 
 export class PickerView extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps<PickerParams<TValue>>) => {
-    const { params } = props.navigation.state;
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    const params = props.navigation.state.params as PickerParams<TValue>;
     const goBack = () => props.navigation.goBack();
     return {
       headerLeft: <HeaderIcon name="close" onPress={goBack} />,

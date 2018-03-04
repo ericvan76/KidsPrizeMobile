@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, TextInput } from 'react-native';
-import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 import { HeaderIcon } from './Icons';
 
@@ -12,7 +12,7 @@ export interface TextInputParams {
 }
 
 interface Props {
-  navigation: NavigationScreenProp<NavigationRoute<TextInputParams>, NavigationAction>;
+  navigation: NavigationScreenProp<{ params: TextInputParams }>;
 }
 
 interface State {
@@ -21,8 +21,8 @@ interface State {
 
 export class TextInputView extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps<TextInputParams>) => {
-    const { params } = props.navigation.state;
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    const params = props.navigation.state.params as TextInputParams;
     const goBack = () => props.navigation.goBack();
     return {
       headerLeft: <HeaderIcon name="close" onPress={goBack} />,

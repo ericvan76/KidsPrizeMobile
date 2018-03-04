@@ -8,7 +8,7 @@ import {
   StyleSheet
 } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn } from 'src/actions/auth';
 import { createRedeem, fetchChildren, fetchMoreRedeems, refreshRedeems } from 'src/actions/child';
@@ -29,7 +29,7 @@ interface NavParams {
 }
 
 interface OwnProps {
-  navigation: NavigationScreenProp<NavigationRoute<NavParams>, NavigationAction>;
+  navigation: NavigationScreenProp<{ params: NavParams }>;
 }
 
 interface StateProps {
@@ -53,8 +53,8 @@ interface State {
 
 class RedeemsViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps<NavParams>) => {
-    const params = props.navigation.state.params || {};
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    const params: NavParams = props.navigation.state.params || {};
     const openDrawer = () => props.navigation.navigate('DrawerOpen');
     return {
       headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,

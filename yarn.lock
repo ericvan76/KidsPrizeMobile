@@ -40,13 +40,13 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-native@^0.52.13":
-  version "0.52.13"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.52.13.tgz#251289b6c995c738f6f94def742308cf7b47f79b"
+"@types/react-native@^0.52.16":
+  version "0.52.16"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.52.16.tgz#d474cdba5b44e4b695e4c918c88d3e171772c298"
   dependencies:
     "@types/react" "*"
 
-"@types/react-navigation@^1.1.0":
+"@types/react-navigation@~1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@types/react-navigation/-/react-navigation-1.2.1.tgz#154e030e324fcd4f084198fc074ebd6fcaedfe8e"
   dependencies:
@@ -2878,9 +2878,9 @@ minimist@~0.0.1:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.20.1:
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
+moment@^2.21.0:
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
 
 morgan@~1.6.1:
   version "1.6.1"
@@ -3558,9 +3558,9 @@ react-native-vector-icons@4.5.0:
     xmldoc "^0.4.0"
     yargs "^9.0.0"
 
-react-navigation@1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-1.1.2.tgz#6e041b8a3cd0f5266072df0b52a55117892875f2"
+react-navigation@~1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-1.2.1.tgz#06cb2c97eb1b2e20bdb4ff7aee1acfa218a1561b"
   dependencies:
     clamp "^1.0.1"
     hoist-non-react-statics "^2.2.0"

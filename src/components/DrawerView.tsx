@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text } from 'react-native';
 import { Avatar, Divider, List, ListItem } from 'react-native-elements';
-import { NavigationAction, NavigationRoute, NavigationScreenProp } from 'react-navigation';
+import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn, signOut } from 'src/actions/auth';
 import { switchChild } from 'src/actions/child';
@@ -14,7 +14,7 @@ import { selectChildren } from 'src/selectors/child';
 import { AppState } from 'src/store';
 
 interface OwnProps {
-  navigation: NavigationScreenProp<NavigationRoute<void>, NavigationAction>;
+  navigation: NavigationScreenProp<{}>;
 }
 
 interface StateProps {

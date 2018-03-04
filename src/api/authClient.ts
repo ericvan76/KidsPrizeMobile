@@ -1,6 +1,6 @@
 import { Fingerprint } from 'expo';
 import moment from 'moment';
-import { Alert, AsyncStorage, Platform } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import {
   authorizeAsync,
   decodeJwt,

@@ -81,6 +81,7 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
       <SafeAreaView style={styles.container}>
         <TextInput
           style={[styles.textInput, { borderColor: this.isValid() ? COLORS.lightBorder : COLORS.error }]}
+          underlineColorAndroid="rgba(0,0,0,0)"
           multiline={true}
           autoFocus={true}
           autoCapitalize="sentences"
@@ -96,7 +97,7 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   textInput: {
-    flex: 0.3,
+    flex: 0.5,
     borderBottomWidth: 0.5,
     paddingHorizontal: 10,
     color: COLORS.primary,

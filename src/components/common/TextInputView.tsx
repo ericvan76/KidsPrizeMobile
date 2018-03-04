@@ -63,6 +63,7 @@ export class TextInputView extends React.PureComponent<Props, State> {
         <TextInput
           style={[styles.textInput, { borderColor: this.isValid() ? COLORS.lightBorder : COLORS.error }]}
           returnKeyType="done"
+          underlineColorAndroid="rgba(0,0,0,0)"
           maxLength={50}
           autoFocus={true}
           autoCapitalize={this.props.navigation.state.params.autoCapitalize}

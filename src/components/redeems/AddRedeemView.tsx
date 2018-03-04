@@ -78,6 +78,7 @@ export class AddRedeemView extends React.PureComponent<Props, State> {
       <SafeAreaView style={styles.container}>
         <TextInput
           style={[styles.textInput, { borderColor: this.isValidDescription() ? COLORS.lightBorder : COLORS.error }]}
+          underlineColorAndroid="rgba(0,0,0,0)"
           maxLength={50}
           autoFocus={true}
           autoCapitalize="sentences"
@@ -87,6 +88,7 @@ export class AddRedeemView extends React.PureComponent<Props, State> {
         />
         <TextInput
           style={[styles.textInput, { borderColor: this.isValidValue() ? COLORS.lightBorder : COLORS.error }]}
+          underlineColorAndroid="rgba(0,0,0,0)"
           maxLength={50}
           keyboardType="numeric"
           placeholder="Amount to redeem"

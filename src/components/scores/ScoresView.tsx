@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { NavigationAction, NavigationRoute, NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
+import { signIn } from 'src/actions/auth';
 import { fetchChildren, fetchMoreStores, refreshScores, setScore } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
 import { Profile } from 'src/api/auth';
@@ -15,12 +16,12 @@ import { Child, WeeklyScore } from 'src/api/child';
 import { ChildDetailParams } from 'src/components/child/ChildDetailView';
 import { HeaderTitle } from 'src/components/common/HeaderTitle';
 import { FooterIcon, HeaderIcon } from 'src/components/common/Icons';
+import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { WeeklyScores } from 'src/components/scores/WeeklyScores';
 import { SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildScores } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { displayErrors } from 'src/utils/error';
-import { signIn } from '../../actions/auth';
 
 interface NavParams {
   onPressRight?(): void;
@@ -149,6 +150,7 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
           onEndReached={this.onEndReached}
           onEndReachedThreshold={0.95}
           removeClippedSubviews={true}
+          ListEmptyComponent={<ListEmptyComponent />}
         />
       </SafeAreaView>
     );

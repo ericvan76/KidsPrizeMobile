@@ -1,4 +1,6 @@
+import { Constants } from 'expo';
 import React from 'react';
+import { Platform } from 'react-native';
 import {
   DrawerNavigator,
   StackNavigator,
@@ -56,7 +58,9 @@ const StackNav = StackNavigator(
     navigationOptions: {
       headerStyle: {
         backgroundColor: COLORS.primary,
-        borderBottomColor: COLORS.primary
+        borderBottomColor: COLORS.primary,
+        // android status bar trick
+        marginTop: Platform.select({ android: Constants.statusBarHeight * -1 })
       },
       headerTitleStyle: {
         color: COLORS.white,

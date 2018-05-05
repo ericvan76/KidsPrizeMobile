@@ -30,8 +30,8 @@ export const TaskRow: React.SFC<Props> = (props) => {
       });
     };
     return (
-      <TouchableOpacity key={i} onPress={onPress}>
-        <MaterialCommunityIcons style={styles.star} name={value > 0 ? 'star' : 'star-outline'} />
+      <TouchableOpacity key={i} onPress={onPress} style={styles.star} >
+        <MaterialCommunityIcons color={COLORS.secondary} size={32} name={value > 0 ? 'star' : 'star-outline'} />
       </TouchableOpacity>
     );
   });
@@ -60,8 +60,6 @@ const styles = StyleSheet.create({
   },
   star: {
     textAlign: 'center',
-    width: 36,
-    fontSize: 32,
-    color: COLORS.secondary
+    width: 36
   }
 });

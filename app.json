@@ -35,7 +35,7 @@
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1040202",
+      "buildNumber": "1040203",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -45,13 +45,13 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1040202,
+      "versionCode": 1040203,
       "permissions": [
         "USE_FINGERPRINT"
       ]
     },
     "extra": {
-      "semver": "1.4.2-beta.2",
+      "semver": "1.4.2-beta.3",
       "apiEndpoint": "https://kidsprize-api.fanstek.com/v2",
       "auth0Domain": "apperic.auth0.com",
     }

@@ -35,7 +35,7 @@ export class TouchableItem extends React.PureComponent<Props> {
     borderless: true,
     pressColor: 'rgba(0, 0, 0, .32)',
     style: {
-      padding: 15,
+      paddingHorizontal: 15,
       alignItems: 'center',
       flexDirection: 'row',
       backgroundColor: 'transparent'

@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   star: {
-    textAlign: 'center',
+    alignItems: 'center',
     width: 36
   }
 });

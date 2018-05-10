@@ -27,4 +27,4 @@ A behaviour chart for kids.
 ### Donation
 
 [![](https://www.paypalobjects.com/en_AU/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JDWWXN2S5776A)<br/>
-KidsPrize is a non-profit project. A little help from you could make it better. Thanks you.
+KidsPrize is a non-profit project maintained by the developer personally, a little help from you could make it better. Thank you.

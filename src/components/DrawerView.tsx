@@ -68,8 +68,8 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
     this.props.navigation.navigate('ChildDetail', params);
   }
 
-  private openDonateLink = () => {
-    Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JDWWXN2S5776A');
+  private openDonateLink = async () => {
+    await Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JDWWXN2S5776A');
   }
 
   public render(): JSX.Element {

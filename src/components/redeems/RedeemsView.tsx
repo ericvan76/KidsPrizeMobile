@@ -74,18 +74,20 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
   }
 
   private addRedeem = () => {
-    const addRedeem: AddRedeemParams = {
-      onSubmit: (description: string, value: number) => {
-        if (this.props.child) {
-          this.props.createRedeem({
-            childId: this.props.child.id,
-            description,
-            value
-          });
+    if (this.props.child) {
+      const addRedeem: AddRedeemParams = {
+        onSubmit: (description: string, value: number) => {
+          if (this.props.child) {
+            this.props.createRedeem({
+              childId: this.props.child.id,
+              description,
+              value
+            });
+          }
         }
-      }
-    };
-    this.props.navigation.navigate('AddRedeem', addRedeem);
+      };
+      this.props.navigation.navigate('AddRedeem', addRedeem);
+    }
   }
 
   public componentWillMount(): void {

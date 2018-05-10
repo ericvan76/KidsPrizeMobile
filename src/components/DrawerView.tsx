@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, SafeAreaView, StyleSheet, Text } from 'react-native';
+import { Alert, Image, Linking, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar, Divider, List, ListItem } from 'react-native-elements';
 import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
@@ -66,6 +66,10 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
       childId: undefined
     };
     this.props.navigation.navigate('ChildDetail', params);
+  }
+
+  private openDonateLink = () => {
+    Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JDWWXN2S5776A');
   }
 
   public render(): JSX.Element {
@@ -140,7 +144,15 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               chevronColor={COLORS.secondary}
             />
           </List>
-          <Text style={styles.version}>{CONFIG.semver}</Text>
+          <View style={styles.bottom}>
+            <Text style={styles.version}>{CONFIG.semver}</Text>
+            <TouchableOpacity style={styles.donate} onPress={this.openDonateLink}>
+              <Image
+                style={{ width: 74, height: 21 }}
+                source={{ uri: 'https://www.paypalobjects.com/en_AU/i/btn/btn_donate_SM.gif' }}
+              />
+            </TouchableOpacity>
+          </View>
         </SafeAreaView>
       );
     }
@@ -166,12 +178,23 @@ export const DrawerView = connect<StateProps, DispatchProps, OwnProps>(
 
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
-  version: {
-    color: COLORS.lightBorder,
-    fontSize: FONT_SIZES.xsmall,
-    textAlign: 'center',
-    alignSelf: 'center',
+  bottom: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     position: 'absolute',
-    bottom: 5
+    bottom: 0
+  },
+  version: {
+    flex: 1,
+    color: COLORS.lightBorder,
+    fontSize: FONT_SIZES.xsmall
+  },
+  donate: {
+    flex: 1,
+    alignItems: 'flex-end'
   }
 });

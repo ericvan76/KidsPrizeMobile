@@ -14,8 +14,8 @@ A behaviour chart for kids.
 
 ### Downloads
 
-- [iOS](https://itunes.apple.com/us/app/kidsprize/id1217712722?ls=1&mt=8)
-- [Android](https://play.google.com/store/apps/details?id=com.kidsprize)
+<a href="https://itunes.apple.com/us/app/kidsprize/id1217712722?ls=1&mt=8"><img src="https://image.ibb.co/mnWfNw/app_store_badge.png" height="80" /></a>
+<a href="https://play.google.com/store/apps/details?id=com.kidsprize"><img src="https://image.ibb.co/mB3iaG/google_play_badge.png" height="80" /></a>
 
 ### Powered by
 

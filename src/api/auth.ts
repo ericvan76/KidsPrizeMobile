@@ -33,9 +33,7 @@ export async function authorizeAsync(): Promise<string | undefined> {
         client_id: CONFIG.auth0ClientId,
         response_type: 'code',
         scope: 'openid profile email email_verified offline_access',
-        redirect_uri: AuthSession.getRedirectUrl(),
-        // For legacy client which doesn't have OIDC Conformant enabled.
-        audience: `https://${CONFIG.auth0Domain}/userinfo`
+        redirect_uri: AuthSession.getRedirectUrl()
       })}`
   });
   if (result.type === 'success') {

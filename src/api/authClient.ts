@@ -64,24 +64,28 @@ class AuthClient {
   }
 
   public getAuthTokenAsync = async (): Promise<string> => {
-    if (this.token) {
-      const decoded = decodeJwt(this.token.id_token);
-      if (moment().add(5, 'minutes').isBefore(moment(decoded.exp * 1000))) {
-        return this.token.id_token;
+    try {
+      if (this.token) {
+        const decoded = decodeJwt(this.token.id_token);
+        if (moment().add(5, 'minutes').isBefore(moment(decoded.exp * 1000))) {
+          return this.token.id_token;
+        }
+        if (this.token.refresh_token) {
+          const token = await refreshTokenAsync(this.token.refresh_token);
+          // set refresh_token to new token, which doesn't contain it.
+          token.refresh_token = this.token.refresh_token;
+          this.token = token;
+          await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
+          return this.token.id_token;
+        }
       }
-      if (this.token.refresh_token) {
-        const token = await refreshTokenAsync(this.token.refresh_token);
-        // set refresh_token to new token, which doesn't contain it.
-        token.refresh_token = this.token.refresh_token;
-        this.token = token;
-        await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
-        return this.token.id_token;
-      }
+      throw new Error('Failed to get AuthToken.');
+    } catch (e) {
+      // clean up
+      this.token = undefined;
+      await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
+      throw e;
     }
-    // clean up
-    this.token = undefined;
-    await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
-    throw new Error('Failed to get AuthToken.');
   }
 
   private parseToken = (token: Token | undefined): Profile | undefined => {

@@ -8,7 +8,8 @@ export function displayErrors(errors: Record<string, Error>, clearAction: typeof
     return;
   }
   if (Object.keys(errors).length > 0) {
-    let message = 'Something went wrong.';
+    let title = 'Service is not available';
+    let message = 'We\'re working on this, please try again later.';
     if (__DEV__) {
       const err = Object.keys(errors).reduce(
         (p: Record<string, string>, c: string) => {
@@ -16,11 +17,12 @@ export function displayErrors(errors: Record<string, Error>, clearAction: typeof
           return p;
         },
         {});
+      title = 'Ooops';
       message = JSON.stringify(err);
     }
     errorInDisplay = true;
     Alert.alert(
-      'Ooops',
+      title,
       message,
       [
         {

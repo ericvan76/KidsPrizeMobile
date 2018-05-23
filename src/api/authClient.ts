@@ -1,6 +1,6 @@
 import { Fingerprint } from 'expo';
 import moment from 'moment';
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage, Platform } from 'react-native';
 import {
   authorizeAsync,
   decodeJwt,
@@ -96,22 +96,21 @@ class AuthClient {
   }
 
   private askEnableFingerprintAsync = async (): Promise<void> => {
-    await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
-    // const hasHardware = await Fingerprint.hasHardwareAsync();
-    // const enrolled = await Fingerprint.isEnrolledAsync();
-    // if (hasHardware && enrolled) {
-    //   Alert.alert(
-    //     Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
-    //     'You can change this by re-login later.',
-    //     [
-    //       { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
-    //       { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }
-    //     ],
-    //     { cancelable: false }
-    //   );
-    // } else {
-    //   await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
-    // }
+    const hasHardware = await Fingerprint.hasHardwareAsync();
+    const enrolled = await Fingerprint.isEnrolledAsync();
+    if (hasHardware && enrolled) {
+      Alert.alert(
+        Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
+        'You can change this by re-login later.',
+        [
+          { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
+          { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
+    }
   }
 
   private loadTokenFromStorageAsync = async (): Promise<Token | undefined> => {

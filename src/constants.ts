@@ -1,6 +1,6 @@
 export const DATE_FORMAT = 'YYYY-MM-DD';
-export const WEEKS_TO_LOAD = 4;
-export const REDEEMS_TO_LOAD = 20;
+export const WEEKS_PAGE_SIZE = 4;
+export const REDEEMS_PAGE_SIZE = 20;
 
 export const COLORS = Object.freeze({
   primary: '#283593',

@@ -19,7 +19,7 @@ import {
   setScoreAsync,
   updateChildAsync
 } from 'src/api/child';
-import { DATE_FORMAT, REDEEMS_TO_LOAD, WEEKS_TO_LOAD } from 'src/constants';
+import { DATE_FORMAT, REDEEMS_PAGE_SIZE, WEEKS_PAGE_SIZE } from 'src/constants';
 import { AppState, ChildState } from 'src/store';
 
 function* fetchChildrenSaga(action: typeof actions.fetchChildren.shape): SagaIterator {
@@ -130,7 +130,7 @@ function* refreshScoresSaga(action: typeof actions.refreshScores.shape): SagaIte
     const childId = action.payload;
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     const rewindFrom: string = moment().day(7).format(DATE_FORMAT);
-    const result = yield call(getScoresAsync, authToken, childId, rewindFrom, WEEKS_TO_LOAD);
+    const result = yield call(getScoresAsync, authToken, childId, rewindFrom, WEEKS_PAGE_SIZE);
     yield all([
       put(actions.updateScores(result)),
       put(endRequesting(actionType))
@@ -153,12 +153,17 @@ function* fetchMoreScoresSaga(action: typeof actions.fetchMoreStores.shape): Sag
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     const loadedWeeks = childState.scores !== undefined ? Object.keys(childState.scores).sort() : [];
     if (loadedWeeks.length > 0) {
-      const lastWeek = loadedWeeks[0];
-      const result = yield call(getScoresAsync, authToken, childId, lastWeek, WEEKS_TO_LOAD);
-      yield all([
-        put(actions.updateScores(result)),
-        put(endRequesting(actionType))
-      ]);
+      if (loadedWeeks.length < WEEKS_PAGE_SIZE) {
+        // less than one page
+        yield put(endRequesting(actionType));
+      } else {
+        const lastWeek = loadedWeeks[0];
+        const result = yield call(getScoresAsync, authToken, childId, lastWeek, WEEKS_PAGE_SIZE);
+        yield all([
+          put(actions.updateScores(result)),
+          put(endRequesting(actionType))
+        ]);
+      }
     } else {
       yield all([
         put(actions.refreshScores(childId)),
@@ -203,7 +208,7 @@ function* refreshRedeemsSaga(action: typeof actions.refreshRedeems.shape): SagaI
     const childId = action.payload;
     const childState: ChildState = yield select((s: AppState) => s.children[childId]);
     const authToken: string = yield call(authClient.getAuthTokenAsync);
-    const redeems: Array<Redeem> = yield call(getRedeemsAsync, authToken, childId, 0, REDEEMS_TO_LOAD);
+    const redeems: Array<Redeem> = yield call(getRedeemsAsync, authToken, childId, 0, REDEEMS_PAGE_SIZE);
     yield all([
       put(actions.updateRedeems({ child: childState.child, redeems })),
       put(endRequesting(actionType))
@@ -225,11 +230,16 @@ function* fetchMoreRedeemsSaga(action: typeof actions.fetchMoreRedeems.shape): S
     const childState: ChildState = yield select((s: AppState) => s.children[childId]);
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     const offset = childState.redeems !== undefined ? Object.keys(childState.redeems).length : 0;
-    const redeems: Array<Redeem> = yield call(getRedeemsAsync, authToken, childId, offset, REDEEMS_TO_LOAD);
-    yield all([
-      put(actions.updateRedeems({ child: childState.child, redeems })),
-      put(endRequesting(actionType))
-    ]);
+    if (offset < REDEEMS_PAGE_SIZE) {
+      // less than one page
+      yield put(endRequesting(actionType));
+    } else {
+      const redeems: Array<Redeem> = yield call(getRedeemsAsync, authToken, childId, offset, REDEEMS_PAGE_SIZE);
+      yield all([
+        put(actions.updateRedeems({ child: childState.child, redeems })),
+        put(endRequesting(actionType))
+      ]);
+    }
   } catch (error) {
     yield put(requestFailure({ actionType, error }));
   }

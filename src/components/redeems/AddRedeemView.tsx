@@ -31,10 +31,19 @@ export class AddRedeemView extends React.PureComponent<Props, State> {
     };
   }
 
-  public state: State = {
-    description: '',
-    value: ''
-  };
+  public constructor(props: Props) {
+    super(props);
+    this.state = {
+      description: '',
+      value: ''
+    };
+    this.props.navigation.setParams(
+      {
+        ...this.props.navigation.state.params,
+        onSubmitInternal: this.onSubmitInternal
+      }
+    );
+  }
 
   private isValidDescription = (): boolean => {
     const { description } = this.state;
@@ -62,15 +71,6 @@ export class AddRedeemView extends React.PureComponent<Props, State> {
       this.props.navigation.state.params.onSubmit(description.trim(), num);
       this.props.navigation.goBack();
     }
-  }
-
-  public componentWillMount(): void {
-    this.props.navigation.setParams(
-      {
-        ...this.props.navigation.state.params,
-        onSubmitInternal: this.onSubmitInternal
-      }
-    );
   }
 
   public render(): JSX.Element {

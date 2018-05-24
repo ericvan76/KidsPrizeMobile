@@ -73,7 +73,7 @@ function* modifyChildSaga(action: typeof actions.modifyChild.shape): SagaIterato
     const payload = action.payload;
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     const result: ScoreResult = yield call(updateChildAsync, authToken, payload.childId, payload.name, payload.gender, payload.tasks);
-    yield ([
+    yield all([
       put(actions.updateScores(result)),
       put(endRequesting(actionType))
     ]);

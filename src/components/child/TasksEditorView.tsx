@@ -31,9 +31,18 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
     };
   }
 
-  public state: State = {
-    value: this.props.navigation.state.params.value.join('\n')
-  };
+  public constructor(props: Props) {
+    super(props);
+    this.state = {
+      value: this.props.navigation.state.params.value.join('\n')
+    };
+    this.props.navigation.setParams(
+      {
+        ...this.props.navigation.state.params,
+        onSubmitInternal: this.onSubmitInternal
+      }
+    );
+  }
 
   private isDirty = (): boolean => {
     const tasks = this.getTasks();
@@ -65,15 +74,6 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
       this.props.navigation.state.params.onSubmit(this.getTasks());
     }
     this.props.navigation.goBack();
-  }
-
-  public componentWillMount(): void {
-    this.props.navigation.setParams(
-      {
-        ...this.props.navigation.state.params,
-        onSubmitInternal: this.onSubmitInternal
-      }
-    );
   }
 
   public render(): JSX.Element {

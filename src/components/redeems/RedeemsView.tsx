@@ -67,6 +67,13 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     };
   }
 
+  public constructor(props: Props) {
+    super(props);
+    this.props.navigation.setParams({
+      onPressRight: this.addRedeem
+    });
+  }
+
   private childSwitched = (otherProps: Props): boolean => {
     const currentId = this.props.child !== undefined ? this.props.child.id : undefined;
     const otherId = otherProps.child !== undefined ? otherProps.child.id : undefined;
@@ -90,22 +97,17 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  public componentWillMount(): void {
-    this.props.navigation.setParams({
-      onPressRight: this.addRedeem
-    });
-  }
-
   public componentDidMount(): void {
     if (this.props.child && this.props.redeems.length === 0) {
       this.props.refreshRedeems(this.props.child.id);
     }
   }
 
-  public componentWillUpdate(nextProps: Props): void {
-    if (this.childSwitched(nextProps)) {
+  public getSnapshotBeforeUpdate(prevProps: Props, _: State): null {
+    if (this.childSwitched(prevProps)) {
       this.scrollToTop();
     }
+    return null;
   }
 
   public componentDidUpdate(prevProps: Props): void {

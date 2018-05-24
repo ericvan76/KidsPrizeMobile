@@ -66,6 +66,13 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     };
   }
 
+  public constructor(props: Props) {
+    super(props);
+    this.props.navigation.setParams({
+      onPressRight: this.editChild
+    });
+  }
+
   private childSwitched = (otherProps: Props): boolean => {
     const currentId = this.props.child !== undefined ? this.props.child.id : undefined;
     const otherId = otherProps.child !== undefined ? otherProps.child.id : undefined;
@@ -81,16 +88,11 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  public componentWillMount(): void {
-    this.props.navigation.setParams({
-      onPressRight: this.editChild
-    });
-  }
-
-  public componentWillUpdate(nextProps: Props): void {
-    if (this.childSwitched(nextProps)) {
+  public getSnapshotBeforeUpdate(prevProps: Props, _: State): null {
+    if (this.childSwitched(prevProps)) {
       this.scrollToTop();
     }
+    return null;
   }
 
   public componentDidUpdate(_: Props): void {

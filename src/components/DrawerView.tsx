@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Image, Linking, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Avatar, Divider, List, ListItem } from 'react-native-elements';
 import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
@@ -68,10 +68,6 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
     this.props.navigation.navigate('ChildDetail', params);
   }
 
-  private openDonateLink = async () => {
-    await Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JDWWXN2S5776A');
-  }
-
   public render(): JSX.Element {
 
     if (this.props.profile === undefined) {
@@ -87,7 +83,9 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               chevronColor={COLORS.secondary}
             />
           </List>
-          <Text style={styles.version}>{CONFIG.semver}</Text>
+          <View style={styles.bottom}>
+            <Text style={styles.version}>{CONFIG.semver}</Text>
+          </View>
         </SafeAreaView>
       );
     } else {
@@ -146,12 +144,6 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
           </List>
           <View style={styles.bottom}>
             <Text style={styles.version}>{CONFIG.semver}</Text>
-            <TouchableOpacity style={styles.donate} onPress={this.openDonateLink}>
-              <Image
-                style={{ width: 74, height: 21 }}
-                source={{ uri: 'https://www.paypalobjects.com/en_AU/i/btn/btn_donate_SM.gif' }}
-              />
-            </TouchableOpacity>
           </View>
         </SafeAreaView>
       );
@@ -180,21 +172,14 @@ const styles = StyleSheet.create({
   ...SHARED_STYLES,
   bottom: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     paddingHorizontal: 10,
-    paddingVertical: 5,
-    position: 'absolute',
-    bottom: 0
+    paddingVertical: 5
   },
   version: {
-    flex: 1,
     color: COLORS.lightBorder,
     fontSize: FONT_SIZES.xsmall
-  },
-  donate: {
-    flex: 1,
-    alignItems: 'flex-end'
   }
 });

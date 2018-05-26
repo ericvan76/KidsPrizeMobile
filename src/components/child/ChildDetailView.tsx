@@ -68,8 +68,8 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
   };
 
   public componentDidUpdate(): void {
-    if (Object.keys(this.props.requestState.errors).length > 0) {
-      displayErrors(this.props.requestState.errors, this.props.clearErrors);
+    if (displayErrors(this.props.requestState.errors)) {
+      return;
     }
   }
 

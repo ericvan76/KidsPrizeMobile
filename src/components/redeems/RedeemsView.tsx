@@ -111,8 +111,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props): void {
-    if (Object.keys(this.props.requestState.errors).length > 0) {
-      displayErrors(this.props.requestState.errors, this.props.clearErrors);
+    if (displayErrors(this.props.requestState.errors)) {
       return;
     }
     if (this.props.child && this.props.redeems.length === 0 && this.childSwitched(prevProps)) {

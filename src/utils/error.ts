@@ -1,17 +1,27 @@
 import { Alert } from 'react-native';
 import { clearErrors } from 'src/actions/requestState';
+import { store } from 'src/store';
+import { signIn, signOut } from '../actions/auth';
 
 let errorInDisplay: boolean = false;
 
-export function displayErrors(errors: Record<string, Error>, clearAction: typeof clearErrors): void {
+export function displayErrors(errors: Record<string, Error>): boolean {
   if (errorInDisplay) {
-    return;
+    return true;
   }
-  if (Object.keys(errors).length > 0) {
-    let title = 'Service is not available';
-    let message = 'We\'re working on this, please try again later.';
+  const errorKeys = Object.keys(errors);
+  if (errorKeys.length > 0) {
+    let title: string;
+    let message: string;
+    if (errorKeys.some(k => k === signIn.type)) {
+      title = 'Authentication Error';
+      message = 'Please re-login.';
+    } else {
+      title = 'Service is not available';
+      message = 'We\'re working on this, please try again later.';
+    }
     if (__DEV__) {
-      const err = Object.keys(errors).reduce(
+      const err = errorKeys.reduce(
         (p: Record<string, string>, c: string) => {
           p[c] = errors[c].message;
           return p;
@@ -28,11 +38,16 @@ export function displayErrors(errors: Record<string, Error>, clearAction: typeof
         {
           text: 'OK', onPress: () => {
             errorInDisplay = false;
-            clearAction(undefined);
+            store.dispatch(clearErrors(undefined));
+            if (errorKeys.some(k => k === signIn.type)) {
+              store.dispatch(signOut(undefined));
+            }
           }
         }
       ],
       { cancelable: false }
     );
+    return true;
   }
+  return false;
 }

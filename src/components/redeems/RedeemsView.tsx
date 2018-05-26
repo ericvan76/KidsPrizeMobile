@@ -21,7 +21,7 @@ import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildRedeems } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
-import { displayErrors } from 'src/utils/error';
+import { tryDisplayErrors } from 'src/utils/error';
 import { AddRedeemParams } from './AddRedeemView';
 
 interface NavParams {
@@ -51,6 +51,10 @@ type Props = OwnProps & StateProps & DispatchProps;
 interface State {
 }
 
+interface Snapshot {
+  childSwitched: boolean;
+}
+
 class RedeemsViewInner extends React.PureComponent<Props, State> {
 
   public static navigationOptions = (props: NavigationScreenProps) => {
@@ -72,12 +76,6 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     this.props.navigation.setParams({
       onPressRight: this.addRedeem
     });
-  }
-
-  private childSwitched = (otherProps: Props): boolean => {
-    const currentId = this.props.child !== undefined ? this.props.child.id : undefined;
-    const otherId = otherProps.child !== undefined ? otherProps.child.id : undefined;
-    return currentId !== otherId;
   }
 
   private addRedeem = () => {
@@ -103,18 +101,22 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  public getSnapshotBeforeUpdate(prevProps: Props, _: State): null {
-    if (this.childSwitched(prevProps)) {
-      this.scrollToTop();
-    }
-    return null;
+  public getSnapshotBeforeUpdate(prevProps: Props, _: State): Snapshot {
+    const currentId = this.props.child !== undefined ? this.props.child.id : undefined;
+    const prevId = prevProps.child !== undefined ? prevProps.child.id : undefined;
+    return {
+      childSwitched: currentId !== prevId
+    };
   }
 
-  public componentDidUpdate(prevProps: Props): void {
-    if (displayErrors(this.props.requestState.errors)) {
+  public componentDidUpdate(_: Props, _2: State, snapshot: Snapshot): void {
+    if (tryDisplayErrors(this.props.requestState.errors)) {
       return;
     }
-    if (this.props.child && this.props.redeems.length === 0 && this.childSwitched(prevProps)) {
+    if (snapshot.childSwitched) {
+      this.scrollToTop();
+    }
+    if (this.props.child && this.props.redeems.length === 0 && snapshot.childSwitched) {
       this.props.refreshRedeems(this.props.child.id);
     }
   }

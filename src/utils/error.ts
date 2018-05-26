@@ -5,7 +5,7 @@ import { signIn, signOut } from '../actions/auth';
 
 let errorInDisplay: boolean = false;
 
-export function displayErrors(errors: Record<string, Error>): boolean {
+export function tryDisplayErrors(errors: Record<string, Error>): boolean {
   if (errorInDisplay) {
     return true;
   }
@@ -15,7 +15,7 @@ export function displayErrors(errors: Record<string, Error>): boolean {
     let message: string;
     if (errorKeys.some(k => k === signIn.type)) {
       title = 'Authentication Error';
-      message = 'Please re-login.';
+      message = 'Please re-signin.';
     } else {
       title = 'Service is not available';
       message = 'We\'re working on this, please try again later.';

@@ -14,7 +14,7 @@ import { TextInputParams } from 'src/components/common/TextInputView';
 import { COLORS, ICON_SIZE, SHARED_STYLES } from 'src/constants';
 import { selectChild, selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
-import { displayErrors } from 'src/utils/error';
+import { tryDisplayErrors } from 'src/utils/error';
 import * as uuid from 'uuid';
 
 export interface ChildDetailParams {
@@ -68,7 +68,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
   };
 
   public componentDidUpdate(): void {
-    if (displayErrors(this.props.requestState.errors)) {
+    if (tryDisplayErrors(this.props.requestState.errors)) {
       return;
     }
   }

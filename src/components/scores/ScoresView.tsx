@@ -21,7 +21,7 @@ import { WeeklyScores } from 'src/components/scores/WeeklyScores';
 import { SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildScores } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
-import { displayErrors } from 'src/utils/error';
+import { tryDisplayErrors } from 'src/utils/error';
 
 interface NavParams {
   onPressRight?(): void;
@@ -50,6 +50,10 @@ type Props = OwnProps & StateProps & DispatchProps;
 interface State {
 }
 
+interface Snapshot {
+  childSwitched: boolean;
+}
+
 class ScoresViewInner extends React.PureComponent<Props, State> {
 
   public static navigationOptions = (props: NavigationScreenProps) => {
@@ -73,12 +77,6 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     });
   }
 
-  private childSwitched = (otherProps: Props): boolean => {
-    const currentId = this.props.child !== undefined ? this.props.child.id : undefined;
-    const otherId = otherProps.child !== undefined ? otherProps.child.id : undefined;
-    return currentId !== otherId;
-  }
-
   private editChild = () => {
     if (this.props.child) {
       const editorParams: ChildDetailParams = {
@@ -88,16 +86,20 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  public getSnapshotBeforeUpdate(prevProps: Props, _: State): null {
-    if (this.childSwitched(prevProps)) {
-      this.scrollToTop();
-    }
-    return null;
+  public getSnapshotBeforeUpdate(prevProps: Props, _: State): Snapshot {
+    const currentId = this.props.child !== undefined ? this.props.child.id : undefined;
+    const prevId = prevProps.child !== undefined ? prevProps.child.id : undefined;
+    return {
+      childSwitched: currentId !== prevId
+    };
   }
 
-  public componentDidUpdate(_: Props): void {
-    if (displayErrors(this.props.requestState.errors)) {
+  public componentDidUpdate(_: Props, _2: State, snapshot: Snapshot): void {
+    if (tryDisplayErrors(this.props.requestState.errors)) {
       return;
+    }
+    if (snapshot.childSwitched) {
+      this.scrollToTop();
     }
     if (this.props.child && this.props.scores.length === 0) {
       this.props.refreshScores(this.props.child.id);

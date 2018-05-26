@@ -101,7 +101,7 @@ class AuthClient {
     if (hasHardware && enrolled) {
       Alert.alert(
         Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
-        'You can change this by logout and re-login.',
+        'You can change this by re-signin.',
         [
           { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
           { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }

@@ -1,6 +1,6 @@
-import { Fingerprint } from 'expo';
 import moment from 'moment';
 import { Alert, AsyncStorage, Platform } from 'react-native';
+import { hasFingerprintEnrolledAsync, validateFingerprintAsync } from 'src/utils/fingerprint';
 import {
   authorizeAsync,
   decodeJwt,
@@ -51,7 +51,7 @@ class AuthClient {
       }
       return profile;
     }
-    throw new Error('Login Failure.');
+    throw new Error('SignIn Failure.');
   }
 
   public signOutAsync = async (): Promise<void> => {
@@ -96,12 +96,10 @@ class AuthClient {
   }
 
   private askEnableFingerprintAsync = async (): Promise<void> => {
-    const hasHardware = await Fingerprint.hasHardwareAsync();
-    const enrolled = await Fingerprint.isEnrolledAsync();
-    if (hasHardware && enrolled) {
+    if (await hasFingerprintEnrolledAsync()) {
       Alert.alert(
         Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
-        'You can change this by re-signin.',
+        'You can change this by Re-SignIn.',
         [
           { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
           { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }
@@ -122,14 +120,8 @@ class AuthClient {
         // fingerprint disabled, return token
         return token;
       }
-      const hasHardware = await Fingerprint.hasHardwareAsync();
-      const enrolled = await Fingerprint.isEnrolledAsync();
-      if (hasHardware && enrolled) {
-        const result: Fingerprint.FingerprintAuthenticationResult = await Fingerprint.authenticateAsync('Use Touch ID to Login');
-        if (result.success) {
-          // fingerprint verified, return token
-          return token;
-        }
+      if (await validateFingerprintAsync()) {
+        return token;
       }
     }
     return undefined;

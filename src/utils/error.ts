@@ -15,7 +15,7 @@ export function tryDisplayErrors(errors: Record<string, Error>): boolean {
     let message: string;
     if (errorKeys.some(k => k === signIn.type)) {
       title = 'Authentication Error';
-      message = 'Please re-signin.';
+      message = 'Please Re-SignIn.';
     } else {
       title = 'Service is not available';
       message = 'We\'re working on this, please try again later.';

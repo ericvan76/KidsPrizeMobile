@@ -17,7 +17,7 @@ export async function validateFingerprintAsync(): Promise<boolean> {
     return true;
   }
   if (await hasFingerprintEnrolledAsync()) {
-    const result: Fingerprint.FingerprintAuthenticationResult = await Fingerprint.authenticateAsync('Use Touch ID to SignIn');
+    const result: Fingerprint.FingerprintAuthenticationResult = await Fingerprint.authenticateAsync('Use Touch ID to sign in');
     if (result.success) {
       return true;
     }

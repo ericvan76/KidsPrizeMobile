@@ -99,7 +99,7 @@ class AuthClient {
     if (await hasFingerprintEnrolledAsync()) {
       Alert.alert(
         Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
-        'You can change this by Re-SignIn.',
+        'You can change this setting by sign out and sign in again.',
         [
           { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
           { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }

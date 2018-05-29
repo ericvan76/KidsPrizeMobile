@@ -24,7 +24,5 @@ A behaviour chart for kids.
 - [Auth0](https://auth0.com/)<br/>
 <a width="150" height="50" href="https://auth0.com/?utm_source=oss&utm_medium=gp&utm_campaign=oss" target="_blank" alt="Single Sign On & Token Based Authentication - Auth0"><img width="150" height="50" alt="JWT Auth for open source projects" src="https://cdn.auth0.com/oss/badges/a0-badge-dark.png"/></a>
 
-### Donation
-
 [![](https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JDWWXN2S5776A)<br/>
 KidsPrize is a non-profit project maintained by the developer personally, a little help from you could make it better. Thank you.

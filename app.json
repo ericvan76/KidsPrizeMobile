@@ -52,7 +52,7 @@
     },
     "extra": {
       "semver": "1.4.3",
-      "apiEndpoint": "https://kidsprize.fanstek.com/v2",
+      "apiEndpoint": "https://kidsprize.fanstek.com/kidsprize-api/v2",
       "auth0Domain": "apperic.auth0.com",
       "auth0ClientId": "<auth0-client-id>",
       "auth0ClientSecret": "<auth0-client-secret>"

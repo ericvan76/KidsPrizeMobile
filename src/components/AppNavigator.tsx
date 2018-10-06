@@ -2,9 +2,10 @@ import { Constants } from 'expo';
 import React from 'react';
 import { Platform } from 'react-native';
 import {
-  DrawerNavigator,
-  StackNavigator,
-  TabNavigator
+  createBottomTabNavigator,
+  createDrawerNavigator,
+  createStackNavigator,
+  NavigationScreenProps
 } from 'react-navigation';
 import { ChildDetailView } from 'src/components/child/ChildDetailView';
 import { TasksEditorView } from 'src/components/child/TasksEditorView';
@@ -15,11 +16,17 @@ import { AddRedeemView } from 'src/components/redeems/AddRedeemView';
 import { RedeemsView } from 'src/components/redeems/RedeemsView';
 import { ScoresView } from 'src/components/scores/ScoresView';
 import { COLORS, FONT_SIZES } from 'src/constants';
+import { HeaderTitle } from './common/HeaderTitle';
+import { HeaderIcon } from './common/Icons';
 
-const TabNav = TabNavigator(
+const TabNav = createBottomTabNavigator(
   {
-    Scores: { screen: ScoresView },
-    Redeems: { screen: RedeemsView }
+    Scores: {
+      screen: ScoresView
+    },
+    Redeems: {
+      screen: RedeemsView
+    }
   },
   {
     animationEnabled: false,
@@ -45,7 +52,17 @@ const TabNav = TabNavigator(
   }
 );
 
-const StackNav = StackNavigator(
+TabNav.navigationOptions = (props: NavigationScreenProps) => {
+  const openDrawer = () => props.navigation.openDrawer();
+  const openChildDetail = () => props.navigation.navigate('ChildDetail');
+  return {
+    headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
+    headerTitle: <HeaderTitle />,
+    headerRight: <HeaderIcon name="account-settings" onPress={openChildDetail} />
+  };
+};
+
+const StackNav = createStackNavigator(
   {
     TabNav: { screen: TabNav },
     ChildDetail: { screen: ChildDetailView },
@@ -71,17 +88,12 @@ const StackNav = StackNavigator(
   }
 );
 
-export const AppNavigator = DrawerNavigator(
+export const AppNavigator = createDrawerNavigator(
   {
     StackNav: { screen: StackNav }
   },
   {
     drawerBackgroundColor: COLORS.white,
-    // tslint:disable-next-line:no-any
-    contentComponent: (props: any) => <DrawerView navigation={props.navigation} />,
-    drawerOpenRoute: 'DrawerOpen',
-    drawerCloseRoute: 'DrawerClose',
-    drawerToggleRoute: 'DrawerToggle'
-    // tslint:disable-next-line:no-any
-  } as any
+    contentComponent: (props) => <DrawerView navigation={props.navigation} />
+  }
 );

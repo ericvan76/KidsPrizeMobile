@@ -4,18 +4,17 @@ import {
   ListRenderItemInfo,
   SafeAreaView,
   StatusBar,
-  StyleSheet
+  StyleSheet,
+  ViewStyle
 } from 'react-native';
-import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn } from 'src/actions/auth';
 import { fetchChildren, fetchMoreStores, refreshScores, setScore } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
 import { Profile } from 'src/api/auth';
 import { Child, WeeklyScore } from 'src/api/child';
-import { ChildDetailParams } from 'src/components/child/ChildDetailView';
-import { HeaderTitle } from 'src/components/common/HeaderTitle';
-import { FooterIcon, HeaderIcon } from 'src/components/common/Icons';
+import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { WeeklyScores } from 'src/components/scores/WeeklyScores';
 import { SHARED_STYLES } from 'src/constants';
@@ -23,12 +22,8 @@ import { selectCurrentChild, selectCurrentChildScores } from 'src/selectors/chil
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
 
-interface NavParams {
-  onPressRight?(): void;
-}
-
 interface OwnProps {
-  navigation: NavigationScreenProp<{ params: NavParams }>;
+  navigation: NavigationScreenProp<{}>;
 }
 
 interface StateProps {
@@ -56,13 +51,8 @@ interface Snapshot {
 
 class ScoresViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    const params: NavParams = props.navigation.state.params || {};
-    const openDrawer = () => props.navigation.navigate('DrawerOpen');
+  public static navigationOptions = () => {
     return {
-      headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
-      headerTitle: <HeaderTitle />,
-      headerRight: <HeaderIcon name="account-settings-variant" onPress={params.onPressRight} />,
       tabBarLabel: 'Scores',
       tabBarIcon: (opt: { tintColor?: string }) => (
         <FooterIcon name="calendar-check" color={opt.tintColor} />
@@ -79,10 +69,7 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
 
   private editChild = () => {
     if (this.props.child) {
-      const editorParams: ChildDetailParams = {
-        childId: this.props.child.id
-      };
-      this.props.navigation.navigate('ChildDetail', editorParams);
+      this.props.navigation.navigate('ChildDetail');
     }
   }
 
@@ -182,6 +169,7 @@ export const ScoresView = connect<StateProps, DispatchProps, OwnProps>(
   }
 )(ScoresViewInner);
 
+// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   flatList: {
@@ -191,5 +179,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     shadowOpacity: 0.5,
     shadowOffset: { width: 3, height: 3 }
-  }
+  } as ViewStyle
 });
+// tslint:enable:no-object-literal-type-assertion

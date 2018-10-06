@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TextStyle } from 'react-native';
 import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
@@ -94,6 +94,7 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
   }
 }
 
+// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   textInput: {
@@ -102,11 +103,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: COLORS.primary,
     fontSize: FONT_SIZES.medium
-  },
+  } as TextStyle,
   hint: {
     color: COLORS.secondary,
     fontSize: FONT_SIZES.small,
     marginHorizontal: 5,
     textAlign: 'center'
-  }
+  } as TextStyle
 });
+// tslint:enable:no-object-literal-type-assertion

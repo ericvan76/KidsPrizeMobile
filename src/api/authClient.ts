@@ -112,11 +112,11 @@ class AuthClient {
   }
 
   private loadTokenFromStorageAsync = async (): Promise<Token | undefined> => {
-    const value: string = await AsyncStorage.getItem(TOKEN_STORAGE_KEY);
-    if (value !== undefined) {
+    const value: string | null = await AsyncStorage.getItem(TOKEN_STORAGE_KEY);
+    if (value != null) {
       const token = JSON.parse(value) as Token;
-      const fingerprintEnabled: string = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY);
-      if (!fingerprintEnabled) {
+      const fingerprintEnabled: string | null = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY);
+      if (fingerprintEnabled != null) {
         // fingerprint disabled, return token
         return token;
       }

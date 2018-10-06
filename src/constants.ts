@@ -1,3 +1,5 @@
+import { ViewStyle } from 'react-native';
+
 export const DATE_FORMAT = 'YYYY-MM-DD';
 export const WEEKS_PAGE_SIZE = 4;
 export const REDEEMS_PAGE_SIZE = 20;
@@ -21,6 +23,7 @@ export const FONT_SIZES = Object.freeze({
 export const ICON_SIZE = 24;
 export const DIVIDER_SIZE = 20;
 
+// tslint:disable:no-object-literal-type-assertion
 export const SHARED_STYLES = {
   container: {
     flex: 1,
@@ -44,7 +47,7 @@ export const SHARED_STYLES = {
   },
   listItemIcon: {
     color: COLORS.secondary
-  },
+  } as ViewStyle,
   listItemTitle: {
     color: COLORS.primary,
     fontSize: FONT_SIZES.medium
@@ -61,3 +64,4 @@ export const SHARED_STYLES = {
     backgroundColor: COLORS.secondary
   }
 };
+// tslint:enable:no-object-literal-type-assertion

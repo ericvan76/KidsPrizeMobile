@@ -6,23 +6,23 @@ import { connect, MapStateToProps } from 'react-redux';
 import { createChild, deleteChild, modifyChild } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
 import { Profile } from 'src/api/auth';
-import { Child, ChildId, Gender } from 'src/api/child';
+import { Child, Gender } from 'src/api/child';
 import { TasksEditorParams } from 'src/components/child/TasksEditorView';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { PickerParams } from 'src/components/common/PickerView';
 import { TextInputParams } from 'src/components/common/TextInputView';
 import { COLORS, ICON_SIZE, SHARED_STYLES } from 'src/constants';
-import { selectChild, selectTasks } from 'src/selectors/child';
+import { selectCurrentChild, selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
 import * as uuid from 'uuid';
 
 export interface ChildDetailParams {
-  childId: ChildId | undefined;
+  createNew?: boolean;
 }
 
 interface OwnProps {
-  navigation: NavigationScreenProp<{ params: ChildDetailParams }>;
+  navigation: NavigationScreenProp<{ params?: ChildDetailParams }>;
 }
 
 interface StateProps {
@@ -52,7 +52,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
   public static navigationOptions = (props: NavigationScreenProps) => {
     const params = props.navigation.state.params as ChildDetailParams;
     const goBack = () => props.navigation.goBack();
-    const isUpdate = params && params.childId;
+    const isUpdate = !(params && params.createNew);
     return {
       headerLeft: <HeaderIcon name={isUpdate ? 'arrow-left' : 'close'} onPress={goBack} />,
       headerTitle: isUpdate ? 'Edit Child' : 'Add Child',
@@ -237,9 +237,9 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state: AppState, ownProps: OwnProps): StateProps => {
   const profile = state.auth.profile;
-  const childId = ownProps.navigation.state.params.childId;
-  const child = selectChild(state, childId);
-  const tasks = selectTasks(state, childId);
+  const createNew = ownProps.navigation.state.params && ownProps.navigation.state.params.createNew;
+  const child = createNew === true ? undefined : selectCurrentChild(state);
+  const tasks = selectTasks(state, child && child.id);
   const requestState = state.requestState;
   return {
     profile,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   ...SHARED_STYLES,
   button: {
     marginTop: 60,
-    height: 40,
+    height: 44,
     borderRadius: 5
   }
 });

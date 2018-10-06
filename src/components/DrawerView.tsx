@@ -35,7 +35,7 @@ interface State {
 class DrawerViewInner extends React.PureComponent<Props, State> {
 
   private switchChild = (id: string) => {
-    this.props.navigation.navigate('DrawerClose');
+    this.props.navigation.closeDrawer();
     this.props.switchChild(id);
   }
 
@@ -47,7 +47,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
         { text: 'No', style: 'cancel' },
         {
           text: 'Yes', onPress: async () => {
-            this.props.navigation.navigate('DrawerClose');
+            this.props.navigation.closeDrawer();
             this.props.signOut(undefined);
           }
         }
@@ -57,13 +57,13 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
   }
 
   private signIn = () => {
-    this.props.navigation.navigate('DrawerClose');
+    this.props.navigation.closeDrawer();
     this.props.signIn(undefined);
   }
 
   private addChild = () => {
     const params: ChildDetailParams = {
-      childId: undefined
+      createNew: true
     };
     this.props.navigation.navigate('ChildDetail', params);
   }

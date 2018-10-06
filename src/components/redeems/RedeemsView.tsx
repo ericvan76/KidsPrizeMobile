@@ -7,29 +7,24 @@ import {
   SafeAreaView,
   StyleSheet
 } from 'react-native';
-import { ListItem } from 'react-native-elements';
-import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
+import { Button, ListItem } from 'react-native-elements';
+import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn } from 'src/actions/auth';
 import { createRedeem, fetchChildren, fetchMoreRedeems, refreshRedeems } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
 import { Profile } from 'src/api/auth';
 import { Child, Redeem } from 'src/api/child';
-import { HeaderTitle } from 'src/components/common/HeaderTitle';
-import { FooterIcon, HeaderIcon } from 'src/components/common/Icons';
+import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
-import { SHARED_STYLES } from 'src/constants';
+import { COLORS, ICON_SIZE, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildRedeems } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
 import { AddRedeemParams } from './AddRedeemView';
 
-interface NavParams {
-  onPressRight?(): void;
-}
-
 interface OwnProps {
-  navigation: NavigationScreenProp<{ params: NavParams }>;
+  navigation: NavigationScreenProp<{}>;
 }
 
 interface StateProps {
@@ -57,13 +52,8 @@ interface Snapshot {
 
 class RedeemsViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    const params: NavParams = props.navigation.state.params || {};
-    const openDrawer = () => props.navigation.navigate('DrawerOpen');
+  public static navigationOptions = () => {
     return {
-      headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
-      headerTitle: <HeaderTitle />,
-      headerRight: <HeaderIcon name="plus" onPress={params.onPressRight} />,
       tabBarLabel: 'Redeems',
       tabBarIcon: (opt: { tintColor?: string }) => (
         <FooterIcon name="gift" color={opt.tintColor} />
@@ -73,9 +63,6 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
 
   public constructor(props: Props) {
     super(props);
-    this.props.navigation.setParams({
-      onPressRight: this.addRedeem
-    });
   }
 
   private addRedeem = () => {
@@ -178,6 +165,11 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
           removeClippedSubviews={true}
           ListEmptyComponent={<ListEmptyComponent />}
         />
+        <Button
+          buttonStyle={[styles.button, { backgroundColor: COLORS.secondary }]}
+          title="Add Redeem"
+          icon={{ name: 'plus', type: 'material-community', size: ICON_SIZE }}
+          onPress={this.addRedeem} />
       </SafeAreaView>
     );
   }
@@ -212,5 +204,10 @@ const styles = StyleSheet.create({
   listItemContainer: {
     ...SHARED_STYLES.listItemContainer,
     marginLeft: -5
+  },
+  button: {
+    height: 44,
+    borderRadius: 5,
+    marginVertical: 10
   }
 });

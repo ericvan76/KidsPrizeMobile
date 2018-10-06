@@ -80,7 +80,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               leftIcon={{ name: 'md-log-in', type: 'ionicon', style: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
-              chevronColor={COLORS.secondary}
+              chevronColor={COLORS.primary}
             />
           </List>
           <View style={styles.bottom}>
@@ -130,7 +130,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               leftIcon={{ name: 'person-add', type: 'material', style: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
-              chevronColor={COLORS.secondary}
+              chevronColor={COLORS.primary}
             />
             <Divider style={styles.listDivider} />
             <ListItem
@@ -139,7 +139,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               leftIcon={{ name: 'md-log-out', type: 'ionicon', style: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
-              chevronColor={COLORS.secondary}
+              chevronColor={COLORS.primary}
             />
           </List>
           <View style={styles.bottom}>

@@ -31,7 +31,7 @@ export const TaskRow: React.SFC<Props> = (props) => {
     };
     return (
       <TouchableOpacity key={i} onPress={onPress} style={styles.star} >
-        <MaterialCommunityIcons color={COLORS.secondary} size={32} name={value > 0 ? 'star' : 'star-outline'} />
+        <MaterialCommunityIcons color={COLORS.primary} size={32} name={value > 0 ? 'star' : 'star-outline'} />
       </TouchableOpacity>
     );
   });

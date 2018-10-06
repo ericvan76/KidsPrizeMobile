@@ -35,19 +35,17 @@ const TabNav = createBottomTabNavigator(
     tabBarOptions: {
       style: {
         borderTopWidth: 0.5,
-        borderTopColor: COLORS.secondary,
-        backgroundColor: 'transparent'
+        borderTopColor: COLORS.primary,
+        backgroundColor: COLORS.white
       },
       tabStyle: {
-        paddingTop: 8
+        paddingTop: 6
       },
       labelStyle: {
-        fontSize: FONT_SIZES.xsmall
+        fontSize: FONT_SIZES.small
       },
       activeTintColor: COLORS.primary,
-      activeBackgroundColor: COLORS.secondary,
-      inactiveTintColor: COLORS.secondary,
-      inactiveBackgroundColor: 'transparent'
+      inactiveTintColor: COLORS.lightBorder
     }
   }
 );
@@ -58,7 +56,7 @@ TabNav.navigationOptions = (props: NavigationScreenProps) => {
   return {
     headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
     headerTitle: <HeaderTitle />,
-    headerRight: <HeaderIcon name="account-settings" onPress={openChildDetail} />
+    headerRight: <HeaderIcon name="account-card-details" onPress={openChildDetail} />
   };
 };
 

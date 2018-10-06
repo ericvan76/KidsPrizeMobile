@@ -5,9 +5,8 @@ export const WEEKS_PAGE_SIZE = 4;
 export const REDEEMS_PAGE_SIZE = 20;
 
 export const COLORS = Object.freeze({
-  primary: '#283593',
-  secondary: '#5c6bc0',
-  lightBorder: '#ccc',
+  primary: '#5c6bc0',
+  lightBorder: '#aaa',
   white: '#eee',
   error: '#d50000'
 });
@@ -46,22 +45,22 @@ export const SHARED_STYLES = {
   listItemWrapperStyle: {
   },
   listItemIcon: {
-    color: COLORS.secondary
+    color: COLORS.primary
   } as ViewStyle,
   listItemTitle: {
     color: COLORS.primary,
     fontSize: FONT_SIZES.medium
   },
   listItemSubtitle: {
-    color: COLORS.secondary,
+    color: COLORS.primary,
     fontSize: FONT_SIZES.small
   },
   listItemRightTitle: {
-    color: COLORS.secondary,
-    fontSize: FONT_SIZES.medium
+    color: COLORS.primary,
+    fontSize: FONT_SIZES.small
   },
   listItemBadge: {
-    backgroundColor: COLORS.secondary
+    backgroundColor: COLORS.primary
   }
 };
 // tslint:enable:no-object-literal-type-assertion

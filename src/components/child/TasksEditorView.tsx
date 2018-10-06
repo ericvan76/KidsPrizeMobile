@@ -105,8 +105,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.medium
   } as TextStyle,
   hint: {
-    color: COLORS.secondary,
-    fontSize: FONT_SIZES.small,
+    color: COLORS.primary,
     marginHorizontal: 5,
     textAlign: 'center'
   } as TextStyle

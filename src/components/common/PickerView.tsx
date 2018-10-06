@@ -74,7 +74,7 @@ export class PickerView extends React.PureComponent<Props, State> {
                   rightIcon={{ name: 'check', type: 'material' }}
                   containerStyle={styles.listItemContainer}
                   titleStyle={styles.listItemTitle}
-                  chevronColor={item.value === this.state.selectedValue ? COLORS.secondary : 'transparent'}
+                  chevronColor={item.value === this.state.selectedValue ? COLORS.primary : 'transparent'}
                 />
               );
             })

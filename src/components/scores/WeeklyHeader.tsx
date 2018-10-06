@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextStyle, View } from 'react-native';
 import { COLORS, DATE_FORMAT, FONT_SIZES } from 'src/constants';
 import { WeekId } from '../../api/child';
 
@@ -31,7 +31,8 @@ export const WeeklyHeader: React.SFC<{ weekId: WeekId }> = (props) => {
       {
         dates.map((d: DateObj, i: number) => {
           const style = d.isToday
-            ? [styles.headerLabel, { color: COLORS.primary }]
+            // tslint:disable-next-line:no-object-literal-type-assertion
+            ? [styles.headerLabel, { textDecorationLine: 'underline' } as TextStyle]
             : styles.headerLabel;
           return (
             <View key={i}>
@@ -45,6 +46,7 @@ export const WeeklyHeader: React.SFC<{ weekId: WeekId }> = (props) => {
   );
 };
 
+// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -52,12 +54,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingVertical: 5,
     paddingHorizontal: 5,
-    backgroundColor: COLORS.secondary
+    backgroundColor: COLORS.primary
   },
   headerLabel: {
     width: 36,
     textAlign: 'center',
     fontSize: FONT_SIZES.small,
     color: COLORS.white
-  }
+  } as TextStyle
 });
+// tslint:enable:no-object-literal-type-assertion

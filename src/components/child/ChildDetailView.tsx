@@ -11,7 +11,7 @@ import { TasksEditorParams } from 'src/components/child/TasksEditorView';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { PickerParams } from 'src/components/common/PickerView';
 import { TextInputParams } from 'src/components/common/TextInputView';
-import { COLORS, ICON_SIZE, SHARED_STYLES } from 'src/constants';
+import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
@@ -191,7 +191,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
             wrapperStyle={styles.listItemWrapperStyle}
             titleStyle={styles.listItemTitle}
             rightTitleStyle={styles.listItemRightTitle}
-            chevronColor={COLORS.secondary}
+            chevronColor={COLORS.primary}
           />
           <ListItem
             title="Gender"
@@ -202,7 +202,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
             wrapperStyle={styles.listItemWrapperStyle}
             titleStyle={styles.listItemTitle}
             rightTitleStyle={styles.listItemRightTitle}
-            chevronColor={COLORS.secondary}
+            chevronColor={COLORS.primary}
           />
           <ListItem
             title="Tasks"
@@ -213,21 +213,21 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
             wrapperStyle={styles.listItemWrapperStyle}
             titleStyle={styles.listItemTitle}
             rightTitleStyle={styles.listItemRightTitle}
-            chevronColor={COLORS.secondary}
+            chevronColor={COLORS.primary}
           />
         </List>
         {
           this.props.child !== undefined ?
-            <Button
+            <Button fontSize={FONT_SIZES.medium}
               buttonStyle={[styles.button, { backgroundColor: COLORS.error }]}
               title="Delete Child"
-              icon={{ name: 'account-remove', type: 'material-community', size: ICON_SIZE }}
+              icon={{ name: 'account-remove', type: 'material-community' }}
               onPress={this.onPressDelete} />
             :
-            <Button
-              buttonStyle={[styles.button, { backgroundColor: COLORS.secondary }]}
+            <Button fontSize={FONT_SIZES.medium}
+              buttonStyle={[styles.button, { backgroundColor: COLORS.primary }]}
               title="Add Child"
-              icon={{ name: 'account-check', type: 'material-community', size: ICON_SIZE }}
+              icon={{ name: 'account-check', type: 'material-community' }}
               onPress={this.onPressAdd} />
         }
       </SafeAreaView>
@@ -261,8 +261,8 @@ export const ChildDetailView = connect<StateProps, DispatchProps, OwnProps>(
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   button: {
+    height: 40,
     marginTop: 60,
-    height: 44,
-    borderRadius: 5
+    borderRadius: 3
   }
 });

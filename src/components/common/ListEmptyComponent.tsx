@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { COLORS, FONT_SIZES } from 'src/constants';
+import { COLORS } from 'src/constants';
 
 interface Props {
   text?: string;
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   text: {
-    color: COLORS.lightBorder,
-    fontSize: FONT_SIZES.small
+    color: COLORS.lightBorder
   }
 });

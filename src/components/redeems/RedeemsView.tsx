@@ -17,7 +17,7 @@ import { Profile } from 'src/api/auth';
 import { Child, Redeem } from 'src/api/child';
 import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
-import { COLORS, ICON_SIZE, SHARED_STYLES } from 'src/constants';
+import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildRedeems } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
@@ -165,10 +165,10 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
           removeClippedSubviews={true}
           ListEmptyComponent={<ListEmptyComponent />}
         />
-        <Button
-          buttonStyle={[styles.button, { backgroundColor: COLORS.secondary }]}
+        <Button fontSize={FONT_SIZES.medium}
+          buttonStyle={[styles.button, { backgroundColor: COLORS.primary }]}
           title="Add Redeem"
-          icon={{ name: 'plus', type: 'material-community', size: ICON_SIZE }}
+          icon={{ name: 'plus', type: 'material-community' }}
           onPress={this.addRedeem} />
       </SafeAreaView>
     );
@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
     marginLeft: -5
   },
   button: {
-    height: 44,
-    borderRadius: 5,
+    height: 40,
+    borderRadius: 3,
     marginVertical: 10
   }
 });

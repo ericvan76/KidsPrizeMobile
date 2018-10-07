@@ -1,6 +1,6 @@
 # KidzPrizeMobile
 
-[![Build Status](https://www.bitrise.io/app/ed6a01c33950676f/status.svg?token=7Zfluv1CUgNYQoM7zCA9rA&branch=master)](https://www.bitrise.io/app/ed6a01c33950676f)
+[![Build Status](https://app.bitrise.io/app/ed6a01c33950676f/status.svg?token=7Zfluv1CUgNYQoM7zCA9rA&branch=master)](https://app.bitrise.io/app/ed6a01c33950676f)
 
 ### Introduction
 

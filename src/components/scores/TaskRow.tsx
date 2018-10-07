@@ -17,7 +17,7 @@ interface Props {
 
 export const TaskRow: React.SFC<Props> = (props) => {
   const stars = Array.from({ length: 7 }, (_, k) => k).map((i: number) => {
-    const date = moment(props.weekId).day(i).format(DATE_FORMAT);
+    const date = moment(`${props.weekId}T00:00:00Z`).weekday(i).format(DATE_FORMAT);
     const score = props.scores[date];
     const value = score ? score.value : 0;
     const newValue = (value > 0) ? 0 : 1;

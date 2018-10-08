@@ -102,7 +102,7 @@ class AuthClient {
         'You can change this setting by sign out and sign in again.',
         [
           { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
-          { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, 'true'); } }
+          { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, '1'); } }
         ],
         { cancelable: false }
       );
@@ -116,7 +116,7 @@ class AuthClient {
     if (value != null) {
       const token = JSON.parse(value) as Token;
       const fingerprintEnabled: string | null = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY);
-      if (fingerprintEnabled !== 'true') {
+      if (fingerprintEnabled == null) {
         // fingerprint disabled, return token
         return token;
       }

@@ -116,7 +116,7 @@ class AuthClient {
     if (value != null) {
       const token = JSON.parse(value) as Token;
       const fingerprintEnabled: string | null = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY);
-      if (fingerprintEnabled != null) {
+      if (fingerprintEnabled !== 'true') {
         // fingerprint disabled, return token
         return token;
       }

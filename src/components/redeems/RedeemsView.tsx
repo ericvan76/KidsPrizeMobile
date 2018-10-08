@@ -123,7 +123,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
         titleStyle={styles.listItemTitle}
         subtitle={moment(item.timestamp).format('DD-MMM-YYYY HH:mm')}
         subtitleStyle={styles.listItemSubtitle}
-        rightTitle={item.value.toString()}
+        rightTitle={`  ${item.value.toString()}`}
         rightTitleStyle={styles.listItemRightTitle}
         hideChevron={true}
       />

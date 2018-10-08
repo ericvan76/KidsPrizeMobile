@@ -2,7 +2,6 @@ import React from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
-  Platform,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -18,7 +17,7 @@ import { Child, WeeklyScore } from 'src/api/child';
 import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { WeeklyScores } from 'src/components/scores/WeeklyScores';
-import { COLORS, SHARED_STYLES } from 'src/constants';
+import { SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildScores } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
@@ -176,12 +175,11 @@ const styles = StyleSheet.create({
   flatList: {
   },
   weekly: {
-    borderWidth: Platform.select({ android: 0.5 }),
-    borderColor: COLORS.lightBorder,
     marginTop: 10,
     marginHorizontal: 10,
     shadowOpacity: 0.5,
-    shadowOffset: { width: 3, height: 3 }
+    shadowOffset: { width: 3, height: 3 },
+    elevation: 5
   } as ViewStyle
 });
 // tslint:enable:no-object-literal-type-assertion

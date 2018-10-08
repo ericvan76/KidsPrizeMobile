@@ -5,7 +5,7 @@ export const WEEKS_PAGE_SIZE = 4;
 export const REDEEMS_PAGE_SIZE = 20;
 
 export const COLORS = Object.freeze({
-  primary: '#5c6bc0',
+  primary: '#1570a6',
   lightBorder: '#aaa',
   white: '#eee',
   error: '#d50000'
@@ -57,7 +57,7 @@ export const SHARED_STYLES = {
   },
   listItemRightTitle: {
     color: COLORS.primary,
-    fontSize: FONT_SIZES.small
+    fontSize: FONT_SIZES.medium
   },
   listItemBadge: {
     backgroundColor: COLORS.primary

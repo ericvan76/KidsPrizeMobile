@@ -98,6 +98,7 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   textInput: {
+    textAlignVertical: 'top',
     flex: 0.5,
     borderBottomWidth: 0.5,
     paddingHorizontal: 10,

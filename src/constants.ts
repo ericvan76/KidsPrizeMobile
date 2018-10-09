@@ -1,4 +1,4 @@
-import { ViewStyle } from 'react-native';
+import { TextStyle, ViewStyle } from 'react-native';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 export const WEEKS_PAGE_SIZE = 4;
@@ -8,7 +8,7 @@ export const COLORS = Object.freeze({
   primary: '#1570a6',
   lightBorder: '#aaa',
   white: '#eee',
-  error: '#d50000'
+  error: '#f35e4c'
 });
 
 export const FONT_SIZES = Object.freeze({
@@ -40,10 +40,9 @@ export const SHARED_STYLES = {
   listItemContainer: {
     borderTopWidth: 0,
     borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.lightBorder
-  },
-  listItemWrapperStyle: {
-  },
+    borderBottomColor: COLORS.lightBorder,
+    paddingVertical: 12
+  } as ViewStyle,
   listItemIcon: {
     color: COLORS.primary
   } as ViewStyle,
@@ -52,7 +51,7 @@ export const SHARED_STYLES = {
     fontSize: FONT_SIZES.medium
   },
   listItemSubtitle: {
-    color: COLORS.primary,
+    color: COLORS.lightBorder,
     fontSize: FONT_SIZES.small
   },
   listItemRightTitle: {
@@ -61,6 +60,15 @@ export const SHARED_STYLES = {
   },
   listItemBadge: {
     backgroundColor: COLORS.primary
-  }
+  },
+  button: {
+    borderRadius: 3,
+    marginVertical: 10,
+    marginHorizontal: 10
+  },
+  buttonTitle: {
+    fontSize: FONT_SIZES.medium,
+    fontWeight: 'normal'
+  } as TextStyle
 };
 // tslint:enable:no-object-literal-type-assertion

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { Avatar, Divider, List, ListItem } from 'react-native-elements';
+import { Avatar, Divider, ListItem } from 'react-native-elements';
 import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn, signOut } from 'src/actions/auth';
@@ -73,16 +73,16 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
     if (this.props.profile === undefined) {
       return (
         <SafeAreaView style={styles.container}>
-          <List containerStyle={styles.listContainer}>
+          <View style={styles.listContainer}>
             <ListItem
               onPress={this.signIn}
               title="Sign In"
-              leftIcon={{ name: 'md-log-in', type: 'ionicon', style: styles.listItemIcon }}
+              leftIcon={{ name: 'md-log-in', type: 'ionicon', iconStyle: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
               chevronColor={COLORS.primary}
             />
-          </List>
+          </View>
           <View style={styles.bottom}>
             <Text style={styles.version}>{CONFIG.semver}</Text>
           </View>
@@ -97,11 +97,9 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
 
       return (
         <SafeAreaView style={styles.container}>
-          <List containerStyle={styles.listContainer}>
+          <View style={styles.listContainer}>
             <ListItem
-              hideChevron={true}
-              roundAvatar
-              avatar={<Avatar rounded large source={{ uri: picture }} />}
+              leftAvatar={<Avatar rounded size="large" source={{ uri: picture }} />}
               title={displayName}
               subtitle={email}
               containerStyle={styles.listItemContainer}
@@ -113,10 +111,9 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               this.props.children.map((c, i) => {
                 return (
                   <ListItem key={i}
-                    hideChevron={true}
                     onPress={onSwitches[i]}
                     title={c.name}
-                    leftIcon={{ name: 'person', type: 'material', style: styles.listItemIcon }}
+                    leftIcon={{ name: 'person', type: 'material', iconStyle: styles.listItemIcon }}
                     badge={{ value: c.totalScore, containerStyle: styles.listItemBadge }}
                     containerStyle={styles.listItemContainer}
                     titleStyle={styles.listItemTitle}
@@ -127,7 +124,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
             <ListItem
               onPress={this.addChild}
               title="Add Child"
-              leftIcon={{ name: 'person-add', type: 'material', style: styles.listItemIcon }}
+              leftIcon={{ name: 'person-add', type: 'material', iconStyle: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
               chevronColor={COLORS.primary}
@@ -136,12 +133,12 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
             <ListItem
               onPress={this.signOut}
               title="Sign Out"
-              leftIcon={{ name: 'md-log-out', type: 'ionicon', style: styles.listItemIcon }}
+              leftIcon={{ name: 'md-log-out', type: 'ionicon', iconStyle: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
               chevronColor={COLORS.primary}
             />
-          </List>
+          </View>
           <View style={styles.bottom}>
             <Text style={styles.version}>{CONFIG.semver}</Text>
           </View>

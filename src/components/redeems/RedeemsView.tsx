@@ -17,7 +17,7 @@ import { Profile } from 'src/api/auth';
 import { Child, Redeem } from 'src/api/child';
 import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
-import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
+import { COLORS, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildRedeems } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
@@ -117,15 +117,13 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     return (
       <ListItem
         containerStyle={styles.listItemContainer}
-        wrapperStyle={styles.listItemWrapperStyle}
         // leftIcon={{ name: 'gift', type: 'material-community', style: styles.listItemIcon }}
         title={item.description}
         titleStyle={styles.listItemTitle}
         subtitle={moment(item.timestamp).format('DD-MMM-YYYY HH:mm')}
         subtitleStyle={styles.listItemSubtitle}
-        rightTitle={`  ${item.value.toString()}`}
+        rightTitle={item.value.toString()}
         rightTitleStyle={styles.listItemRightTitle}
-        hideChevron={true}
       />
     );
   }
@@ -165,10 +163,11 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
           removeClippedSubviews={true}
           ListEmptyComponent={<ListEmptyComponent />}
         />
-        <Button fontSize={FONT_SIZES.medium}
+        <Button
+          titleStyle={styles.buttonTitle}
           buttonStyle={[styles.button, { backgroundColor: COLORS.primary }]}
           title="Add Redeem"
-          icon={{ name: 'plus', type: 'material-community' }}
+          icon={{ name: 'plus', type: 'material-community', color: COLORS.white }}
           onPress={this.addRedeem} />
       </SafeAreaView>
     );
@@ -197,6 +196,7 @@ export const RedeemsView = connect<StateProps, DispatchProps, OwnProps>(
   }
 )(RedeemsViewInner);
 
+// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   flatList: {
@@ -204,10 +204,6 @@ const styles = StyleSheet.create({
   listItemContainer: {
     ...SHARED_STYLES.listItemContainer,
     marginLeft: -5
-  },
-  button: {
-    height: 40,
-    borderRadius: 3,
-    marginVertical: 10
   }
 });
+// tslint:enable:no-object-literal-type-assertion

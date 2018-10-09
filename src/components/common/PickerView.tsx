@@ -1,6 +1,6 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { COLORS, SHARED_STYLES } from 'src/constants';
 import { HeaderIcon } from './Icons';
@@ -8,7 +8,7 @@ import { HeaderIcon } from './Icons';
 interface PickerItem<T> {
   name: string;
   value: T;
-  icon?: string;
+  icon: string;
   family?: string;
 }
 
@@ -62,24 +62,24 @@ export class PickerView extends React.PureComponent<Props, State> {
       (): void => { this.onSelect(item.value); });
     return (
       <SafeAreaView style={styles.container}>
-        <List containerStyle={styles.listContainer}>
+        <View style={styles.listContainer}>
           {
             items.map((item, i) => {
+              const checkColor = item.value === this.state.selectedValue ? COLORS.primary : 'transparent';
               return (
                 <ListItem
                   key={i}
                   onPress={onPresses[i]}
                   title={item.name}
-                  leftIcon={{ name: item.icon, type: item.family, style: styles.listItemIcon }}
-                  rightIcon={{ name: 'check', type: 'material' }}
+                  leftIcon={{ name: item.icon, type: item.family, iconStyle: styles.listItemIcon }}
+                  rightIcon={{ name: 'check', type: 'material', iconStyle: { color: checkColor } }}
                   containerStyle={styles.listItemContainer}
                   titleStyle={styles.listItemTitle}
-                  chevronColor={item.value === this.state.selectedValue ? COLORS.primary : 'transparent'}
                 />
               );
             })
           }
-        </List>
+        </View>
       </SafeAreaView>
     );
   }

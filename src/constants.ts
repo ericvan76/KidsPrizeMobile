@@ -58,8 +58,14 @@ export const SHARED_STYLES = {
     color: COLORS.primary,
     fontSize: FONT_SIZES.medium
   },
+  listItemBadgeText: {
+    //fontSize: FONT_SIZES.small
+  },
   listItemBadge: {
     backgroundColor: COLORS.primary
+    //paddingVertical: 3
+  },
+  listItemBadgeContainer: {
   },
   button: {
     borderRadius: 3,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { RegisteredStyle, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 import { setScore } from 'src/actions/child';
 import { ChildId, Score, WeeklyScore } from 'src/api/child';
 import { COLORS } from 'src/constants';
@@ -10,7 +10,7 @@ interface Props {
   childId: ChildId;
   weeklyScore: WeeklyScore;
   setScore: typeof setScore;
-  style: RegisteredStyle<ViewStyle>;
+  style: ViewStyle;
 }
 
 export class WeeklyScores extends React.PureComponent<Props> {

@@ -4,8 +4,8 @@
     "description": "Kids behaviour chart",
     "slug": "kidsprize",
     "privacy": "public",
-    "sdkVersion": "30.0.0",
-    "version": "1.5.0",
+    "sdkVersion": "32.0.0",
+    "version": "1.5.1",
     "githubUrl": "https://github.com/ericvan76/KidsPrizeMobile",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
@@ -35,7 +35,7 @@
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1050033",
+      "buildNumber": "1050101",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -45,13 +45,13 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1050033,
+      "versionCode": 1050101,
       "permissions": [
         "USE_FINGERPRINT"
       ]
     },
     "extra": {
-      "semver": "1.5.0-beta.33",
+      "semver": "1.5.1-expo-sdk-32.1",
       "apiEndpoint": "https://kidsprize.fanstek.com/kidsprize-api/v2",
       "auth0Domain": "apperic.auth0.com",
       "auth0ClientId": "<auth0-client-id>",

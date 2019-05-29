@@ -2,7 +2,7 @@ import { AppLoading } from 'expo';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { signIn } from 'src/actions/auth';
-import { AppNavigator } from 'src/components/AppNavigator';
+import { AppContainer } from 'src/components/AppNavigator';
 import { store } from 'src/store';
 
 interface Props { }
@@ -30,12 +30,12 @@ export class App extends React.PureComponent<Props, State> {
 
     return (
       <Provider store={store}>
-        <AppNavigator />
+        <AppContainer />
       </Provider>
     );
   }
 
-  private finishLoading = () => {
+  private readonly finishLoading = () => {
     this.setState((state: State) => {
       return {
         ...state,
@@ -45,7 +45,7 @@ export class App extends React.PureComponent<Props, State> {
     store.dispatch(signIn(undefined));
   }
 
-  private cacheResourcesAsync = async () => {
+  private readonly cacheResourcesAsync = async () => {
     // tslint:disable:no-require-imports no-floating-promises
     // tslint:enable:no-require-imports no-floating-promises
   }

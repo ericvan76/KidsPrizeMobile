@@ -67,7 +67,9 @@ class AuthClient {
     try {
       if (this.token) {
         const decoded = decodeJwt(this.token.id_token);
-        if (moment().add(5, 'minutes').isBefore(moment(decoded.exp * 1000))) {
+        if (moment()
+          .add(5, 'minutes')
+          .isBefore(moment(decoded.exp * 1000))) {
           return this.token.id_token;
         }
         if (this.token.refresh_token) {
@@ -88,14 +90,14 @@ class AuthClient {
     }
   }
 
-  private parseToken = (token: Token | undefined): Profile | undefined => {
+  private readonly parseToken = (token: Token | undefined): Profile | undefined => {
     if (token && token.id_token) {
       return decodeJwt(token.id_token);
     }
     return undefined;
   }
 
-  private askEnableFingerprintAsync = async (): Promise<void> => {
+  private readonly askEnableFingerprintAsync = async (): Promise<void> => {
     if (await hasFingerprintEnrolledAsync()) {
       Alert.alert(
         Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
@@ -111,12 +113,12 @@ class AuthClient {
     }
   }
 
-  private loadTokenFromStorageAsync = async (): Promise<Token | undefined> => {
-    const value: string | null = await AsyncStorage.getItem(TOKEN_STORAGE_KEY);
-    if (value != null) {
+  private readonly loadTokenFromStorageAsync = async (): Promise<Token | undefined> => {
+    const value: string | undefined = await AsyncStorage.getItem(TOKEN_STORAGE_KEY) || undefined;
+    if (value !== undefined) {
       const token = JSON.parse(value) as Token;
-      const fingerprintEnabled: string | null = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY);
-      if (fingerprintEnabled == null) {
+      const fingerprintEnabled: string | undefined = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY) || undefined;
+      if (fingerprintEnabled === undefined) {
         // fingerprint disabled, return token
         return token;
       }

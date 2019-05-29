@@ -1,23 +1,14 @@
-import { Fingerprint } from 'expo';
-import { Platform } from 'react-native';
+import { LocalAuthentication } from 'expo';
 
 export async function hasFingerprintEnrolledAsync(): Promise<boolean> {
-  if (Platform.OS === 'android') {
-    // Finerprint is currently not available on Android
-    return false;
-  }
-  const hasHardware = await Fingerprint.hasHardwareAsync();
-  const enrolled = await Fingerprint.isEnrolledAsync();
+  const hasHardware = await LocalAuthentication.hasHardwareAsync();
+  const enrolled = await LocalAuthentication.isEnrolledAsync();
   return hasHardware && enrolled;
 }
 
 export async function validateFingerprintAsync(): Promise<boolean> {
-  if (Platform.OS === 'android') {
-    // Finerprint is currently not available on Android
-    return true;
-  }
   if (await hasFingerprintEnrolledAsync()) {
-    const result: Fingerprint.FingerprintAuthenticationResult = await Fingerprint.authenticateAsync('Use Touch ID to sign in');
+    const result = await LocalAuthentication.authenticateAsync('Use Touch ID to sign in');
     if (result.success) {
       return true;
     }

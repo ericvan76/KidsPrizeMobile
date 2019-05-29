@@ -44,7 +44,7 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
     );
   }
 
-  private isDirty = (): boolean => {
+  private readonly isDirty = (): boolean => {
     const tasks = this.getTasks();
     const prevTasks = this.props.navigation.state.params.value;
     if (tasks.length === prevTasks.length) {
@@ -53,20 +53,24 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
     return true;
   }
 
-  private isValid = (): boolean => {
+  private readonly isValid = (): boolean => {
     return this.state.value.trim().length > 0;
   }
 
-  private onChangeText = (text: string): void => {
+  private readonly onChangeText = (text: string): void => {
     this.setState((s: State) => ({ ...s, value: text }));
   }
 
   private getTasks(): Array<string> {
-    const tasks = this.state.value.trim().split('\n').map(s => s.trim()).filter(s => s !== '');
+    const tasks = this.state.value
+      .trim()
+      .split('\n')
+      .map(s => s.trim())
+      .filter(s => s !== '');
     return tasks.filter((t, i) => tasks.indexOf(t) === i);
   }
 
-  private onSubmitInternal = (): void => {
+  private readonly onSubmitInternal = (): void => {
     if (!this.isValid()) {
       return;
     }

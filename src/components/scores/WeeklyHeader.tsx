@@ -12,9 +12,11 @@ export const WeeklyHeader: React.SFC<{ weekId: WeekId }> = (props) => {
     isToday: boolean;
   }
 
-  const today = moment().format(DATE_FORMAT);
+  const today = moment()
+    .format(DATE_FORMAT);
   const dates: Array<DateObj> = [0, 1, 2, 3, 4, 5, 6].map((i: number) => {
-    const mo = moment(`${props.weekId}T00:00:00Z`).weekday(i);
+    const mo = moment(`${props.weekId}T00:00:00Z`)
+      .weekday(i);
     const up = mo.format('ddd');
     const d = mo.date();
     const down = d === 1 ? `${d}/${mo.month() + 1}` : `${d}`;

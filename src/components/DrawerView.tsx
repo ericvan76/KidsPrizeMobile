@@ -9,7 +9,7 @@ import { Profile } from 'src/api/auth';
 import { Child } from 'src/api/child';
 import { ChildDetailParams } from 'src/components/child/ChildDetailView';
 import { CONFIG } from 'src/config';
-import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
+import { BADGE_PROPS, COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 import { selectChildren } from 'src/selectors/child';
 import { AppState } from 'src/store';
 
@@ -80,7 +80,6 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               leftIcon={{ name: 'md-log-in', type: 'ionicon', iconStyle: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
-            // chevronColor={COLORS.primary}
             />
           </View>
           <View style={styles.bottom}>
@@ -114,12 +113,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
                     onPress={onSwitches[i]}
                     title={c.name}
                     leftIcon={{ name: 'person', type: 'material', iconStyle: styles.listItemIcon }}
-                    badge={{
-                      value: c.totalScore,
-                      badgeStyle: styles.listItemBadge,
-                      textStyle: styles.listItemBadgeText,
-                      containerStyle: styles.listItemBadgeContainer
-                    }}
+                    badge={{ value: c.totalScore, ...BADGE_PROPS }}
                     containerStyle={styles.listItemContainer}
                     titleStyle={styles.listItemTitle}
                   />
@@ -132,7 +126,6 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               leftIcon={{ name: 'person-add', type: 'material', iconStyle: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
-              chevron={true}
             />
             <Divider style={styles.listDivider} />
             <ListItem
@@ -141,7 +134,6 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
               leftIcon={{ name: 'md-log-out', type: 'ionicon', iconStyle: styles.listItemIcon }}
               containerStyle={styles.listItemContainer}
               titleStyle={styles.listItemTitle}
-              chevron={true}
             />
           </View>
           <View style={styles.bottom}>

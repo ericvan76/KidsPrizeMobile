@@ -8,7 +8,7 @@ export async function callApiAsync(
   body?: {}
   // tslint:disable-next-line:no-any
 ): Promise<any> {
-  const url: string = `${CONFIG.apiEndpoint}${uri}`;
+  const url: string = `${CONFIG.apiBaseUrl}/v2/${uri}`;
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
   headers.set('Accept', 'application/json');
@@ -33,15 +33,15 @@ export async function callApiAsync(
 }
 
 export async function getPreferenceAsync(authToken: string): Promise<Preference> {
-  return callApiAsync(authToken, 'GET', '/preference');
+  return callApiAsync(authToken, 'GET', 'preference');
 }
 
 export async function setPreferenceAsync(authToken: string, preference: Preference): Promise<void> {
-  return callApiAsync(authToken, 'PUT', '/preference', preference);
+  return callApiAsync(authToken, 'PUT', 'preference', preference);
 }
 
 export async function getChildrenListAsync(authToken: string): Promise<Array<Child>> {
-  return callApiAsync(authToken, 'GET', '/children');
+  return callApiAsync(authToken, 'GET', 'children');
 }
 
 export async function createChildAsync(
@@ -51,7 +51,7 @@ export async function createChildAsync(
   gender: Gender,
   tasks: Array<string>
 ): Promise<ScoreResult> {
-  return callApiAsync(authToken, 'POST', '/children', {
+  return callApiAsync(authToken, 'POST', 'children', {
     childId,
     name,
     gender,
@@ -60,7 +60,7 @@ export async function createChildAsync(
 }
 
 export async function deleteChildAsync(authToken: string, childId: ChildId): Promise<void> {
-  return callApiAsync(authToken, 'DELETE', `/children/${childId}`);
+  return callApiAsync(authToken, 'DELETE', `children/${childId}`);
 }
 
 export async function updateChildAsync(
@@ -70,7 +70,7 @@ export async function updateChildAsync(
   gender?: Gender,
   tasks?: Array<string>
 ): Promise<ScoreResult> {
-  return callApiAsync(authToken, 'PUT', `/children/${childId}`, {
+  return callApiAsync(authToken, 'PUT', `children/${childId}`, {
     childId,
     name,
     gender,
@@ -88,7 +88,7 @@ export async function getScoresAsync(
     rewindFrom,
     numOfWeeks: numOfWeeks.toString()
   });
-  return callApiAsync(authToken, 'GET', `/children/${childId}/scores?${qs}`);
+  return callApiAsync(authToken, 'GET', `children/${childId}/scores?${qs}`);
 }
 
 export async function setScoreAsync(
@@ -98,7 +98,7 @@ export async function setScoreAsync(
   task: string,
   value: number
 ): Promise<void> {
-  return callApiAsync(authToken, 'PUT', `/children/${childId}/scores`, {
+  return callApiAsync(authToken, 'PUT', `children/${childId}/scores`, {
     childId,
     date,
     task,
@@ -112,7 +112,7 @@ export async function createRedeemAsync(
   description: string,
   value: number
 ): Promise<Redeem> {
-  return callApiAsync(authToken, 'POST', `/children/${childId}/redeems`, {
+  return callApiAsync(authToken, 'POST', `children/${childId}/redeems`, {
     childId,
     description,
     value
@@ -129,7 +129,7 @@ export async function getRedeemsAsync(
     limit: limit.toString(),
     offset: offset.toString()
   });
-  return callApiAsync(authToken, 'GET', `/children/${childId}/redeems?${qs}`);
+  return callApiAsync(authToken, 'GET', `children/${childId}/redeems?${qs}`);
 }
 
 export interface Preference {

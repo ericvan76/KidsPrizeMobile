@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderWidth: 0,
-    backgroundColor: COLORS.white
+    backgroundColor: COLORS.white,
+    borderRadius: 9
   },
   weeklyBody: {
     paddingTop: 2,

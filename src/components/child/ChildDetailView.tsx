@@ -11,7 +11,7 @@ import { TasksEditorParams } from 'src/components/child/TasksEditorView';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { PickerParams } from 'src/components/common/PickerView';
 import { TextInputParams } from 'src/components/common/TextInputView';
-import { COLORS, SHARED_STYLES } from 'src/constants';
+import { BADGE_PROPS, COLORS, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
@@ -207,12 +207,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
           <ListItem
             chevron
             title="Tasks"
-            badge={{
-              value: tasks.length,
-              badgeStyle: styles.listItemBadge,
-              textStyle: styles.listItemBadgeText,
-              containerStyle: styles.listItemBadgeContainer
-            }}
+            badge={{ value: tasks.length, ...BADGE_PROPS }}
             leftIcon={{ name: 'format-list-bulleted', type: 'material-community', iconStyle: styles.listItemIcon }}
             onPress={this.onPressTasks}
             containerStyle={styles.listItemContainer}

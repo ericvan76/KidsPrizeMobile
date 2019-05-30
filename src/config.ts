@@ -2,7 +2,7 @@ import { Constants } from 'expo';
 
 interface Config {
   semver: string;
-  apiEndpoint: string;
+  apiBaseUrl: string;
   auth0Domain: string;
   auth0ClientId: string;
   auth0ClientSecret: string;

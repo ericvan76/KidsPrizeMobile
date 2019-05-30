@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React from 'react';
-import { StyleSheet, Text, TextStyle, View } from 'react-native';
+import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { COLORS, DATE_FORMAT, FONT_SIZES } from 'src/constants';
 import { WeekId } from '../../api/child';
 
@@ -56,8 +56,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingVertical: 5,
     paddingHorizontal: 5,
-    backgroundColor: COLORS.primary
-  },
+    backgroundColor: COLORS.primary,
+    borderTopStartRadius: 9,
+    borderTopEndRadius: 9
+  } as ViewStyle,
   headerLabel: {
     width: 36,
     textAlign: 'center',

@@ -1,6 +1,5 @@
 import moment from 'moment';
-import { Alert, AsyncStorage, Platform } from 'react-native';
-import { hasFingerprintEnrolledAsync, validateFingerprintAsync } from 'src/utils/fingerprint';
+import { AsyncStorage } from 'react-native';
 import {
   authorizeAsync,
   decodeJwt,
@@ -47,7 +46,7 @@ class AuthClient {
       this.token = token;
       if (token.refresh_token) {
         await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
-        await this.askEnableFingerprintAsync();
+        // await this.askEnableFingerprintAsync();
       }
       return profile;
     }
@@ -97,34 +96,34 @@ class AuthClient {
     return undefined;
   }
 
-  private readonly askEnableFingerprintAsync = async (): Promise<void> => {
-    if (await hasFingerprintEnrolledAsync()) {
-      Alert.alert(
-        Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
-        'You can change this setting by sign out and sign in again.',
-        [
-          { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
-          { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, '1'); } }
-        ],
-        { cancelable: false }
-      );
-    } else {
-      await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
-    }
-  }
+  // private readonly askEnableFingerprintAsync = async (): Promise<void> => {
+  //   if (await hasFingerprintEnrolledAsync()) {
+  //     Alert.alert(
+  //       Platform.OS === 'ios' ? 'Enable Touch ID?' : 'Enable Fingerprint?',
+  //       'You can change this setting by sign out and sign in again.',
+  //       [
+  //         { text: 'No', onPress: async () => { await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY); }, style: 'cancel' },
+  //         { text: 'Yes', onPress: async () => { await AsyncStorage.setItem(FINGER_PRINT_ENABLED_KEY, '1'); } }
+  //       ],
+  //       { cancelable: false }
+  //     );
+  //   } else {
+  //     await AsyncStorage.removeItem(FINGER_PRINT_ENABLED_KEY);
+  //   }
+  // }
 
   private readonly loadTokenFromStorageAsync = async (): Promise<Token | undefined> => {
     const value: string | undefined = await AsyncStorage.getItem(TOKEN_STORAGE_KEY) || undefined;
     if (value !== undefined) {
-      const token = JSON.parse(value) as Token;
-      const fingerprintEnabled: string | undefined = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY) || undefined;
-      if (fingerprintEnabled === undefined) {
-        // fingerprint disabled, return token
-        return token;
-      }
-      if (await validateFingerprintAsync()) {
-        return token;
-      }
+      return JSON.parse(value) as Token;
+      // const fingerprintEnabled: string | undefined = await AsyncStorage.getItem(FINGER_PRINT_ENABLED_KEY) || undefined;
+      // if (fingerprintEnabled === undefined) {
+      //   // fingerprint disabled, return token
+      //   return token;
+      // }
+      // if (await validateFingerprintAsync()) {
+      //   return token;
+      // }
     }
     return undefined;
   }

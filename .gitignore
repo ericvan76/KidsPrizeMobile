@@ -1,4 +1,4 @@
 node_modules/**/*
-.expo/*
+**/.expo/*
 npm-debug.*
 yarn-error.log

@@ -22,6 +22,26 @@ export const FONT_SIZES = Object.freeze({
 export const ICON_SIZE = 24;
 export const DIVIDER_SIZE = 20;
 
+interface BadgeProps {
+  textStyle: TextStyle;
+  badgeStyle: ViewStyle;
+  containerStyle: ViewStyle;
+}
+
+export const BADGE_PROPS: BadgeProps = {
+  textStyle: {
+    fontSize: FONT_SIZES.small
+  },
+  badgeStyle: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 5,
+    height: 22,
+    borderRadius: 11
+  },
+  containerStyle: {
+  }
+};
+
 // tslint:disable:no-object-literal-type-assertion
 export const SHARED_STYLES = {
   container: {
@@ -57,15 +77,6 @@ export const SHARED_STYLES = {
   listItemRightTitle: {
     color: COLORS.primary,
     fontSize: FONT_SIZES.medium
-  },
-  listItemBadgeText: {
-    //fontSize: FONT_SIZES.small
-  },
-  listItemBadge: {
-    backgroundColor: COLORS.primary
-    //paddingVertical: 3
-  },
-  listItemBadgeContainer: {
   },
   button: {
     borderRadius: 3,

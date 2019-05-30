@@ -4,8 +4,7 @@ import {
   ListRenderItemInfo,
   SafeAreaView,
   StatusBar,
-  StyleSheet,
-  ViewStyle
+  StyleSheet
 } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
@@ -67,7 +66,7 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     });
   }
 
-  private editChild = () => {
+  private readonly editChild = () => {
     if (this.props.child) {
       this.props.navigation.navigate('ChildDetail');
     }
@@ -93,30 +92,31 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  private keyExtractor = (item: WeeklyScore): string => {
+  private readonly keyExtractor = (item: WeeklyScore): string => {
     return item.week;
   }
-  private renderItem = (info: ListRenderItemInfo<WeeklyScore>): JSX.Element => {
+  private readonly renderItem = (info: ListRenderItemInfo<WeeklyScore>): JSX.Element => {
     const item = info.item;
+    const childId = this.props.child !== undefined ? this.props.child.id : '';
     return (
       <WeeklyScores
         style={styles.weekly}
-        childId={this.props.child !== undefined ? this.props.child.id : ''}
+        childId={childId}
         weeklyScore={item}
         setScore={this.props.setScore} />
     );
   }
-  private onRefresh = () => {
+  private readonly onRefresh = () => {
     if (this.props.child !== undefined) {
       this.props.refreshScores(this.props.child.id);
     }
   }
-  private onEndReached = () => {
+  private readonly onEndReached = () => {
     if (this.props.child !== undefined) {
       this.props.fetchMoreStores(this.props.child.id);
     }
   }
-  private scrollToTop = () => {
+  private readonly scrollToTop = () => {
     // tslint:disable-next-line:no-any
     (this.refs.flatList as any).scrollToOffset({ offset: 0, animated: false });
   }
@@ -180,6 +180,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowOffset: { width: 3, height: 3 },
     elevation: 5
-  } as ViewStyle
+  }
 });
 // tslint:enable:no-object-literal-type-assertion

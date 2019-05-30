@@ -45,26 +45,26 @@ export class AddRedeemView extends React.PureComponent<Props, State> {
     );
   }
 
-  private isValidDescription = (): boolean => {
+  private readonly isValidDescription = (): boolean => {
     const { description } = this.state;
     return description.trim().length > 0;
   }
 
-  private onChangeDescription = (text: string): void => {
+  private readonly onChangeDescription = (text: string): void => {
     this.setState((s: State) => ({ ...s, description: text }));
   }
 
-  private isValidValue = (): boolean => {
+  private readonly isValidValue = (): boolean => {
     const { value } = this.state;
     const num = parseInt(value.trim(), 10);
     return !isNaN(num);
   }
 
-  private onChangeValue = (text: string): void => {
+  private readonly onChangeValue = (text: string): void => {
     this.setState((s: State) => ({ ...s, value: text }));
   }
 
-  private onSubmitInternal = (): void => {
+  private readonly onSubmitInternal = (): void => {
     const { description, value } = this.state;
     if (this.isValidDescription() && this.isValidValue()) {
       const num = parseInt(value.trim(), 10);

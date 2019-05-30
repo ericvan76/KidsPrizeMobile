@@ -65,7 +65,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     super(props);
   }
 
-  private addRedeem = () => {
+  private readonly addRedeem = () => {
     if (this.props.child) {
       const addRedeem: AddRedeemParams = {
         onSubmit: (description: string, value: number) => {
@@ -108,11 +108,11 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  private keyExtractor = (redeem: Redeem): string => {
+  private readonly keyExtractor = (redeem: Redeem): string => {
     return redeem.timestamp;
   }
 
-  private renderItem: ListRenderItem<Redeem> = (info: ListRenderItemInfo<Redeem>) => {
+  private readonly renderItem: ListRenderItem<Redeem> = (info: ListRenderItemInfo<Redeem>) => {
     const item = info.item;
     return (
       <ListItem
@@ -120,7 +120,8 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
         // leftIcon={{ name: 'gift', type: 'material-community', style: styles.listItemIcon }}
         title={item.description}
         titleStyle={styles.listItemTitle}
-        subtitle={moment(item.timestamp).format('DD-MMM-YYYY HH:mm')}
+        subtitle={moment(item.timestamp)
+          .format('DD-MMM-YYYY HH:mm')}
         subtitleStyle={styles.listItemSubtitle}
         rightTitle={item.value.toString()}
         rightTitleStyle={styles.listItemRightTitle}
@@ -128,17 +129,17 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
     );
   }
 
-  private onRefresh = (): void => {
+  private readonly onRefresh = (): void => {
     if (this.props.child !== undefined) {
       this.props.refreshRedeems(this.props.child.id);
     }
   }
-  private onEndReached = () => {
+  private readonly onEndReached = () => {
     if (this.props.child !== undefined) {
       this.props.fetchMoreRedeems(this.props.child.id);
     }
   }
-  private scrollToTop = () => {
+  private readonly scrollToTop = () => {
     // tslint:disable-next-line:no-any
     (this.refs.flatList as any).scrollToOffset({ offset: 0, animated: false });
   }

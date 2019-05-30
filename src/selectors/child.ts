@@ -25,7 +25,10 @@ export const selectTasks = createSelector(
   ): Array<string> | undefined => {
     if (childId !== undefined && children[childId] !== undefined) {
       const scores = children[childId].scores;
-      const currentWeek = Object.keys(scores).sort().reverse()[0];
+      const currentWeek = Object
+        .keys(scores)
+        .sort()
+        .reverse()[0];
       return scores[currentWeek].tasks;
     }
     return undefined;
@@ -54,7 +57,9 @@ export const selectCurrentChildScores = createSelector(
     childId: ChildId | null
   ): Array<WeeklyScore> => {
     if (childId !== null && children[childId] !== undefined) {
-      return Object.values(children[childId].scores).sort((a: WeeklyScore, b: WeeklyScore) => a.week < b.week ? 1 : -1);
+      return Object
+        .values(children[childId].scores)
+        .sort((a: WeeklyScore, b: WeeklyScore) => a.week < b.week ? 1 : -1);
     }
     return [];
   }
@@ -68,7 +73,9 @@ export const selectCurrentChildRedeems = createSelector(
     childId: ChildId | null
   ): Array<Redeem> => {
     if (childId !== null && children[childId] !== undefined) {
-      return Object.values(children[childId].redeems).sort((a: Redeem, b: Redeem) => a.timestamp < b.timestamp ? 1 : -1);
+      return Object
+        .values(children[childId].redeems)
+        .sort((a: Redeem, b: Redeem) => a.timestamp < b.timestamp ? 1 : -1);
     }
     return [];
   }
@@ -79,6 +86,8 @@ export const selectChildren = createSelector(
   (
     children: Record<ChildId, ChildState>
   ): Array<Child> => {
-    return Object.values(children).map(i => i.child);
+    return Object
+      .values(children)
+      .map(i => i.child);
   }
 );

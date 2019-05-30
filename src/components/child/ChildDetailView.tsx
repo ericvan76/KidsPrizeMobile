@@ -53,8 +53,9 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     const params = props.navigation.state.params as ChildDetailParams;
     const goBack = () => props.navigation.goBack();
     const isUpdate = !(params && params.createNew);
+    const headerIcon = isUpdate ? 'arrow-left' : 'close';
     return {
-      headerLeft: <HeaderIcon name={isUpdate ? 'arrow-left' : 'close'} onPress={goBack} />,
+      headerLeft: <HeaderIcon name={headerIcon} onPress={goBack} />,
       headerTitle: isUpdate ? 'Edit Child' : 'Add Child',
       drawerLockMode: 'locked-closed'
     };
@@ -73,7 +74,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     }
   }
 
-  private onPressName = () => {
+  private readonly onPressName = () => {
     const { id, name } = this.props.child || this.state;
     const params: TextInputParams = {
       title: 'Input Name',
@@ -96,7 +97,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     this.props.navigation.navigate('TextInput', params);
   }
 
-  private onPressGender = () => {
+  private readonly onPressGender = () => {
     const { id, gender } = this.props.child || this.state;
     const params: PickerParams<Gender> = {
       title: 'Select Gender',
@@ -122,7 +123,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     this.props.navigation.navigate('Picker', params);
   }
 
-  private onPressTasks = () => {
+  private readonly onPressTasks = () => {
     const { id } = this.props.child || this.state;
     const tasks = this.props.tasks || this.state.tasks;
     const params: TasksEditorParams = {
@@ -144,7 +145,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     this.props.navigation.navigate('TasksEditor', params);
   }
 
-  private onPressDelete = () => {
+  private readonly onPressDelete = () => {
     Alert.alert(
       'Confirm',
       'Are you sure you want to delete this child? This cannot be undone.',
@@ -163,7 +164,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     );
   }
 
-  private onPressAdd = () => {
+  private readonly onPressAdd = () => {
     const { id, name, gender, tasks } = this.state;
     if (name.length > 0) {
       this.props.createChild({
@@ -179,6 +180,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
   public render(): JSX.Element {
     const { name, gender } = this.props.child || this.state;
     const tasks = this.props.tasks || this.state.tasks;
+    const genderTitle = gender === 'M' ? 'Boy' : 'Girl';
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.listContainer}>
@@ -195,7 +197,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
           <ListItem
             chevron
             title="Gender"
-            rightTitle={gender === 'M' ? 'Boy' : 'Girl'}
+            rightTitle={genderTitle}
             leftIcon={{ name: 'human-male-female', type: 'material-community', iconStyle: styles.listItemIcon }}
             onPress={this.onPressGender}
             containerStyle={styles.listItemContainer}
@@ -205,7 +207,12 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
           <ListItem
             chevron
             title="Tasks"
-            badge={{ value: tasks.length, containerStyle: styles.listItemBadge }}
+            badge={{
+              value: tasks.length,
+              badgeStyle: styles.listItemBadge,
+              textStyle: styles.listItemBadgeText,
+              containerStyle: styles.listItemBadgeContainer
+            }}
             leftIcon={{ name: 'format-list-bulleted', type: 'material-community', iconStyle: styles.listItemIcon }}
             onPress={this.onPressTasks}
             containerStyle={styles.listItemContainer}

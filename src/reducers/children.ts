@@ -37,6 +37,7 @@ export function childrenReducer(
     case actions.removeChild.type: {
       const childId = action.payload;
       const newState = { ...state };
+      // tslint:disable-next-line: no-dynamic-delete
       delete newState[childId];
       return newState;
     }
@@ -65,7 +66,9 @@ export function childrenReducer(
     case actions.setScore.type: {
       const { childId, task, date, value } = action.payload;
       const childState: ChildState = state[childId];
-      const weekId = moment(`${date}T00:00:00Z`).day(0).format(Constants.DATE_FORMAT);
+      const weekId = moment(`${date}T00:00:00Z`)
+        .day(0)
+        .format(Constants.DATE_FORMAT);
       if (childState.scores === undefined) {
         return state;
       }

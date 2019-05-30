@@ -2,6 +2,7 @@ import { Constants } from 'expo';
 import React from 'react';
 import { Platform } from 'react-native';
 import {
+  createAppContainer,
   createBottomTabNavigator,
   createDrawerNavigator,
   createStackNavigator,
@@ -70,7 +71,7 @@ const StackNav = createStackNavigator(
     AddRedeem: { screen: AddRedeemView }
   },
   {
-    navigationOptions: {
+    defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: COLORS.primary,
         borderBottomColor: COLORS.primary,
@@ -81,12 +82,13 @@ const StackNav = createStackNavigator(
         color: COLORS.white,
         fontSize: FONT_SIZES.xlarge
       },
+      // tslint:disable-next-line: no-null-keyword
       headerBackTitle: null
     }
   }
 );
 
-export const AppNavigator = createDrawerNavigator(
+const AppNavigator = createDrawerNavigator(
   {
     StackNav: { screen: StackNav }
   },
@@ -95,3 +97,5 @@ export const AppNavigator = createDrawerNavigator(
     contentComponent: (props) => <DrawerView navigation={props.navigation} />
   }
 );
+
+export const AppContainer = createAppContainer(AppNavigator);

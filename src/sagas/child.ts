@@ -88,7 +88,10 @@ function* deleteChildSaga(action: typeof actions.deleteChild.shape): SagaIterato
     yield put(startRequesting(actionType));
     const childId = action.payload;
     const allChildren: Record<ChildId, ChildState> = yield select((s: AppState) => s.children);
-    const nextChildId = Object.keys(allChildren).find((k: ChildId) => k !== childId) || null;
+    const nextChildId = Object
+      .keys(allChildren)
+      // tslint:disable-next-line: no-null-keyword
+      .find((k: ChildId) => k !== childId) || null;
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     yield call(deleteChildAsync, authToken, childId);
     yield all([
@@ -129,7 +132,9 @@ function* refreshScoresSaga(action: typeof actions.refreshScores.shape): SagaIte
     yield put(startRequesting(actionType));
     const childId = action.payload;
     const authToken: string = yield call(authClient.getAuthTokenAsync);
-    const rewindFrom: string = moment().day(7).format(DATE_FORMAT);
+    const rewindFrom: string = moment()
+      .day(7)
+      .format(DATE_FORMAT);
     const result = yield call(getScoresAsync, authToken, childId, rewindFrom, WEEKS_PAGE_SIZE);
     yield all([
       put(actions.updateScores(result)),
@@ -151,7 +156,11 @@ function* fetchMoreScoresSaga(action: typeof actions.fetchMoreStores.shape): Sag
     const childId = action.payload;
     const childState: ChildState = yield select((s: AppState) => s.children[childId]);
     const authToken: string = yield call(authClient.getAuthTokenAsync);
-    const loadedWeeks = childState.scores !== undefined ? Object.keys(childState.scores).sort() : [];
+    const loadedWeeks = childState.scores !== undefined
+      ? Object
+        .keys(childState.scores)
+        .sort()
+      : [];
     if (loadedWeeks.length > 0) {
       if (loadedWeeks.length < WEEKS_PAGE_SIZE) {
         // less than one page

@@ -35,19 +35,19 @@ export class TextInputView extends React.PureComponent<Props, State> {
     value: this.props.navigation.state.params.value || ''
   };
 
-  private isDirty = (): boolean => {
+  private readonly isDirty = (): boolean => {
     return this.state.value.trim() !== this.props.navigation.state.params.value;
   }
 
-  private isValid = (): boolean => {
+  private readonly isValid = (): boolean => {
     return this.state.value.trim().length > 0;
   }
 
-  private onChangeText = (text: string): void => {
+  private readonly onChangeText = (text: string): void => {
     this.setState((s: State) => ({ ...s, value: text }));
   }
 
-  private onSubmitEditing = (): void => {
+  private readonly onSubmitEditing = (): void => {
     if (!this.isValid()) {
       return;
     }

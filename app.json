@@ -5,7 +5,7 @@
     "slug": "kidsprize",
     "privacy": "public",
     "sdkVersion": "36.0.0",
-    "version": "1.5.3",
+    "version": "1.6.0",
     "githubUrl": "https://github.com/ericvan76/KidsPrizeMobile",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
@@ -19,14 +19,6 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [],
-    "packagerOpts": {
-      "sourceExts": [
-        "ts",
-        "tsx",
-        "js"
-      ],
-      "transformer": "node_modules/react-native-typescript-transformer/index.js"
-    },
     "androidStatusBar": {
       "barStyle": "dark-content",
       "backgroundColor": "#ffffff"
@@ -34,7 +26,7 @@
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1050302",
+      "buildNumber": "1060004",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -44,7 +36,7 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1050302,
+      "versionCode": 1060004,
       "permissions": [
         "USE_FINGERPRINT"
       ],
@@ -58,7 +50,7 @@
       "ios"
     ],
     "extra": {
-      "semver": "1.5.3-beta.2"
+      "semver": "1.6.0-beta.4"
     }
   }
 }

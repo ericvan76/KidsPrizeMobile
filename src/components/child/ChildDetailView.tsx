@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Button, ListItem } from 'react-native-elements';
-import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { createChild, deleteChild, modifyChild } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
@@ -16,19 +15,23 @@ import { selectCurrentChild, selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
 import * as uuid from 'uuid';
+import { StackNavigationProp, StackNavigationOptions } from '@react-navigation/stack';
+import { RootStackParamList } from '../AppNavigator';
+import { RouteProp } from '@react-navigation/native';
 
 export interface ChildDetailParams {
   createNew?: boolean;
 }
 
 interface OwnProps {
-  navigation: NavigationScreenProp<{ params?: ChildDetailParams }>;
+  navigation: StackNavigationProp<RootStackParamList, 'ChildDetail'>;
+  route: RouteProp<RootStackParamList, 'ChildDetail'>;
 }
 
 interface StateProps {
   profile: Profile | undefined;
   child: Child | undefined;
-  tasks: Array<string> | undefined;
+  tasks: string[] | undefined;
   requestState: RequestState;
 }
 interface DispatchProps {
@@ -44,22 +47,22 @@ interface State {
   id: string;
   name: string;
   gender: Gender;
-  tasks: Array<string>;
+  tasks: string[];
 }
 
 class ChildDetailViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    const params = props.navigation.state.params as ChildDetailParams;
+  public static navigationOptions = (props: Props): StackNavigationOptions => {
+    const params = props.route.params;
     const goBack = () => props.navigation.goBack();
     const isUpdate = !(params && params.createNew);
     const headerIcon = isUpdate ? 'arrow-left' : 'close';
     return {
-      headerLeft: <HeaderIcon name={headerIcon} onPress={goBack} />,
-      headerTitle: isUpdate ? 'Edit Child' : 'Add Child',
-      drawerLockMode: 'locked-closed'
+      headerLeft: () => <HeaderIcon name={headerIcon} onPress={goBack} />,
+      headerTitle: isUpdate ? 'Edit Child' : 'Add Child'
+      //  drawerLockMode: 'locked-closed'
     };
-  }
+  };
 
   public state: State = {
     id: uuid.v4(),
@@ -95,7 +98,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
       }
     };
     this.props.navigation.navigate('TextInput', params);
-  }
+  };
 
   private readonly onPressGender = () => {
     const { id, gender } = this.props.child || this.state;
@@ -121,14 +124,14 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
       }
     };
     this.props.navigation.navigate('Picker', params);
-  }
+  };
 
   private readonly onPressTasks = () => {
     const { id } = this.props.child || this.state;
     const tasks = this.props.tasks || this.state.tasks;
     const params: TasksEditorParams = {
       value: tasks,
-      onSubmit: (value: Array<string>) => {
+      onSubmit: (value: string[]) => {
         if (this.props.child) {
           this.props.modifyChild({
             childId: id,
@@ -142,8 +145,8 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
         }
       }
     };
-    this.props.navigation.navigate('TasksEditor', params);
-  }
+    this.props.navigation.navigate('TaskEditor', params);
+  };
 
   private readonly onPressDelete = () => {
     Alert.alert(
@@ -162,7 +165,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
       ],
       { cancelable: false }
     );
-  }
+  };
 
   private readonly onPressAdd = () => {
     const { id, name, gender, tasks } = this.state;
@@ -175,7 +178,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
       });
       this.props.navigation.goBack();
     }
-  }
+  };
 
   public render(): JSX.Element {
     const { name, gender } = this.props.child || this.state;
@@ -238,7 +241,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state: AppState, ownProps: OwnProps): StateProps => {
   const profile = state.auth.profile;
-  const createNew = ownProps.navigation.state.params && ownProps.navigation.state.params.createNew;
+  const createNew = ownProps.route.params && ownProps.route.params.createNew;
   const child = createNew === true ? undefined : selectCurrentChild(state);
   const tasks = selectTasks(state, child && child.id);
   const requestState = state.requestState;
@@ -251,7 +254,8 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state:
 };
 
 export const ChildDetailView = connect<StateProps, DispatchProps, OwnProps>(
-  mapStateToProps, {
+  mapStateToProps,
+  {
     createChild,
     modifyChild,
     deleteChild,
@@ -262,7 +266,7 @@ export const ChildDetailView = connect<StateProps, DispatchProps, OwnProps>(
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   button: {
-    marginTop: 60,
-    marginHorizontal: 10
+    ...SHARED_STYLES.button,
+    marginTop: 40
   }
 });

@@ -6,9 +6,9 @@ export async function callApiAsync(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   uri: string,
   body?: {}
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
-  const url: string = `${CONFIG.apiBaseUrl}/v2/${uri}`;
+  const url: string = `${CONFIG.apiBaseUrl}/${uri}`;
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
   headers.set('Accept', 'application/json');
@@ -40,7 +40,7 @@ export async function setPreferenceAsync(authToken: string, preference: Preferen
   return callApiAsync(authToken, 'PUT', 'preference', preference);
 }
 
-export async function getChildrenListAsync(authToken: string): Promise<Array<Child>> {
+export async function getChildrenListAsync(authToken: string): Promise<Child[]> {
   return callApiAsync(authToken, 'GET', 'children');
 }
 
@@ -49,7 +49,7 @@ export async function createChildAsync(
   childId: ChildId,
   name: string,
   gender: Gender,
-  tasks: Array<string>
+  tasks: string[]
 ): Promise<ScoreResult> {
   return callApiAsync(authToken, 'POST', 'children', {
     childId,
@@ -68,7 +68,7 @@ export async function updateChildAsync(
   childId: ChildId,
   name?: string,
   gender?: Gender,
-  tasks?: Array<string>
+  tasks?: string[]
 ): Promise<ScoreResult> {
   return callApiAsync(authToken, 'PUT', `children/${childId}`, {
     childId,
@@ -124,7 +124,7 @@ export async function getRedeemsAsync(
   childId: ChildId,
   offset: number,
   limit: number
-): Promise<Array<Redeem>> {
+): Promise<Redeem[]> {
   const qs = toQueryString({
     limit: limit.toString(),
     offset: offset.toString()
@@ -149,13 +149,13 @@ export interface Child {
 
 export interface ScoreResult {
   child: Child;
-  weeklyScores: Array<WeeklyScore>;
+  weeklyScores: WeeklyScore[];
 }
 
 export interface WeeklyScore {
   week: WeekId;
-  tasks: Array<string>;
-  scores: Array<Score>;
+  tasks: string[];
+  scores: Score[];
 }
 
 export interface Score {

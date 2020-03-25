@@ -42,7 +42,6 @@ export const BADGE_PROPS: BadgeProps = {
   }
 };
 
-// tslint:disable:no-object-literal-type-assertion
 export const SHARED_STYLES = {
   container: {
     flex: 1,
@@ -81,11 +80,11 @@ export const SHARED_STYLES = {
   button: {
     borderRadius: 3,
     marginVertical: 10,
-    marginHorizontal: 10
+    marginHorizontal: 40
   },
   buttonTitle: {
     fontSize: FONT_SIZES.medium,
     fontWeight: 'normal'
   } as TextStyle
 };
-// tslint:enable:no-object-literal-type-assertion
+

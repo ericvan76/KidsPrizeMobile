@@ -5,7 +5,6 @@ export const INITIAL_STATE: AppState = {
     profile: undefined
   },
   children: {},
-  // tslint:disable-next-line: no-null-keyword
   currentChild: null,
   requestState: {
     requesting: {},

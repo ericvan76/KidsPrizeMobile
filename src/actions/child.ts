@@ -26,7 +26,7 @@ export const updateScores = createAction<'kidsprize/child/updateScores', ScoreRe
 
 export interface UpdateRedeemsPayload {
   child: Child;
-  redeems: Array<Redeem>;
+  redeems: Redeem[];
 }
 export const updateRedeems = createAction<'kidsprize/child/updateRedeems', UpdateRedeemsPayload>(
   'kidsprize/child/updateRedeems'
@@ -53,7 +53,7 @@ export interface CreateChildPayload {
   childId: ChildId;
   name: string;
   gender: Gender;
-  tasks: Array<string>;
+  tasks: string[];
 }
 export const createChild = createAction<'kidsprize/child/createChild', CreateChildPayload>(
   'kidsprize/child/createChild'
@@ -62,7 +62,7 @@ export interface EditChildPayload {
   childId: ChildId;
   name?: string;
   gender?: Gender;
-  tasks?: Array<string>;
+  tasks?: string[];
 }
 export const modifyChild = createAction<'kidsprize/child/modifyChild', EditChildPayload>(
   'kidsprize/child/modifyChild'

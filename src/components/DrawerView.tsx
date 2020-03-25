@@ -1,25 +1,26 @@
 import React from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Avatar, Divider, ListItem } from 'react-native-elements';
-import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn, signOut } from 'src/actions/auth';
 import { switchChild } from 'src/actions/child';
 import { Profile } from 'src/api/auth';
 import { Child } from 'src/api/child';
 import { ChildDetailParams } from 'src/components/child/ChildDetailView';
-import { CONFIG } from 'src/config';
 import { BADGE_PROPS, COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
 import { selectChildren } from 'src/selectors/child';
 import { AppState } from 'src/store';
+import Constants from 'expo-constants';
+import { DrawerContentComponentProps } from '@react-navigation/drawer';
+import { DrawerActions } from '@react-navigation/native';
 
 interface OwnProps {
-  navigation: NavigationScreenProp<{}>;
+  drawerProps: DrawerContentComponentProps;
 }
 
 interface StateProps {
   profile: Profile | undefined;
-  children: Array<Child>;
+  children: Child[];
 }
 interface DispatchProps {
   switchChild: typeof switchChild;
@@ -35,9 +36,9 @@ interface State {
 class DrawerViewInner extends React.PureComponent<Props, State> {
 
   private readonly switchChild = (id: string) => {
-    this.props.navigation.closeDrawer();
+    this.props.drawerProps.navigation.dispatch(DrawerActions.closeDrawer());
     this.props.switchChild(id);
-  }
+  };
 
   private readonly signOut = () => {
     Alert.alert(
@@ -47,26 +48,26 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
         { text: 'No', style: 'cancel' },
         {
           text: 'Yes', onPress: async () => {
-            this.props.navigation.closeDrawer();
+            this.props.drawerProps.navigation.dispatch(DrawerActions.closeDrawer());
             this.props.signOut(undefined);
           }
         }
       ],
       { cancelable: false }
     );
-  }
+  };
 
   private readonly signIn = () => {
-    this.props.navigation.closeDrawer();
+    this.props.drawerProps.navigation.dispatch(DrawerActions.closeDrawer());
     this.props.signIn(undefined);
-  }
+  };
 
   private readonly addChild = () => {
     const params: ChildDetailParams = {
       createNew: true
     };
-    this.props.navigation.navigate('ChildDetail', params);
-  }
+    this.props.drawerProps.navigation.navigate('ChildDetail', params);
+  };
 
   public render(): JSX.Element {
 
@@ -83,12 +84,12 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
             />
           </View>
           <View style={styles.bottom}>
-            <Text style={styles.version}>{CONFIG.semver}</Text>
+            <Text style={styles.version}>{Constants.manifest.extra.semver}</Text>
           </View>
         </SafeAreaView>
       );
     } else {
-      const onSwitches: Array<() => void> = this.props.children.map(c =>
+      const onSwitches: (() => void)[] = this.props.children.map(c =>
         (): void => { this.switchChild(c.id); }
       );
       const { picture, name, nickname, given_name, email } = this.props.profile;
@@ -137,7 +138,7 @@ class DrawerViewInner extends React.PureComponent<Props, State> {
             />
           </View>
           <View style={styles.bottom}>
-            <Text style={styles.version}>{CONFIG.semver}</Text>
+            <Text style={styles.version}>{Constants.manifest.extra.semver}</Text>
           </View>
         </SafeAreaView>
       );
@@ -155,7 +156,8 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state:
 };
 
 export const DrawerView = connect<StateProps, DispatchProps, OwnProps>(
-  mapStateToProps, {
+  mapStateToProps,
+  {
     switchChild,
     signIn,
     signOut

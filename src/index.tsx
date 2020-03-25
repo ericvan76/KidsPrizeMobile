@@ -43,10 +43,9 @@ export class App extends React.PureComponent<Props, State> {
       };
     });
     store.dispatch(signIn(undefined));
-  }
+  };
 
   private readonly cacheResourcesAsync = async () => {
-    // tslint:disable:no-require-imports no-floating-promises
-    // tslint:enable:no-require-imports no-floating-promises
-  }
+    // nothing
+  };
 }

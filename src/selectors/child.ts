@@ -22,7 +22,7 @@ export const selectTasks = createSelector(
   (
     children: Record<ChildId, ChildState>,
     childId: ChildId | undefined
-  ): Array<string> | undefined => {
+  ): string[] | undefined => {
     if (childId !== undefined && children[childId] !== undefined) {
       const scores = children[childId].scores;
       const currentWeek = Object
@@ -55,7 +55,7 @@ export const selectCurrentChildScores = createSelector(
   (
     children: Record<ChildId, ChildState>,
     childId: ChildId | null
-  ): Array<WeeklyScore> => {
+  ): WeeklyScore[] => {
     if (childId !== null && children[childId] !== undefined) {
       return Object
         .values(children[childId].scores)
@@ -71,7 +71,7 @@ export const selectCurrentChildRedeems = createSelector(
   (
     children: Record<ChildId, ChildState>,
     childId: ChildId | null
-  ): Array<Redeem> => {
+  ): Redeem[] => {
     if (childId !== null && children[childId] !== undefined) {
       return Object
         .values(children[childId].redeems)
@@ -85,7 +85,7 @@ export const selectChildren = createSelector(
   (s: AppState) => s.children,
   (
     children: Record<ChildId, ChildState>
-  ): Array<Child> => {
+  ): Child[] => {
     return Object
       .values(children)
       .map(i => i.child);

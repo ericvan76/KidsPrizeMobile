@@ -34,8 +34,8 @@ function* fetchChildrenSaga(action: typeof actions.fetchChildren.shape): SagaIte
     yield call(setPreferenceAsync, authToken, {
       timeZoneOffset: new Date().getTimezoneOffset()
     });
-    const children: Array<Child> = yield call(getChildrenListAsync, authToken);
-    const effects: Array<Effect> = [];
+    const children: Child[] = yield call(getChildrenListAsync, authToken);
+    const effects: Effect[] = [];
     if (children.length > 0) {
       children.forEach((c: Child) => {
         effects.push(put(actions.updateChild(c)));
@@ -90,7 +90,6 @@ function* deleteChildSaga(action: typeof actions.deleteChild.shape): SagaIterato
     const allChildren: Record<ChildId, ChildState> = yield select((s: AppState) => s.children);
     const nextChildId = Object
       .keys(allChildren)
-      // tslint:disable-next-line: no-null-keyword
       .find((k: ChildId) => k !== childId) || null;
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     yield call(deleteChildAsync, authToken, childId);
@@ -217,7 +216,7 @@ function* refreshRedeemsSaga(action: typeof actions.refreshRedeems.shape): SagaI
     const childId = action.payload;
     const childState: ChildState = yield select((s: AppState) => s.children[childId]);
     const authToken: string = yield call(authClient.getAuthTokenAsync);
-    const redeems: Array<Redeem> = yield call(getRedeemsAsync, authToken, childId, 0, REDEEMS_PAGE_SIZE);
+    const redeems: Redeem[] = yield call(getRedeemsAsync, authToken, childId, 0, REDEEMS_PAGE_SIZE);
     yield all([
       put(actions.updateRedeems({ child: childState.child, redeems })),
       put(endRequesting(actionType))
@@ -236,14 +235,14 @@ function* fetchMoreRedeemsSaga(action: typeof actions.fetchMoreRedeems.shape): S
   try {
     yield put(startRequesting(actionType));
     const childId = action.payload;
-    const childState: ChildState = yield select((s: AppState) => s.children[childId]);
+    const childState = yield select((s: AppState) => s.children[childId]);
     const authToken: string = yield call(authClient.getAuthTokenAsync);
     const offset = childState.redeems !== undefined ? Object.keys(childState.redeems).length : 0;
     if (offset < REDEEMS_PAGE_SIZE) {
       // less than one page
       yield put(endRequesting(actionType));
     } else {
-      const redeems: Array<Redeem> = yield call(getRedeemsAsync, authToken, childId, offset, REDEEMS_PAGE_SIZE);
+      const redeems: Redeem[] = yield call(getRedeemsAsync, authToken, childId, offset, REDEEMS_PAGE_SIZE);
       yield all([
         put(actions.updateRedeems({ child: childState.child, redeems })),
         put(endRequesting(actionType))

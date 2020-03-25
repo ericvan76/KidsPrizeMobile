@@ -1,17 +1,20 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TextInput, TextStyle } from 'react-native';
-import { NavigationScreenProp, NavigationScreenProps } from 'react-navigation';
 import { HeaderIcon } from 'src/components/common/Icons';
 import { COLORS, FONT_SIZES, SHARED_STYLES } from 'src/constants';
+import { StackNavigationProp, StackNavigationOptions } from '@react-navigation/stack';
+import { RootStackParamList } from '../AppNavigator';
+import { RouteProp } from '@react-navigation/native';
 
 export interface TasksEditorParams {
-  value: Array<string>;
-  onSubmit(value: Array<string>): void;
+  value: string[];
+  onSubmit(value: string[]): void;
   onSubmitInternal?(): void;
 }
 
 interface Props {
-  navigation: NavigationScreenProp<{ params: TasksEditorParams }>;
+  navigation: StackNavigationProp<RootStackParamList, 'TaskEditor'>;
+  route: RouteProp<RootStackParamList, 'TaskEditor'>;
 }
 
 interface State {
@@ -20,25 +23,25 @@ interface State {
 
 export class TasksEditorView extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    const params = props.navigation.state.params as TasksEditorParams;
+  public static navigationOptions = (props: Props): StackNavigationOptions => {
+    const params = props.route.params;
     const goBack = () => props.navigation.goBack();
     return {
-      headerLeft: <HeaderIcon name="close" onPress={goBack} />,
+      headerLeft: () => <HeaderIcon name="close" onPress={goBack} />,
       headerTitle: 'Edit Tasks',
-      headerRight: <HeaderIcon name="check" onPress={params.onSubmitInternal} />,
-      drawerLockMode: 'locked-closed'
+      headerRight: () => <HeaderIcon name="check" onPress={params.onSubmitInternal} />,
+      //  drawerLockMode: 'locked-closed'
     };
-  }
+  };
 
   public constructor(props: Props) {
     super(props);
     this.state = {
-      value: this.props.navigation.state.params.value.join('\n')
+      value: this.props.route.params.value.join('\n')
     };
     this.props.navigation.setParams(
       {
-        ...this.props.navigation.state.params,
+        ...this.props.route.params,
         onSubmitInternal: this.onSubmitInternal
       }
     );
@@ -46,22 +49,22 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
 
   private readonly isDirty = (): boolean => {
     const tasks = this.getTasks();
-    const prevTasks = this.props.navigation.state.params.value;
+    const prevTasks = this.props.route.params.value;
     if (tasks.length === prevTasks.length) {
       return tasks.some((t, i) => t !== prevTasks[i]);
     }
     return true;
-  }
+  };
 
   private readonly isValid = (): boolean => {
     return this.state.value.trim().length > 0;
-  }
+  };
 
   private readonly onChangeText = (text: string): void => {
     this.setState((s: State) => ({ ...s, value: text }));
-  }
+  };
 
-  private getTasks(): Array<string> {
+  private getTasks(): string[] {
     const tasks = this.state.value
       .trim()
       .split('\n')
@@ -75,10 +78,10 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
       return;
     }
     if (this.isDirty()) {
-      this.props.navigation.state.params.onSubmit(this.getTasks());
+      this.props.route.params.onSubmit(this.getTasks());
     }
     this.props.navigation.goBack();
-  }
+  };
 
   public render(): JSX.Element {
     return (
@@ -98,7 +101,6 @@ export class TasksEditorView extends React.PureComponent<Props, State> {
   }
 }
 
-// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   textInput: {
@@ -115,4 +117,3 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   } as TextStyle
 });
-// tslint:enable:no-object-literal-type-assertion

@@ -5,7 +5,6 @@ import * as Constants from 'src/constants';
 import { ChildState } from 'src/store';
 import { INITIAL_STATE } from './initialState';
 
-// tslint:disable-next-line:max-func-body-length
 export function childrenReducer(
   state: Record<ChildId, ChildState> = INITIAL_STATE.children,
   action:
@@ -37,7 +36,6 @@ export function childrenReducer(
     case actions.removeChild.type: {
       const childId = action.payload;
       const newState = { ...state };
-      // tslint:disable-next-line: no-dynamic-delete
       delete newState[childId];
       return newState;
     }

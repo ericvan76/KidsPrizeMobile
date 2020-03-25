@@ -1,101 +1,113 @@
-import { Constants } from 'expo';
 import React from 'react';
-import { Platform } from 'react-native';
-import {
-  createAppContainer,
-  createBottomTabNavigator,
-  createDrawerNavigator,
-  createStackNavigator,
-  NavigationScreenProps
-} from 'react-navigation';
-import { ChildDetailView } from 'src/components/child/ChildDetailView';
-import { TasksEditorView } from 'src/components/child/TasksEditorView';
-import { PickerView } from 'src/components/common/PickerView';
-import { TextInputView } from 'src/components/common/TextInputView';
+import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+import { createStackNavigator, StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ChildDetailView, ChildDetailParams } from 'src/components/child/ChildDetailView';
 import { DrawerView } from 'src/components/DrawerView';
-import { AddRedeemView } from 'src/components/redeems/AddRedeemView';
 import { RedeemsView } from 'src/components/redeems/RedeemsView';
 import { ScoresView } from 'src/components/scores/ScoresView';
+import { TextInputView, TextInputParams } from './common/TextInputView';
+import { PickerView, PickerParams } from './common/PickerView';
+import { TasksEditorView, TasksEditorParams } from './child/TasksEditorView';
+import { AddRedeemView, AddRedeemParams } from './redeems/AddRedeemView';
 import { COLORS, FONT_SIZES } from 'src/constants';
+import { FooterIcon, HeaderIcon } from './common/Icons';
 import { HeaderTitle } from './common/HeaderTitle';
-import { HeaderIcon } from './common/Icons';
 
-const TabNav = createBottomTabNavigator(
-  {
-    Scores: {
-      screen: ScoresView
-    },
-    Redeems: {
-      screen: RedeemsView
-    }
+const stackNavigationOptions: StackNavigationOptions = {
+  headerStyle: {
+    backgroundColor: COLORS.primary,
+    borderBottomColor: COLORS.primary,
+    // android status bar trick
+    //  marginTop: Platform.select({ android: Constants.statusBarHeight * -1 })
   },
-  {
-    animationEnabled: false,
-    swipeEnabled: true,
-    tabBarPosition: 'bottom',
-    tabBarOptions: {
+  headerTitleStyle: {
+    color: COLORS.white,
+    fontSize: FONT_SIZES.xlarge
+  },
+  headerBackTitleVisible: false
+};
+
+export type RootStackParamList = {
+  Home: undefined;
+  ChildDetail: ChildDetailParams;
+  TextInput: TextInputParams;
+  Picker: PickerParams<unknown>;
+  TaskEditor: TasksEditorParams;
+  AddRedeem: AddRedeemParams;
+};
+
+export type TabStackParamList = {
+  Scores: undefined;
+  Redeems: undefined;
+};
+
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
+const RootStack = createStackNavigator<RootStackParamList>();
+
+function Tabs() {
+  return (
+    <Tab.Navigator tabBarOptions={{
       style: {
         borderTopWidth: 0.5,
         borderTopColor: COLORS.primary,
         backgroundColor: COLORS.white
       },
-      tabStyle: {
-        paddingTop: 6
-      },
-      labelStyle: {
-        fontSize: FONT_SIZES.small
-      },
-      activeTintColor: COLORS.primary,
-      inactiveTintColor: COLORS.lightBorder
-    }
-  }
-);
+      tabStyle: { paddingTop: 6 },
+      labelStyle: { fontSize: FONT_SIZES.small }
+    }} >
+      <Tab.Screen name="Scores" component={ScoresView} options={{
+        tabBarLabel: 'Scores',
+        tabBarIcon: (opt: { color: string }) => (
+          <FooterIcon name="calendar-check" color={opt.color} />
+        )
+      }} />
+      <Tab.Screen name="Redeems" component={RedeemsView} options={{
+        tabBarLabel: 'Redeems',
+        tabBarIcon: (opt: { color: string }) => (
+          <FooterIcon name="gift" color={opt.color} />
+        )
+      }} />
+    </Tab.Navigator>
+  );
+}
 
-TabNav.navigationOptions = (props: NavigationScreenProps) => {
-  const openDrawer = () => props.navigation.openDrawer();
-  const openChildDetail = () => props.navigation.navigate('ChildDetail');
+
+
+function Home() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <DrawerView drawerProps={props} />}
+      drawerStyle={{ backgroundColor: COLORS.white }} >
+      <Drawer.Screen name="Tabs" component={Tabs} />
+    </Drawer.Navigator>
+  );
+}
+
+const homeOptions = (props: { navigation: StackNavigationProp<RootStackParamList, 'Home'> }): StackNavigationOptions => {
+  const openDrawer = () => props.navigation.dispatch(DrawerActions.openDrawer());
+  const openChildDetail = () => props.navigation.navigate('ChildDetail', {});
   return {
-    headerLeft: <HeaderIcon name="menu" onPress={openDrawer} />,
-    headerTitle: <HeaderTitle />,
-    headerRight: <HeaderIcon name="account-card-details" onPress={openChildDetail} />
+    headerLeft: () => <HeaderIcon name="menu" onPress={openDrawer} />,
+    headerTitle: () => <HeaderTitle />,
+    headerRight: () => <HeaderIcon name="account-card-details" onPress={openChildDetail} />
   };
 };
 
-const StackNav = createStackNavigator(
-  {
-    TabNav: { screen: TabNav },
-    ChildDetail: { screen: ChildDetailView },
-    TextInput: { screen: TextInputView },
-    Picker: { screen: PickerView },
-    TasksEditor: { screen: TasksEditorView },
-    AddRedeem: { screen: AddRedeemView }
-  },
-  {
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: COLORS.primary,
-        borderBottomColor: COLORS.primary,
-        // android status bar trick
-        marginTop: Platform.select({ android: Constants.statusBarHeight * -1 })
-      },
-      headerTitleStyle: {
-        color: COLORS.white,
-        fontSize: FONT_SIZES.xlarge
-      },
-      // tslint:disable-next-line: no-null-keyword
-      headerBackTitle: null
-    }
-  }
-);
+export function AppContainer() {
 
-const AppNavigator = createDrawerNavigator(
-  {
-    StackNav: { screen: StackNav }
-  },
-  {
-    drawerBackgroundColor: COLORS.white,
-    contentComponent: (props) => <DrawerView navigation={props.navigation} />
-  }
-);
-
-export const AppContainer = createAppContainer(AppNavigator);
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator screenOptions={stackNavigationOptions}>
+        <RootStack.Screen name="Home" component={Home} options={homeOptions} />
+        <RootStack.Screen name="ChildDetail" component={ChildDetailView} options={ChildDetailView.WrappedComponent.navigationOptions} />
+        <RootStack.Screen name="TextInput" component={TextInputView} options={TextInputView.navigationOptions} />
+        <RootStack.Screen name="Picker" component={PickerView} options={PickerView.navigationOptions} />
+        <RootStack.Screen name="TaskEditor" component={TasksEditorView} options={TasksEditorView.navigationOptions} />
+        <RootStack.Screen name="AddRedeem" component={AddRedeemView} options={AddRedeemView.navigationOptions} />
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+};

@@ -19,7 +19,9 @@ class AuthClient {
   private static instance: AuthClient;
   private token: Token | undefined;
 
-  private constructor() { }
+  private constructor() {
+    // singleton protect
+  }
 
   public static getInstance(): AuthClient {
     if (this.instance === undefined) {
@@ -51,7 +53,7 @@ class AuthClient {
       return profile;
     }
     throw new Error('SignIn Failure.');
-  }
+  };
 
   public signOutAsync = async (): Promise<void> => {
     await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -60,7 +62,7 @@ class AuthClient {
       await revokeRefreshTokenAsync(this.token.refresh_token);
     }
     await logoutAsync();
-  }
+  };
 
   public getAuthTokenAsync = async (): Promise<string> => {
     try {
@@ -87,14 +89,14 @@ class AuthClient {
       await AsyncStorage.removeItem(TOKEN_STORAGE_KEY);
       throw e;
     }
-  }
+  };
 
   private readonly parseToken = (token: Token | undefined): Profile | undefined => {
     if (token && token.id_token) {
       return decodeJwt(token.id_token);
     }
     return undefined;
-  }
+  };
 
   // private readonly askEnableFingerprintAsync = async (): Promise<void> => {
   //   if (await hasFingerprintEnrolledAsync()) {
@@ -126,7 +128,7 @@ class AuthClient {
       // }
     }
     return undefined;
-  }
+  };
 }
 
 export const authClient = AuthClient.getInstance();

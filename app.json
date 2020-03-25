@@ -4,8 +4,8 @@
     "description": "Kids behaviour chart",
     "slug": "kidsprize",
     "privacy": "public",
-    "sdkVersion": "32.0.0",
-    "version": "1.5.2",
+    "sdkVersion": "36.0.0",
+    "version": "1.5.3",
     "githubUrl": "https://github.com/ericvan76/KidsPrizeMobile",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
@@ -22,7 +22,8 @@
     "packagerOpts": {
       "sourceExts": [
         "ts",
-        "tsx"
+        "tsx",
+        "js"
       ],
       "transformer": "node_modules/react-native-typescript-transformer/index.js"
     },
@@ -33,7 +34,7 @@
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1050201",
+      "buildNumber": "1050302",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -43,21 +44,21 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1050201,
+      "versionCode": 1050302,
       "permissions": [
         "USE_FINGERPRINT"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon-foreground.png",
-        "backgroundImage": "./assets/adaptive-icon-background.png",
-      },
+        "backgroundImage": "./assets/adaptive-icon-background.png"
+      }
     },
+    "platforms": [
+      "android",
+      "ios"
+    ],
     "extra": {
-      "semver": "1.5.2-beta.1",
-      "apiBaseUrl": "https://kidsprize.fanstek.com/kidsprize-api",
-      "auth0Domain": "apperic.auth0.com",
-      "auth0ClientId": "<auth0-client-id>",
-      "auth0ClientSecret": "<auth0-client-secret>"
+      "semver": "1.5.3-beta.2"
     }
   }
 }

@@ -6,29 +6,29 @@ import {
   StatusBar,
   StyleSheet
 } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn } from 'src/actions/auth';
 import { fetchChildren, fetchMoreStores, refreshScores, setScore } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
 import { Profile } from 'src/api/auth';
 import { Child, WeeklyScore } from 'src/api/child';
-import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { WeeklyScores } from 'src/components/scores/WeeklyScores';
 import { SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildScores } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../AppNavigator';
 
 interface OwnProps {
-  navigation: NavigationScreenProp<{}>;
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 }
 
 interface StateProps {
   profile: Profile | undefined;
   child: Child | undefined;
-  scores: Array<WeeklyScore>;
+  scores: WeeklyScore[];
   requestState: RequestState;
 }
 
@@ -50,26 +50,8 @@ interface Snapshot {
 
 class ScoresViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = () => {
-    return {
-      tabBarLabel: 'Scores',
-      tabBarIcon: (opt: { tintColor?: string }) => (
-        <FooterIcon name="calendar-check" color={opt.tintColor} />
-      )
-    };
-  }
-
   public constructor(props: Props) {
     super(props);
-    this.props.navigation.setParams({
-      onPressRight: this.editChild
-    });
-  }
-
-  private readonly editChild = () => {
-    if (this.props.child) {
-      this.props.navigation.navigate('ChildDetail');
-    }
   }
 
   public getSnapshotBeforeUpdate(prevProps: Props, _: State): Snapshot {
@@ -94,7 +76,7 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
 
   private readonly keyExtractor = (item: WeeklyScore): string => {
     return item.week;
-  }
+  };
   private readonly renderItem = (info: ListRenderItemInfo<WeeklyScore>): JSX.Element => {
     const item = info.item;
     const childId = this.props.child !== undefined ? this.props.child.id : '';
@@ -105,21 +87,21 @@ class ScoresViewInner extends React.PureComponent<Props, State> {
         weeklyScore={item}
         setScore={this.props.setScore} />
     );
-  }
+  };
   private readonly onRefresh = () => {
     if (this.props.child !== undefined) {
       this.props.refreshScores(this.props.child.id);
     }
-  }
+  };
   private readonly onEndReached = () => {
     if (this.props.child !== undefined) {
       this.props.fetchMoreStores(this.props.child.id);
     }
-  }
+  };
   private readonly scrollToTop = () => {
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.flatList as any).scrollToOffset({ offset: 0, animated: false });
-  }
+  };
 
   public render(): JSX.Element {
     const refreshing =
@@ -161,7 +143,8 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state:
 };
 
 export const ScoresView = connect<StateProps, DispatchProps, OwnProps>(
-  mapStateToProps, {
+  mapStateToProps,
+  {
     refreshScores,
     fetchMoreStores,
     setScore,
@@ -169,7 +152,6 @@ export const ScoresView = connect<StateProps, DispatchProps, OwnProps>(
   }
 )(ScoresViewInner);
 
-// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   flatList: {
@@ -182,4 +164,3 @@ const styles = StyleSheet.create({
     elevation: 5
   }
 });
-// tslint:enable:no-object-literal-type-assertion

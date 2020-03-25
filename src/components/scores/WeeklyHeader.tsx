@@ -14,7 +14,7 @@ export const WeeklyHeader: React.SFC<{ weekId: WeekId }> = (props) => {
 
   const today = moment()
     .format(DATE_FORMAT);
-  const dates: Array<DateObj> = [0, 1, 2, 3, 4, 5, 6].map((i: number) => {
+  const dates: DateObj[] = [0, 1, 2, 3, 4, 5, 6].map((i: number) => {
     const mo = moment(`${props.weekId}T00:00:00Z`)
       .weekday(i);
     const up = mo.format('ddd');
@@ -33,7 +33,6 @@ export const WeeklyHeader: React.SFC<{ weekId: WeekId }> = (props) => {
       {
         dates.map((d: DateObj, i: number) => {
           const style = d.isToday
-            // tslint:disable-next-line:no-object-literal-type-assertion
             ? [styles.headerLabel, { textDecorationLine: 'underline' } as TextStyle]
             : styles.headerLabel;
           return (
@@ -48,7 +47,6 @@ export const WeeklyHeader: React.SFC<{ weekId: WeekId }> = (props) => {
   );
 };
 
-// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -67,4 +65,3 @@ const styles = StyleSheet.create({
     color: COLORS.white
   } as TextStyle
 });
-// tslint:enable:no-object-literal-type-assertion

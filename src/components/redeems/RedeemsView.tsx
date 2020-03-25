@@ -8,29 +8,29 @@ import {
   StyleSheet
 } from 'react-native';
 import { Button, ListItem } from 'react-native-elements';
-import { NavigationScreenProp } from 'react-navigation';
 import { connect, MapStateToProps } from 'react-redux';
 import { signIn } from 'src/actions/auth';
 import { createRedeem, fetchChildren, fetchMoreRedeems, refreshRedeems } from 'src/actions/child';
 import { clearErrors } from 'src/actions/requestState';
 import { Profile } from 'src/api/auth';
 import { Child, Redeem } from 'src/api/child';
-import { FooterIcon } from 'src/components/common/Icons';
 import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { COLORS, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildRedeems } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
 import { AddRedeemParams } from './AddRedeemView';
+import { RootStackParamList } from '../AppNavigator';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface OwnProps {
-  navigation: NavigationScreenProp<{}>;
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 }
 
 interface StateProps {
   profile: Profile | undefined;
   child: Child | undefined;
-  redeems: Array<Redeem>;
+  redeems: Redeem[];
   requestState: RequestState;
 }
 
@@ -52,15 +52,6 @@ interface Snapshot {
 
 class RedeemsViewInner extends React.PureComponent<Props, State> {
 
-  public static navigationOptions = () => {
-    return {
-      tabBarLabel: 'Redeems',
-      tabBarIcon: (opt: { tintColor?: string }) => (
-        <FooterIcon name="gift" color={opt.tintColor} />
-      )
-    };
-  }
-
   public constructor(props: Props) {
     super(props);
   }
@@ -80,7 +71,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
       };
       this.props.navigation.navigate('AddRedeem', addRedeem);
     }
-  }
+  };
 
   public componentDidMount(): void {
     if (this.props.child && this.props.redeems.length === 0) {
@@ -110,7 +101,7 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
 
   private readonly keyExtractor = (redeem: Redeem): string => {
     return redeem.timestamp;
-  }
+  };
 
   private readonly renderItem: ListRenderItem<Redeem> = (info: ListRenderItemInfo<Redeem>) => {
     const item = info.item;
@@ -127,22 +118,22 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
         rightTitleStyle={styles.listItemRightTitle}
       />
     );
-  }
+  };
 
   private readonly onRefresh = (): void => {
     if (this.props.child !== undefined) {
       this.props.refreshRedeems(this.props.child.id);
     }
-  }
+  };
   private readonly onEndReached = () => {
     if (this.props.child !== undefined) {
       this.props.fetchMoreRedeems(this.props.child.id);
     }
-  }
+  };
   private readonly scrollToTop = () => {
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.refs.flatList as any).scrollToOffset({ offset: 0, animated: false });
-  }
+  };
 
   public render(): JSX.Element {
     const refreshing =
@@ -189,7 +180,8 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state:
 };
 
 export const RedeemsView = connect<StateProps, DispatchProps, OwnProps>(
-  mapStateToProps, {
+  mapStateToProps,
+  {
     refreshRedeems,
     fetchMoreRedeems,
     createRedeem,
@@ -197,7 +189,6 @@ export const RedeemsView = connect<StateProps, DispatchProps, OwnProps>(
   }
 )(RedeemsViewInner);
 
-// tslint:disable:no-object-literal-type-assertion
 const styles = StyleSheet.create({
   ...SHARED_STYLES,
   flatList: {
@@ -207,4 +198,3 @@ const styles = StyleSheet.create({
     marginLeft: -5
   }
 });
-// tslint:enable:no-object-literal-type-assertion

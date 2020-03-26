@@ -53,10 +53,12 @@ function Tabs() {
       style: {
         borderTopWidth: 0.5,
         borderTopColor: COLORS.primary,
-        backgroundColor: COLORS.white
+        backgroundColor: COLORS.white,
       },
       tabStyle: { paddingTop: 6 },
-      labelStyle: { fontSize: FONT_SIZES.small }
+      labelStyle: { fontSize: FONT_SIZES.small },
+      activeTintColor: COLORS.primary,
+      inactiveTintColor: COLORS.lightBorder
     }} >
       <Tab.Screen name="Scores" component={ScoresView} options={{
         tabBarLabel: 'Scores',

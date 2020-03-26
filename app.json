@@ -19,14 +19,10 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [],
-    "androidStatusBar": {
-      "barStyle": "dark-content",
-      "backgroundColor": "#ffffff"
-    },
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1060004",
+      "buildNumber": "1060005",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -36,7 +32,7 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1060004,
+      "versionCode": 1060005,
       "permissions": [
         "USE_FINGERPRINT"
       ],
@@ -50,7 +46,7 @@
       "ios"
     ],
     "extra": {
-      "semver": "1.6.0-beta.4"
+      "semver": "1.6.0-beta.5"
     }
   }
 }

@@ -15,7 +15,6 @@ import {
   getScoresAsync,
   Redeem,
   ScoreResult,
-  setPreferenceAsync,
   setScoreAsync,
   updateChildAsync
 } from 'src/api/child';
@@ -31,9 +30,6 @@ function* fetchChildrenSaga(action: typeof actions.fetchChildren.shape): SagaIte
   try {
     yield put(startRequesting(actionType));
     const authToken: string = yield call(authClient.getAuthTokenAsync);
-    yield call(setPreferenceAsync, authToken, {
-      timeZoneOffset: new Date().getTimezoneOffset()
-    });
     const children: Child[] = yield call(getChildrenListAsync, authToken);
     const effects: Effect[] = [];
     if (children.length > 0) {

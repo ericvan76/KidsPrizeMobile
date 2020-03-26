@@ -22,7 +22,7 @@
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1060005",
+      "buildNumber": "1060006",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -32,7 +32,7 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1060005,
+      "versionCode": 1060006,
       "permissions": [
         "USE_FINGERPRINT"
       ],
@@ -46,7 +46,7 @@
       "ios"
     ],
     "extra": {
-      "semver": "1.6.0-beta.5"
+      "semver": "1.6.0-beta.6"
     }
   }
 }

@@ -18,13 +18,12 @@ import { HeaderTitle } from './common/HeaderTitle';
 const stackNavigationOptions: StackNavigationOptions = {
   headerStyle: {
     backgroundColor: COLORS.primary,
-    borderBottomColor: COLORS.primary,
-    // android status bar trick
-    //  marginTop: Platform.select({ android: Constants.statusBarHeight * -1 })
+    borderBottomColor: COLORS.primary
   },
   headerTitleStyle: {
     color: COLORS.white,
-    fontSize: FONT_SIZES.xlarge
+    fontSize: FONT_SIZES.large,
+    fontFamily: 'Regular'
   },
   headerBackTitleVisible: false
 };
@@ -54,9 +53,10 @@ function Tabs() {
         borderTopWidth: 0.5,
         borderTopColor: COLORS.primary,
         backgroundColor: COLORS.white,
+        paddingVertical: 8,
+        height: 56
       },
-      tabStyle: { paddingTop: 6 },
-      labelStyle: { fontSize: FONT_SIZES.small },
+      labelStyle: { fontSize: FONT_SIZES.small, fontFamily: 'Regular' },
       activeTintColor: COLORS.primary,
       inactiveTintColor: COLORS.lightBorder
     }} >
@@ -75,8 +75,6 @@ function Tabs() {
     </Tab.Navigator>
   );
 }
-
-
 
 function Home() {
   return (

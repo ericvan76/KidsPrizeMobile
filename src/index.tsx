@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { AppLoading } from 'expo';
 import React from 'react';
+import * as Font from 'expo-font';
 import { Provider } from 'react-redux';
 import { signIn } from 'src/actions/auth';
 import { AppContainer } from 'src/components/AppNavigator';
@@ -47,5 +49,9 @@ export class App extends React.PureComponent<Props, State> {
 
   private readonly cacheResourcesAsync = async () => {
     // nothing
+    await Font.loadAsync({
+      'Regular': require('../assets/fonts/Baloo2-Regular.ttf'),
+      'Bold': require('../assets/fonts/Baloo2-Bold.ttf'),
+    });
   };
 }

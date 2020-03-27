@@ -18,11 +18,13 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [],
+    "assetBundlePatterns": [
+      "assets/fonts/*.ttf"
+    ],
     "scheme": "kidsprize",
     "ios": {
       "bundleIdentifier": "com.kids-prize.mobile.KidsPrize",
-      "buildNumber": "1060006",
+      "buildNumber": "1060007",
       "supportsTablet": false,
       "config": {
         "usesNonExemptEncryption": false
@@ -32,7 +34,7 @@
     },
     "android": {
       "package": "com.kidsprize",
-      "versionCode": 1060006,
+      "versionCode": 1060007,
       "permissions": [
         "USE_FINGERPRINT"
       ],
@@ -46,7 +48,7 @@
       "ios"
     ],
     "extra": {
-      "semver": "1.6.0-beta.6"
+      "semver": "1.6.0-beta.7"
     }
   }
 }

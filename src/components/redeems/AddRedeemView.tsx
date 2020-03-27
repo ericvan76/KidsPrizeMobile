@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     paddingHorizontal: 10,
     color: COLORS.primary,
-    fontSize: FONT_SIZES.medium
+    fontSize: FONT_SIZES.medium,
+    fontFamily: 'Regular'
   }
 });

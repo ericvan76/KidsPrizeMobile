@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
   },
   version: {
     color: COLORS.lightBorder,
-    fontSize: FONT_SIZES.xsmall
+    fontSize: FONT_SIZES.xsmall,
+    fontFamily: 'Regular'
   }
 });

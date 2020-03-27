@@ -35,8 +35,8 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state:
 };
 
 export const HeaderTitle = connect<StateProps, {}, OwnProps>(
-  mapStateToProps, {
-  }
+  mapStateToProps,
+  {}
 )(HeaderTitleInner);
 
 const styles = StyleSheet.create({
@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.white,
     fontSize: FONT_SIZES.xlarge,
-    fontWeight: 'bold'
+    fontFamily: 'Bold'
   }
 });

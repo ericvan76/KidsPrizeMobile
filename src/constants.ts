@@ -12,9 +12,9 @@ export const COLORS = Object.freeze({
 });
 
 export const FONT_SIZES = Object.freeze({
-  xlarge: 20,
-  large: 18,
-  medium: 16,
+  xlarge: 22,
+  large: 20,
+  medium: 18,
   small: 14,
   xsmall: 12
 });
@@ -30,7 +30,8 @@ interface BadgeProps {
 
 export const BADGE_PROPS: BadgeProps = {
   textStyle: {
-    fontSize: FONT_SIZES.small
+    fontSize: FONT_SIZES.small,
+    fontFamily: 'Regular'
   },
   badgeStyle: {
     backgroundColor: COLORS.primary,
@@ -67,15 +68,18 @@ export const SHARED_STYLES = {
   } as ViewStyle,
   listItemTitle: {
     color: COLORS.primary,
-    fontSize: FONT_SIZES.medium
+    fontSize: FONT_SIZES.medium,
+    fontFamily: 'Regular'
   },
   listItemSubtitle: {
     color: COLORS.lightBorder,
-    fontSize: FONT_SIZES.small
+    fontSize: FONT_SIZES.small,
+    fontFamily: 'Regular'
   },
   listItemRightTitle: {
     color: COLORS.primary,
-    fontSize: FONT_SIZES.medium
+    fontSize: FONT_SIZES.medium,
+    fontFamily: 'Regular'
   },
   button: {
     borderRadius: 3,
@@ -84,7 +88,7 @@ export const SHARED_STYLES = {
   },
   buttonTitle: {
     fontSize: FONT_SIZES.medium,
-    fontWeight: 'normal'
+    fontFamily: 'Regular'
   } as TextStyle
 };
 

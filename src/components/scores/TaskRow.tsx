@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
   },
   taskLabel: {
     fontSize: FONT_SIZES.medium,
-    color: COLORS.primary
+    color: COLORS.primary,
+    fontFamily: 'Regular'
   },
   starRow: {
     flex: 1,

@@ -109,11 +109,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     paddingHorizontal: 10,
     color: COLORS.primary,
-    fontSize: FONT_SIZES.medium
+    fontSize: FONT_SIZES.medium,
+    fontFamily: 'Regular'
   } as TextStyle,
   hint: {
     color: COLORS.primary,
     marginHorizontal: 5,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: 'Regular'
   } as TextStyle
 });

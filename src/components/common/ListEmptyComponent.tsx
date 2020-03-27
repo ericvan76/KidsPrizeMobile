@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   text: {
-    color: COLORS.lightBorder
+    color: COLORS.lightBorder,
+    fontFamily: 'Regular'
   }
 });

@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     width: 36,
     textAlign: 'center',
     fontSize: FONT_SIZES.small,
-    color: COLORS.white
+    color: COLORS.white,
+    fontFamily: 'Regular'
   } as TextStyle
 });

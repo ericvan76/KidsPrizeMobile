@@ -11,13 +11,13 @@ import { HeaderIcon } from 'src/components/common/Icons';
 import { PickerParams } from 'src/components/common/PickerView';
 import { TextInputParams } from 'src/components/common/TextInputView';
 import { BADGE_PROPS, COLORS, SHARED_STYLES } from 'src/constants';
-import { selectCurrentChild, selectTasks } from 'src/selectors/child';
+import { selectCurrentChild, selectTasks as selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
 import { tryDisplayErrors } from 'src/utils/error';
-import * as uuid from 'uuid';
 import { StackNavigationProp, StackNavigationOptions } from '@react-navigation/stack';
 import { RootStackParamList } from '../AppNavigator';
 import { RouteProp } from '@react-navigation/native';
+import { uuidv4 } from 'src/utils/uuid';
 
 export interface ChildDetailParams {
   createNew?: boolean;
@@ -65,7 +65,7 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
   };
 
   public state: State = {
-    id: uuid.v4(),
+    id: uuidv4(),
     name: 'New Child',
     gender: 'M',
     tasks: ['Task 1', 'Task 2', 'Task 3']

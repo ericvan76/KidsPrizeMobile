@@ -44,7 +44,7 @@ export type TabStackParamList = {
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-const RootStack = createStackNavigator<RootStackParamList>();
+const RootStack = createStackNavigator();
 
 function Tabs() {
   return (

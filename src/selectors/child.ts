@@ -29,7 +29,9 @@ export const selectTasks = createSelector(
         .keys(scores)
         .sort()
         .reverse()[0];
-      return scores[currentWeek].tasks;
+      if (scores[currentWeek] !== undefined) {
+        return scores[currentWeek].tasks;
+      }
     }
     return undefined;
   }

@@ -18,6 +18,10 @@ export class App extends React.PureComponent<Props, State> {
     isReady: false
   };
 
+  public componentDidMount() {
+    store.dispatch(signIn(undefined));
+  }
+
   public render(): JSX.Element {
 
     if (!this.state.isReady) {
@@ -44,11 +48,9 @@ export class App extends React.PureComponent<Props, State> {
         isReady: true
       };
     });
-    store.dispatch(signIn(undefined));
   };
 
   private readonly cacheResourcesAsync = async () => {
-    // nothing
     await Font.loadAsync({
       'Regular': require('../assets/fonts/Baloo2-Regular.ttf'),
       'Bold': require('../assets/fonts/Baloo2-Bold.ttf'),

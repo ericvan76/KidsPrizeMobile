@@ -30,29 +30,22 @@ class AuthClient {
     return this.instance;
   }
 
-  public signInAsync = async (): Promise<Profile | undefined> => {
+  public signInAsync = async (): Promise<Profile> => {
     let token = await this.loadTokenFromStorageAsync();
-    let profile = this.parseToken(token);
-    if (profile) {
+    if (token != null) {
       this.token = token;
-      return profile;
+      return this.parseToken(token);
     }
     // no stored token, authorise
     const authCode = await authorizeAsync();
-    if (authCode === undefined) {
-      return undefined;
-    }
     token = await obtainTokenAsync(authCode);
-    profile = this.parseToken(token);
-    if (profile) {
-      this.token = token;
-      if (token.refresh_token) {
-        await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
-        // await this.askEnableFingerprintAsync();
-      }
-      return profile;
+    let profile = this.parseToken(token);
+    this.token = token;
+    if (token.refresh_token) {
+      await AsyncStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
+      // await this.askEnableFingerprintAsync();
     }
-    throw new Error('SignIn Failure.');
+    return profile;
   };
 
   public signOutAsync = async (): Promise<void> => {
@@ -91,11 +84,11 @@ class AuthClient {
     }
   };
 
-  private readonly parseToken = (token: Token | undefined): Profile | undefined => {
+  private readonly parseToken = (token: Token): Profile => {
     if (token && token.id_token) {
       return decodeJwt(token.id_token);
     }
-    return undefined;
+    throw new Error('Invalid token.');
   };
 
   // private readonly askEnableFingerprintAsync = async (): Promise<void> => {

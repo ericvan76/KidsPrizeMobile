@@ -26,28 +26,28 @@ export interface Profile {
   iat: number;
 }
 
-export async function authorizeAsync(): Promise<string | undefined> {
-  const result = await AuthSession.startAsync({
-    authUrl:
-      `https://${CONFIG.auth0Domain}/authorize?${url.toQueryString({
-        client_id: CONFIG.auth0ClientId,
-        response_type: 'code',
-        scope: 'openid profile email email_verified offline_access',
-        redirect_uri: AuthSession.getRedirectUrl()
-      })}`
-  });
+export async function authorizeAsync(): Promise<string> {
+  const result = await AuthSession.startAsync(
+    {
+      authUrl:
+        `https://${CONFIG.auth0Domain}/authorize?${url.toQueryString({
+          client_id: CONFIG.auth0ClientId,
+          response_type: 'code',
+          scope: 'openid profile email email_verified offline_access',
+          redirect_uri: AuthSession.getRedirectUrl()
+        })}`
+    });
   if (result.type === 'success') {
     return result.params.code;
-  }
-  if (result.type === 'error') {
+  } else {
     throw new Error('Authorise Failure.');
   }
-  return undefined;
 }
 
 export async function obtainTokenAsync(code: string): Promise<Token> {
   const req = new Request(
-    `https://${CONFIG.auth0Domain}/oauth/token`, {
+    `https://${CONFIG.auth0Domain}/oauth/token`,
+    {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -70,7 +70,8 @@ export async function obtainTokenAsync(code: string): Promise<Token> {
 
 export async function refreshTokenAsync(refreshToken: string): Promise<Token> {
   const req = new Request(
-    `https://${CONFIG.auth0Domain}/oauth/token`, {
+    `https://${CONFIG.auth0Domain}/oauth/token`,
+    {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -92,7 +93,8 @@ export async function refreshTokenAsync(refreshToken: string): Promise<Token> {
 
 export async function revokeRefreshTokenAsync(refreshToken: string): Promise<void> {
   const req = new Request(
-    `https://${CONFIG.auth0Domain}/oauth/revoke`, {
+    `https://${CONFIG.auth0Domain}/oauth/revoke`,
+    {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

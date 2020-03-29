@@ -27,6 +27,7 @@ export interface Profile {
 }
 
 export async function authorizeAsync(): Promise<string> {
+
   const result = await AuthSession.startAsync(
     {
       authUrl:
@@ -37,10 +38,15 @@ export async function authorizeAsync(): Promise<string> {
           redirect_uri: AuthSession.getRedirectUrl()
         })}`
     });
-  if (result.type === 'success') {
-    return result.params.code;
-  } else {
-    throw new Error('Authorise Failure.');
+  switch (result.type) {
+    case 'success':
+      return result.params.code;
+    case 'error':
+      throw new Error(`Error code: ${result.errorCode}`);
+    case 'cancel':
+    case 'dismiss':
+    default:
+      throw new Error('Authentication cancelled');
   }
 }
 

@@ -18,8 +18,6 @@ export function* signInSaga(action: typeof actions.signIn.shape): SagaIterator {
     yield put(fetchChildren(undefined));
   } catch (error) {
     yield all([
-      //put(actions.updateProfile(undefined)),
-      //put(reset(undefined)),
       put(requestFailure({ actionType, error })),
     ]);
   }

@@ -18,7 +18,6 @@ import { ListEmptyComponent } from 'src/components/common/ListEmptyComponent';
 import { COLORS, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectCurrentChildRedeems } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
-import { tryDisplayErrors } from 'src/utils/error';
 import { AddRedeemParams } from './AddRedeemView';
 import { RootStackParamList } from '../AppNavigator';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -88,9 +87,6 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
   }
 
   public componentDidUpdate(_: Props, _2: State, snapshot: Snapshot): void {
-    if (tryDisplayErrors(this.props.requestState.errors)) {
-      return;
-    }
     if (snapshot.childSwitched) {
       this.scrollToTop();
     }
@@ -160,7 +156,8 @@ class RedeemsViewInner extends React.PureComponent<Props, State> {
           buttonStyle={[styles.button, { backgroundColor: COLORS.primary }]}
           title="Add Redeem"
           icon={{ name: 'plus', type: 'material-community', color: COLORS.white }}
-          onPress={this.addRedeem} />
+          onPress={this.addRedeem}
+        />
       </SafeAreaView>
     );
   }

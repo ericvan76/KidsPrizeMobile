@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -12,8 +13,10 @@ import { PickerView, PickerParams } from './common/PickerView';
 import { TasksEditorView, TasksEditorParams } from './child/TasksEditorView';
 import { AddRedeemView, AddRedeemParams } from './redeems/AddRedeemView';
 import { COLORS, FONT_SIZES } from 'src/constants';
+import { signIn } from 'src/actions/auth';
 import { FooterIcon, HeaderIcon } from './common/Icons';
-import { HeaderTitle } from './common/HeaderTitle';
+import { AppState } from 'src/store';
+import { tryDisplayErrors } from 'src/utils/error';
 
 const stackNavigationOptions: StackNavigationOptions = {
   headerStyle: {
@@ -23,7 +26,7 @@ const stackNavigationOptions: StackNavigationOptions = {
   headerTitleStyle: {
     color: COLORS.white,
     fontSize: FONT_SIZES.large,
-    fontFamily: 'Regular'
+    fontFamily: 'Bold'
   },
   headerBackTitleVisible: false
 };
@@ -79,7 +82,7 @@ function Tabs() {
 function Home() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <DrawerView drawerProps={props} />}
+      drawerContent={() => <DrawerView />}
       drawerStyle={{ backgroundColor: COLORS.white }} >
       <Drawer.Screen name="Tabs" component={Tabs} />
     </Drawer.Navigator>
@@ -87,16 +90,48 @@ function Home() {
 }
 
 const homeOptions = (props: { navigation: StackNavigationProp<RootStackParamList, 'Home'> }): StackNavigationOptions => {
+
+  const { profile, title } = useSelector((state: AppState) =>
+    ({
+      profile: state.auth.profile,
+      title: state.currentChild != null ? state.children[state.currentChild].child.name : ''
+    })
+  );
+
   const openDrawer = () => props.navigation.dispatch(DrawerActions.openDrawer());
   const openChildDetail = () => props.navigation.navigate('ChildDetail', {});
   return {
     headerLeft: () => <HeaderIcon name="menu" onPress={openDrawer} />,
-    headerTitle: () => <HeaderTitle />,
-    headerRight: () => <HeaderIcon name="account-card-details" onPress={openChildDetail} />
+    headerTitle: title, //<HeaderTitle />,
+    headerRight: profile ? () => <HeaderIcon name="account-card-details" onPress={openChildDetail} /> : undefined
   };
 };
 
-export function AppContainer() {
+export const AppContainer = () => {
+
+  const { profile, requestState } = useSelector((state: AppState) => (
+    {
+      profile: state.auth.profile,
+      requestState: state.requestState,
+    }
+  ));
+
+  const [signing, setSigning] = useState(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (tryDisplayErrors(requestState.errors)) {
+      return;
+    }
+    if (profile == null && !signing) {
+      setSigning(true);
+      dispatch(signIn(undefined));
+    }
+    if (profile != null && signing) {
+      setSigning(false);
+    }
+  });
 
   return (
     <NavigationContainer>

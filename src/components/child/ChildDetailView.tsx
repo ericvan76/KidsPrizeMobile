@@ -13,7 +13,6 @@ import { TextInputParams } from 'src/components/common/TextInputView';
 import { BADGE_PROPS, COLORS, SHARED_STYLES } from 'src/constants';
 import { selectCurrentChild, selectTasks as selectTasks } from 'src/selectors/child';
 import { AppState, RequestState } from 'src/store';
-import { tryDisplayErrors } from 'src/utils/error';
 import { StackNavigationProp, StackNavigationOptions } from '@react-navigation/stack';
 import { RootStackParamList } from '../AppNavigator';
 import { RouteProp } from '@react-navigation/native';
@@ -70,12 +69,6 @@ class ChildDetailViewInner extends React.PureComponent<Props, State> {
     gender: 'M',
     tasks: ['Task 1', 'Task 2', 'Task 3']
   };
-
-  public componentDidUpdate(): void {
-    if (tryDisplayErrors(this.props.requestState.errors)) {
-      return;
-    }
-  }
 
   private readonly onPressName = () => {
     const { id, name } = this.props.child || this.state;
